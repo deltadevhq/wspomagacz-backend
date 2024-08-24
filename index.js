@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const pool = require('./database');
 
 const port = 3000;
 const listener = 'localhost';
