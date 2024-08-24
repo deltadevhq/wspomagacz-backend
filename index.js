@@ -10,7 +10,7 @@ const listener = 'localhost';
 app.use(express.json());
 
 // Use morgan to log requests to the console
-app.use(morgan('common'));
+app.use(morgan('[:date[clf]] Request: :method :url HTTP/:http-version, Response: :status, ResponseTime: :response-time ms'));
 
 // Basic test route
 app.get('/', (req, res) => {
