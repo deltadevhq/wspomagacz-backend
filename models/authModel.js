@@ -1,7 +1,7 @@
 const pool = require('../config/database');
 
-// Fetch all users
-const getUser = async (username) => {
+// Fetch user password hash for login
+const getUserCredentials = async (username) => {
   try {
     const query = 'SELECT id, username, email, password_hash FROM users WHERE username = $1';
     const values = [username];
@@ -15,5 +15,5 @@ const getUser = async (username) => {
 };
 
 module.exports = {
-  getUser
+  getUserCredentials
 };

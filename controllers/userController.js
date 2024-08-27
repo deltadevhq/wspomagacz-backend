@@ -1,6 +1,10 @@
 const userModel = require('../models/userModel');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
-// Get user
+const secretKey = process.env.API_SECRET;
+
+// Get user data
 const getUser = async (req, res) => {
   const userId = parseInt(req.params.id);
   if (isNaN(userId)) {
@@ -21,19 +25,46 @@ const getUser = async (req, res) => {
   }
 };
 
-// Create a new user
-const createUser = async (req, res) => {
-  const { name } = req.body;
+// Create new user
+const postUser = async (req, res) => {
+  const { username, displayName, password, email } = req.body;
+
+  // TODO: REGISTER DATA VALIDATION
+  // TODO: PASSWORD STRENGHT VALIDATION
+
   try {
-    const newUser = await userModel.createUser(name);
-    res.status(201).json(newUser);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
+    // Check if the email is already taken
+    let existingUser = await userModel.findUserByEmail(email);
+    if (existingUser) {
+      return res.status(400).json({ message: 'This email is already taken' });
+    }
+
+    // Check if the username is already taken
+    existingUser = await userModel.findUserByUsername(username);
+    if (existingUser) {
+      return res.status(400).json({ message: 'This username is already taken' });
+    }
+
+    // Hash the password
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(password, salt);
+
+    // Create the user
+    const newUser = await userModel.postUser(username, displayName, passwordHash, email);
+
+    // Create a JWT token
+    const token = jwt.sign({ id: newUser.id, username: newUser.username }, secretKey, {
+      expiresIn: '7d',  // TODO: DETERMINE TOKEN EXPIRE TIME / CONSIDER AUTOMATIC TOKEN RENEWAL
+    });
+
+    res.status(201).json({ token, user: newUser });
+  } catch (error) {
+    console.error('Error registering user:', error.stack);
+    res.status(500).json({ message: 'Internal server error' });
   }
 };
 
 module.exports = {
   getUser,
-  createUser,
+  postUser
 };

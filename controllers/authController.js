@@ -2,7 +2,7 @@ const authModel = require('../models/authModel');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
-const secretKey = process.env.API_SECRET; // TODO: GENERATE SECRET AND KEY
+const secretKey = process.env.API_SECRET;
 
 // Verify JWT token
 const verifyToken = async (req, res, next) => {
@@ -22,25 +22,25 @@ const verifyToken = async (req, res, next) => {
 };
 
 // Login to get JWT
-const login = async (req, res) => {
-  const username = req.params.username;
-  const password = req.params.password;
+const loginUser = async (req, res) => {
+  const { username, password } = req.body;
+  
+  // TODO: CONSIDER USER LOGIN BY EMAIL
 
   try {
     if (username && password) {
-        const user = await authModel.getUser(username);
+        const user = await authModel.getUserCredentials(username);
 
-        const isMatch = await bcrypt.compare(password, user.passwordHash);
+        const isMatch = await bcrypt.compare(password, user.password_hash);
         if (!isMatch) {
             return res.status(401).json({ message: 'Invalid username or password' });
         }
 
         const token = jwt.sign({ id: user.id, username: user.username }, secretKey, {
-            expiresIn: '1h', // TODO: DETERMINE TOKEN EXPIRE TIME
+            expiresIn: '7d', // TODO: DETERMINE TOKEN EXPIRE TIME / CONSIDER AUTOMATIC TOKEN RENEWAL
         });
         
         res.json({ token });
-
     } else {
       return res.status(400).json({ error: 'Invalid login request' });
     }
@@ -51,13 +51,7 @@ const login = async (req, res) => {
   }
 };
 
-// Register new user
-const register = async (req, res) => {
-  // TODO: CREATE REGISTER CONTROLLER
-};
-
 module.exports = {
-  login,
-  verifyToken,
-  register,
+  loginUser,
+  verifyToken
 };
