@@ -2,6 +2,8 @@ const express = require('express');
 const morgan = require('morgan');
 const app = express();
 const userRoutes = require('./routes/userRoutes');
+const authRoutes = require('./routes/authRoutes');
+const authController = require('./controllers/authController');
 const pool = require('./config/database');
 
 const port = 3000;
@@ -18,7 +20,10 @@ app.get('/', (req, res) => {
 });
 
 // Use user routes
-app.use('/api', userRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/users', authController.verifyToken, userRoutes);
+app.use('/api/dev/users', userRoutes);
+
 
 // Start the server
 app.listen(port, () => {
