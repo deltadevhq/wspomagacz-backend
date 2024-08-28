@@ -36,13 +36,13 @@ const postUser = async (req, res) => {
     // Check if the email is already taken
     let existingUser = await userModel.findUserByEmail(email);
     if (existingUser) {
-      return res.status(400).json({ message: 'This email is already taken' });
+      return res.status(409).json({ message: 'This email is already taken' });
     }
 
     // Check if the username is already taken
     existingUser = await userModel.findUserByUsername(username);
     if (existingUser) {
-      return res.status(400).json({ message: 'This username is already taken' });
+      return res.status(409).json({ message: 'This username is already taken' });
     }
 
     // Hash the password
