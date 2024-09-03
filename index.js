@@ -2,7 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const swaggerUi = require('swagger-ui-express');
 const app = express();
-const { userRoutes, authRoutes } = require('./routes');
+const { authRoutes, userRoutes, muscleRoutes } = require('./routes');
 const { port, listener, swaggerOptions, swaggerDocs } = require('./config/settings')
 
 app.use(express.json());
@@ -14,6 +14,10 @@ app.use(morgan('[:date[clf]] Request: :method :url HTTP/:http-version, Response:
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/muscles', muscleRoutes);
+// TODO: app.use('/api/equipment', equipmentRoutes);
+
+
 
 // Start the server
 app.listen(port, () => {

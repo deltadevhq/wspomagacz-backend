@@ -9,6 +9,7 @@ router.post('/', userController.postUser);
 // AUTH ROUTES
 router.get('/:id', authController.verifyToken, userController.getUser);
 
+// TODO: CREATE PUT ENDPOINT FOR USER
 
 module.exports = router;
 
