@@ -51,10 +51,14 @@ module.exports = router;
  *                     email:
  *                       type: string
  *                       example: "testowicz@test.com"
+ *       400:
+ *         description: Bad request - Invalid user ID
  *       401:
  *         description: Unauthorized - Invalid or missing token
  *       403:
  *         description: Forbidden - Token does not have the required permissions
+ *       404:
+ *         description: Not Found - User not found
  * /api/users:
  *   post:
  *     summary: User register endpoint
@@ -106,6 +110,8 @@ module.exports = router;
  *                     email:
  *                       type: string
  *                       example: "testowicz@test.com"
+ *       400:
+ *         description: Bad request - Invalid or missing user data
  *       409:
- *         description: Email or username already taken
+ *         description: Conflict - Email or username already taken
  */

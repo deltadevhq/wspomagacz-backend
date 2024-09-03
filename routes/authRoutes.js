@@ -40,6 +40,8 @@ module.exports = router;
  *                 token:
  *                   type: string
  *                   example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+ *       400:
+ *         description: Bad request - Invalid or missing login data
  *       401:
- *         description: Invalid credentials
+ *         description: Unauthorized - Invalid credentials
  */
