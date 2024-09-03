@@ -2,7 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const swaggerUi = require('swagger-ui-express');
 const app = express();
-const { authRoutes, userRoutes, muscleRoutes } = require('./routes');
+const { authRoutes, userRoutes, muscleRoutes, equipmentRoutes } = require('./routes');
 const { port, listener, swaggerOptions, swaggerDocs } = require('./config/settings')
 
 app.use(express.json());
@@ -15,7 +15,7 @@ app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/muscles', muscleRoutes);
-// TODO: app.use('/api/equipment', equipmentRoutes);
+app.use('/api/equipment', equipmentRoutes);
 
 
 
