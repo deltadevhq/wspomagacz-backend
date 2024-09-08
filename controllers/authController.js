@@ -43,7 +43,9 @@ const loginUser = async (req, res) => {
             expiresIn: '7d', // TODO: DETERMINE TOKEN EXPIRE TIME / CONSIDER AUTOMATIC TOKEN RENEWAL
         });
         
-        res.status(201).json({ token });
+        delete user.password_hash;
+
+        res.status(201).json({ token: token, user: user });
     } else {
       return res.status(400).json({ error: 'Invalid login request' });
     }

@@ -3,7 +3,7 @@ const pool = require('../config/database');
 // Fetch user password hash for login
 const getUserCredentials = async (username) => {
   try {
-    const query = 'SELECT id, username, email, password_hash FROM users WHERE username = $1';
+    const query = 'SELECT * FROM users WHERE username = $1';
     const values = [username];
 
     const result = await pool.query(query, values);
