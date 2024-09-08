@@ -25,6 +25,7 @@ const verifyToken = async (req, res, next) => {
 const loginUser = async (req, res) => {
   const { username, password } = req.body;
   // TODO: CONSIDER USER LOGIN BY EMAIL
+  // TODO: UPDATE LAST LOGIN IN DATABASE
 
   try {
     if (username && password) {
