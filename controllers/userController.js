@@ -54,10 +54,18 @@ const postUser = async (req, res) => {
 
     // Create a JWT token
     const token = jwt.sign({ id: newUser.id, username: newUser.username }, secretKey, {
-      expiresIn: '7d',  // TODO: DETERMINE TOKEN EXPIRE TIME / CONSIDER AUTOMATIC TOKEN RENEWAL
+      expiresIn: '7d',  // CONSIDER: DETERMINE TOKEN EXPIRE TIME / CONSIDER AUTOMATIC TOKEN RENEWAL
     });
 
-    res.status(201).json({ token, user: newUser });
+    // Set the cookie with the token
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      sameSite: 'strict'
+    });
+
+    res.status(201).json({ user: newUser });
   } catch (error) {
     console.error('Error registering user:', error.stack);
     res.status(500).json({ message: 'Internal server error' });

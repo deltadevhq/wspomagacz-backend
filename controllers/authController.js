@@ -24,7 +24,7 @@ const verifyToken = async (req, res, next) => {
 // Login to get JWT token cookie
 const loginUser = async (req, res) => {
   const { username, password } = req.body;
-  // TODO: CONSIDER USER LOGIN BY EMAIL
+  // CONSIDER: USER LOGIN BY EMAIL
 
   try {
     if (username && password) {
@@ -41,14 +41,14 @@ const loginUser = async (req, res) => {
       await authModel.updateLastLogin(username);
 
       const token = jwt.sign({ id: user.id, username: user.username }, secretKey, {
-        expiresIn: '7d', // TODO: DETERMINE TOKEN EXPIRE TIME / CONSIDER AUTOMATIC TOKEN RENEWAL
+        expiresIn: '7d', // CONSIDER: DETERMINE TOKEN EXPIRE TIME / CONSIDER AUTOMATIC TOKEN RENEWAL
       });
 
       // Set the cookie with the token
       res.cookie('token', token, {
         httpOnly: true,
         secure: true,
-        maxAge: 3600000,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
         sameSite: 'strict'
       });
 
