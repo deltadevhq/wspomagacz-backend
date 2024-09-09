@@ -33,21 +33,9 @@ module.exports = router;
  *             schema:
  *               type: object
  *               properties:
- *                 token:
- *                   type: string
- *                   example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
  *                 user:
  *                   type: object
- *                   properties:
- *                     id:
- *                       type: int
- *                       example: 3
- *                     username:
- *                       type: string
- *                       example: "testowicz"
- *                     email:
- *                       type: string
- *                       example: "testowicz@test.com"
+ *                   example: { "id": 10, "username": "testowicz", "display_name": "Test", "email": "testowicz@test.com", "gender": "Wolę nie podawać", "birthday": null, "status": "Aktywny", "level": 1, "exp": 0, "weights": [], "height": null, "last_logged_at": "2024-09-09T17:44:12.057Z", "created_at": "2024-09-08T18:19:39.627Z", "modified_at": "2024-09-09T17:44:12.057Z" }
  *       400:
  *         description: Bad request - Invalid user ID
  *       401:

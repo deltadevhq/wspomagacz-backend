@@ -3,7 +3,7 @@ const pool = require('../config/database');
 // Fetch single users
 const getUser = async (userId) => {
   try {
-    const query = 'SELECT id, username, display_name, gender, birthday, status, level, exp, weights, height, created_at FROM users WHERE id = $1';
+    const query = 'SELECT * FROM users WHERE id = $1';
     const values = [userId];
 
     const result = await pool.query(query, values);

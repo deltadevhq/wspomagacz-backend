@@ -42,6 +42,7 @@ module.exports = router;
  *               email:
  *                 type: email
  *                 example: testowicz@test.com
+ *     security: []
  *     responses:
  *       201:
  *         description: A successful register

@@ -11,6 +11,7 @@ const getUser = async (req, res) => {
     const user = await userModel.getUser(userId);
 
     if (user) {
+      delete user.password_hash;
       res.json(user);
     } else {
       res.status(404).json({ error: 'User not found' });
