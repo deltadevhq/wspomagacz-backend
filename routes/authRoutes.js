@@ -4,6 +4,7 @@ const authController = require('../controllers/authController');
 
 // NO AUTH ROUTES
 router.post('/login', authController.loginUser);
+router.post('/register', authController.registerUser);
 
 // AUTH ROUTES
 router.get('/user', authController.verifyToken, authController.getUserByUsername)
@@ -13,13 +14,64 @@ module.exports = router;
 
 /**
  * @swagger
+ * /api/auth/register:
+ *   post:
+ *     summary: User register endpoint
+ *     tags: [Authorization]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - displayName
+ *               - password
+ *               - email
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 example: testowicz
+ *               displayName:
+ *                 type: string
+ *                 example: Test
+ *               password:
+ *                 type: string
+ *                 example: Test123!
+ *               email:
+ *                 type: email
+ *                 example: testowicz@test.com
+ *     responses:
+ *       201:
+ *         description: A successful register
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: int
+ *                       example: 3
+ *                     username:
+ *                       type: string
+ *                       example: "testowicz"
+ *                     email:
+ *                       type: string
+ *                       example: "testowicz@test.com"
+ *       400:
+ *         description: Bad request - Invalid or missing user data
+ *       409:
+ *         description: Conflict - Email or username already taken
  * /api/auth/login:
  *   post:
  *     summary: User login endpoint
  *     tags: [Authorization]
  *     requestBody:
  *       required: true
- *       description: A JSON object containing the login and password.
  *       content:
  *         application/json:
  *           schema:
@@ -47,6 +99,15 @@ module.exports = router;
  *         description: Bad request - Invalid or missing login data
  *       401:
  *         description: Unauthorized - Invalid credentials
+ * /api/auth/logout:
+ *   post:
+ *     summary: User logout endpoint
+ *     tags: [Authorization]
+ *     responses:
+ *       204:
+ *         description: A successful logout - removes cookie with autorization token
+ *       401:
+ *         description: Bad request - Invalid or missing autorization token
  * /api/auth/user:
  *   get:
  *     summary: Returns user data by token provided in cookie
@@ -66,13 +127,4 @@ module.exports = router;
  *         description: Unauthorized - Invalid or missing token
  *       404:
  *         description: Not Found - User not found
- * /api/auth/logout:
- *   post:
- *     summary: User logout endpoint
- *     tags: [Authorization]
- *     responses:
- *       204:
- *         description: A successful logout - removes cookie with autorization token
- *       401:
- *         description: Bad request - Invalid or missing autorization token
  */
