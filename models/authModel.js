@@ -14,6 +14,21 @@ const getUserCredentials = async (username) => {
   }
 };
 
+// Update last_logged_at column on user login
+const updateLastLogin = async (username) => {
+  try {
+    const query = 'UPDATE users SET last_logged_at = NOW() WHERE username = $1';
+    const values = [username];
+
+    const result = await pool.query(query, values);
+    return result.rows.length > 0 ? result.rows[0] : null;
+  } catch (error) {
+    console.error('Error executing query', error.stack);
+    throw error;
+  }
+};
+
 module.exports = {
-  getUserCredentials
+  getUserCredentials,
+  updateLastLogin
 };
