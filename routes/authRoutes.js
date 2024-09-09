@@ -6,6 +6,7 @@ const authController = require('../controllers/authController');
 router.post('/login', authController.loginUser);
 
 // AUTH ROUTES
+router.get('/user', authController.verifyToken, authController.getUserByUsername)
 router.post('/logout', authController.verifyToken, authController.logoutUser)
 
 module.exports = router;
@@ -46,6 +47,25 @@ module.exports = router;
  *         description: Bad request - Invalid or missing login data
  *       401:
  *         description: Unauthorized - Invalid credentials
+ * /api/auth/user:
+ *   get:
+ *     summary: Returns user data by token provided in cookie
+ *     tags: [Authorization]
+ *     responses:
+ *       200:
+ *         description: Successfuly retrieved user data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 user:
+ *                   type: object
+ *                   example: { "id": 10, "username": "testowicz", "display_name": "Test", "email": "testowicz@test.com", "gender": "Wolę nie podawać", "birthday": null, "status": "Aktywny", "level": 1, "exp": 0, "weights": [], "height": null, "last_logged_at": "2024-09-09T17:44:12.057Z", "created_at": "2024-09-08T18:19:39.627Z", "modified_at": "2024-09-09T17:44:12.057Z" }
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       404:
+ *         description: Not Found - User not found
  * /api/auth/logout:
  *   post:
  *     summary: User logout endpoint
@@ -53,6 +73,6 @@ module.exports = router;
  *     responses:
  *       204:
  *         description: A successful logout - removes cookie with autorization token
- *       400:
+ *       401:
  *         description: Bad request - Invalid or missing autorization token
  */

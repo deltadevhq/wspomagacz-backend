@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 
 const secretKey = process.env.API_SECRET;
 
-// Verify JWT token
+// Verify JWT token cookie
 const verifyToken = async (req, res, next) => {
   const token = req.cookies.token;
 
@@ -28,7 +28,7 @@ const loginUser = async (req, res) => {
 
   try {
     if (username && password) {
-      const user = await authModel.getUserCredentials(username);
+      const user = await authModel.getUserByUsername(username);
       if (!user) {
         return res.status(401).json({ message: 'Invalid username or password' });
       }
@@ -80,8 +80,37 @@ const logoutUser = async (req, res) => {
   }
 };
 
+// Get user data by username from token
+const getUserByUsername = async (req, res) => {
+  const token = req.cookies.token;
+
+  try {
+    const decoded = jwt.verify(token, secretKey);
+    const user = await authModel.getUserByUsername(decoded.username);
+
+    // User associated to this token could be deleted 
+    if (!user) {
+      res.clearCookie('token', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict'
+      });
+      return res.status(404).json({ message: 'Invalid user' });
+    }
+
+    delete user.password_hash;
+
+    res.status(200).json({ user: user });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+
 module.exports = {
   loginUser,
   verifyToken,
-  logoutUser
+  logoutUser,
+  getUserByUsername
 };
