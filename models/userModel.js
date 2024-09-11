@@ -14,6 +14,31 @@ const getUser = async (userId) => {
   }
 };
 
+// Patch user data
+const patchUser = async (userId, displayName, gender, birthday, weights, height) => {
+  try {
+    const query = `
+        UPDATE users
+        SET 
+            display_name = COALESCE($1, display_name),
+            gender = COALESCE($2, gender),
+            birthday = COALESCE($3, birthday),
+            weights = COALESCE($4, weights),
+            height = COALESCE($5, height)
+        WHERE id = $6
+        RETURNING *;
+    `;
+    const values = [displayName, gender, birthday, weights, height, userId];
+
+    const result = await pool.query(query, values);
+    return result.rows.length > 0 ? result.rows[0] : null;
+  } catch (error) {
+    console.error('Error executing query', error.stack);
+    throw error;
+  }
+};
+
 module.exports = {
-  getUser
+  getUser,
+  patchUser
 };

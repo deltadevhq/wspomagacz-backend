@@ -95,7 +95,7 @@ module.exports = router;
  *           Set-Cookie:
  *             schema: 
  *               type: string
- *               example: token=abcde12345; Path=/; Secure; HttpOnly
+ *               example: token=abcde12345; Path=/; Secure; HttpOnly; SameSite=Strict
  *       400:
  *         description: Bad request - Invalid or missing login data
  *       401:

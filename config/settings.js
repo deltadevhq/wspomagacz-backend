@@ -12,7 +12,7 @@ const swaggerOptions = {
       title: 'Wspomagacz API',
       version: '1.0.0',
       description: 'WspomagaczBackend API for WspomagaczFrontend',
-      },
+    },
     components: {
       securitySchemes: {
         cookieAuth: {

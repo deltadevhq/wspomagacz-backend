@@ -36,8 +36,7 @@ const getUserByUsername = async (req, res) => {
 const registerUser = async (req, res) => {
   const { username, displayName, password, email } = req.body;
 
-  // TODO: REGISTER DATA VALIDATION
-  // TODO: PASSWORD STRENGHT VALIDATION
+  // TODO: VALIDATE BODY DATA
 
   try {
     // Check if the email is already taken
@@ -75,14 +74,16 @@ const registerUser = async (req, res) => {
     res.status(201).json({ user: newUser });
   } catch (error) {
     console.error('Error registering user:', error.stack);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
 
 // Login to get JWT token cookie
 const loginUser = async (req, res) => {
   const { username, password } = req.body;
+
   // CONSIDER: USER LOGIN BY EMAIL
+  // TODO: VALIDATE BODY DATA
 
   try {
     if (username && password) {
