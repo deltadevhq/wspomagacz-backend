@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const swaggerUi = require('swagger-ui-express');
@@ -10,6 +11,11 @@ const { port, listener, swaggerDocs } = require('./config/settings')
 app.use(morgan('[:date[clf]] Request: :method :url HTTP/:http-version, Response: :status, ResponseTime: :response-time ms'));
 // Use cookieparser to parse cookies
 app.use(cookieParser());
+// CORS configuration
+app.use(cors({
+    origin: 'http://localhost:4200', // Angular app URL, TODO: Use environment variable
+    credentials: true
+}));
 app.use(express.json());
 
 // Define specific routes
