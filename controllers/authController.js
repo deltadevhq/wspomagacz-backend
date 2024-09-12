@@ -56,7 +56,7 @@ const registerUser = async (req, res) => {
     const passwordHash = await bcrypt.hash(password, salt);
 
     // Create the user
-    const newUser = await authModelModel.postUser(username, displayName, passwordHash, email);
+    const newUser = await authModel.postUser(username, displayName, passwordHash, email);
 
     // Create a JWT token
     const token = jwt.sign({ id: newUser.id, username: newUser.username }, secretKey, {
