@@ -8,7 +8,7 @@ router.post('/register', authController.registerUser);
 
 // AUTH ROUTES
 router.get('/user', authController.verifyToken, authController.getUserByUsername)
-router.post('/logout', authController.verifyToken, authController.logoutUser)
+router.get('/logout', authController.verifyToken, authController.logoutUser)
 
 module.exports = router;
 
@@ -101,7 +101,7 @@ module.exports = router;
  *       401:
  *         description: Unauthorized - Invalid credentials
  * /api/auth/logout:
- *   post:
+ *   get:
  *     summary: User logout endpoint
  *     tags: [Authorization]
  *     responses:
