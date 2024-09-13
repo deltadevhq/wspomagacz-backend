@@ -20,8 +20,6 @@ const getMuscles = async (req, res) => {
 const getMuscleById = async (req, res) => {
   const muscleId = parseInt(req.params.id);
 
-  // TODO: VALIDATE PARAMS DATA
-
   if (isNaN(muscleId)) {
     return res.status(400).json({ error: 'Invalid muscle ID' });
   }

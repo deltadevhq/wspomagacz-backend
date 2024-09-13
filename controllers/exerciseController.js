@@ -19,9 +19,7 @@ const getExercises = async (req, res) => {
 // Fetch single exercise
 const getExerciseById = async (req, res) => {
   const exerciseId = parseInt(req.params.id);
-
-  // TODO: VALIDATE PARAMS DATA
-
+  
   if (isNaN(exerciseId)) {
     return res.status(400).json({ error: 'Invalid exercise ID' });
   }

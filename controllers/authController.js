@@ -36,8 +36,6 @@ const getUserByUsername = async (req, res) => {
 const registerUser = async (req, res) => {
   const { username, displayName, password, email } = req.body;
 
-  // TODO: VALIDATE BODY DATA
-
   try {
     // Check if the email is already taken
     let existingUser = await authModel.getUserByEmail(email);
@@ -83,7 +81,6 @@ const loginUser = async (req, res) => {
   const { username, password } = req.body;
 
   // CONSIDER: USER LOGIN BY EMAIL
-  // TODO: VALIDATE BODY DATA
 
   try {
     if (username && password) {

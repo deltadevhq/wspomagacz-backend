@@ -20,8 +20,6 @@ const getEquipment = async (req, res) => {
 const getEquipmentById = async (req, res) => {
   const equipmentId = parseInt(req.params.id);
 
-  // TODO: VALIDATE PARAMS DATA
-
   if (isNaN(equipmentId)) {
     return res.status(400).json({ error: 'Invalid equipment ID' });
   }

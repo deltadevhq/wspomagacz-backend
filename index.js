@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
@@ -11,9 +12,9 @@ const { port, listener, swaggerDocs } = require('./config/settings')
 app.use(morgan('[:date[clf]] Request: :method :url HTTP/:http-version, Response: :status, ResponseTime: :response-time ms'));
 // Use cookieparser to parse cookies
 app.use(cookieParser());
-// CORS configuration
+// Use CORS to control allow origin access
 app.use(cors({
-    origin: 'http://localhost:4200', // Angular app URL, TODO: Use environment variable
+    origin: process.env.CORS_ORIGIN,
     credentials: true
 }));
 app.use(express.json());
@@ -26,12 +27,12 @@ app.use('/api/muscles', muscleRoutes);
 app.use('/api/equipment', equipmentRoutes);
 app.use('/api/exercises', exerciseRoutes);
 
-
-
 // Start the server
 app.listen(port, () => {
   console.log(`API listening at http://${listener}:${port}`);
 });
 
 
-// TODO: IMPORTANT!! CREATE A FUNCTION TO OMIT IDOR VULNERABILITY
+// TODO: CREATE A FUNCTION TO OMIT IDOR VULNERABILITY
+// TODO: VALIDATE PARAMS DATA
+// TODO: VALIDATE BODY DATA
