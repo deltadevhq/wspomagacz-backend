@@ -48,30 +48,7 @@ const patchUser = async (req, res) => {
   }
 };
 
-// Get user exercises
-const getUserExercises = async (req, res) => {
-  const userId = parseInt(req.params.id);
-
-  if (isNaN(userId)) {
-    return res.status(400).json({ error: 'Invalid user ID' });
-  }
-
-  try {
-    const exercises = await userModel.getUserExercises(userId);
-
-    if (exercises) {
-      res.json(exercises);
-    } else {
-      res.status(404).json({ error: 'There are no exercises for this user' });
-    }
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-};
-
 module.exports = {
   getUser,
-  patchUser,
-  getUserExercises
+  patchUser
 };

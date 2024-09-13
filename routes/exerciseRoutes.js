@@ -19,6 +19,17 @@ module.exports = router;
  *     tags: [Exercises]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: user_id
+ *         schema:
+ *           type: integer
+ *         description: ID of user for which exercises will be shown 
+ *       - in: query
+ *         name: type
+ *         schema:
+ *           type: string
+ *         description: Type of exercises which will be shown [all, custom, standard]
  *     responses:
  *       200:
  *         description: Successfully retrieved exercises

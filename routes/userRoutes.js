@@ -6,12 +6,9 @@ const authController = require('../controllers/authController');
 // AUTH ROUTES
 router.get('/:id', authController.verifyToken, userController.getUser);
 router.patch('/:id', authController.verifyToken, userController.patchUser);
-router.get('/:id/exercises', authController.verifyToken, userController.getUserExercises);
-
 
 // CONSIDER: DELETE /api/users/:id - Delete user
 
-// ENDPOINT: GET /api/users/:user_id/exercises?all=true - Retrieve all exercises for a specific user
 // ENDPOINT: GET /api/users/:user_id/exercises/:exercise_id - Retrieve an custom exercise by its ID
 // ENDPOINT: POST /api/users/:user_id/exercises - Create new custom exercise
 
@@ -110,58 +107,4 @@ module.exports = router;
  *         description: Forbidden - Token does not have the required permissions
  *       404:
  *         description: Not Found - User not found
- * /api/users/{id}/exercises:
- *   get:
- *     summary: Get user custom exercises
- *     description: This endpoint requires authorization token
- *     tags: [User Profile]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Successfully retrieved user custom exercises
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: int
- *                   user_id:
- *                     type: int
- *                   name:
- *                     type: string
- *                   equipment:
- *                     type: array
- *                   muscles:
- *                     type: array
- *             examples:
- *               AllExercises:
- *                 value:
- *                   - id: 1
- *                     user_id: 1
- *                     name: "Pompki"
- *                     equipment: []
- *                     muscles: []
- *                   - id: 2
- *                     user_id: 1
- *                     name: "Wyciskanie sztangielek chwytem neutralnym na ławce ze skosem dodatnim"
- *                     equipment: []
- *                     muscles: []
- *       400:
- *         description: Bad request - Invalid user ID
- *       401:
- *         description: Unauthorized - Invalid or missing token
- *       403:
- *         description: Forbidden - Token does not have the required permissions
- *       404:
- *         description: Not Found - Exercises for user not found
  */

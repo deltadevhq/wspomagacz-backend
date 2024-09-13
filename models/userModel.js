@@ -38,22 +38,7 @@ const patchUser = async (userId, displayName, gender, birthday, weights, height)
   }
 };
 
-// Fetch user custom exercises
-const getUserExercises = async (userId) => {
-  try {
-    const query = 'SELECT * FROM custom_exercises WHERE user_id =  $1';
-    const values = [userId];
-
-    const result = await pool.query(query, values);
-    return result.rows.length > 0 ? result.rows[0] : null;
-  } catch (error) {
-    console.error('Error executing query', error.stack);
-    throw error;
-  }
-};
-
 module.exports = {
   getUser,
-  patchUser,
-  getUserExercises
+  patchUser
 };

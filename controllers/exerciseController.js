@@ -1,10 +1,25 @@
 const exerciseModel = require('../models/exerciseModel');
+const userModel = require('../models/userModel');
+
 
 // Fetch all exercises
 const getExercises = async (req, res) => {
-  try {
-    const exercises = await exerciseModel.getExercises();
+  const userId = req.query.user_id;
+  const type = req.query.type;
 
+  try {
+    if (userId) {
+      if (isNaN(userId)) {
+        return res.status(400).json({ error: 'Invalid user ID' });
+      }
+      const user = userModel.getUser(userId);
+      if (!user) {
+        res.status(404).json({ error: 'Exercises not found' });
+      }
+    }
+    
+    const exercises = await exerciseModel.getExercises(userId, type);
+    
     if (exercises) {
       res.json(exercises);
     } else {
