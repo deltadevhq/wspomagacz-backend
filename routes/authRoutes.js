@@ -51,20 +51,7 @@ module.exports = router;
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 user:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: int
- *                       example: 3
- *                     username:
- *                       type: string
- *                       example: "testowicz"
- *                     email:
- *                       type: string
- *                       example: "testowicz@test.com"
+ *               $ref: '#/components/schemas/User'
  *       400:
  *         description: Bad request - Invalid or missing user data
  *       409:
