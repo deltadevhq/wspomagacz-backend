@@ -17,22 +17,13 @@ module.exports = router;
  *     summary: Get all muscles
  *     description: This endpoint requires authorization token
  *     tags: [Muscles]
- *     security:
- *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Successfully retrieved muscles
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: int
- *                   name:
- *                     type: string
+ *               $ref: '#/components/schemas/AllMuscles'
  *             examples:
  *               AllMuscles:
  *                 value:
@@ -51,8 +42,6 @@ module.exports = router;
  *     summary: Get single muscle
  *     description: This endpoint requires authorization token
  *     tags: [Muscles]
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -65,14 +54,7 @@ module.exports = router;
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: int
- *                   example: 1
- *                 name:
- *                   type: string
- *                   example: "Biceps"
+ *               $ref: '#/components/schemas/Muscle'
  *       400:
  *         description: Bad request - Invalid muscle ID
  *       401:
@@ -81,4 +63,15 @@ module.exports = router;
  *         description: Forbidden - Token does not have the required permissions
  *       404:
  *         description: Not Found - Muscle not found
+ * components:
+ *   schemas:
+ *     Muscle:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: int
+ *           example: 1
+ *         name:
+ *           type: string
+ *           example: "Biceps"
  */
