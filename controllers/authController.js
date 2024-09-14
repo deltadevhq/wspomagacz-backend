@@ -69,6 +69,8 @@ const registerUser = async (req, res) => {
       sameSite: 'strict'
     });
 
+    delete newUser.password_hash;
+
     res.status(201).json(newUser);
   } catch (error) {
     console.error('Error registering user:', error.stack);
