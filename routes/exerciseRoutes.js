@@ -17,8 +17,6 @@ module.exports = router;
  *     summary: Get all exercises
  *     description: This endpoint requires authorization token
  *     tags: [Exercises]
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: query
  *         name: user_id
@@ -29,36 +27,15 @@ module.exports = router;
  *         name: type
  *         schema:
  *           type: string
- *         description: Type of exercises which will be shown [all, custom, standard]
+ *           enum: [all, custom, standard]
+ *         description: Type of exercises which will be shown
  *     responses:
  *       200:
  *         description: Successfully retrieved exercises
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: int
- *                   name:
- *                     type: string
- *                   equipment:
- *                     type: array
- *                   muscles:
- *                     type: array
- *             examples:
- *               AllExercises:
- *                 value:
- *                   - id: 1
- *                     name: "Pompki"
- *                     equipment: []
- *                     muscles: []
- *                   - id: 2
- *                     name: "Wyciskanie sztangielek chwytem neutralnym na ławce ze skosem dodatnim"
- *                     equipment: []
- *                     muscles: []
+ *               $ref: '#/components/schemas/Exercise'
  *       401:
  *         description: Unauthorized - Invalid or missing token
  *       403:
@@ -70,8 +47,6 @@ module.exports = router;
  *     summary: Get single exercise
  *     description: This endpoint requires authorization token
  *     tags: [Exercises]
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -84,20 +59,7 @@ module.exports = router;
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: int
- *                   example: 1
- *                 name:
- *                   type: string
- *                   example: "Pompki"
- *                 equipment:
- *                   type: array
- *                   example: []
- *                 muscles:
- *                   type: array
- *                   example: []
+ *               $ref: '#/components/schemas/Exercise'
  *       400:
  *         description: Bad request - Invalid exercise ID
  *       401:
@@ -106,4 +68,34 @@ module.exports = router;
  *         description: Forbidden - Token does not have the required permissions
  *       404:
  *         description: Not Found - Exercise not found
+ * components:
+ *   schemas:
+ *     Exercise:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           example: 1
+ *         name:
+ *           type: string
+ *           example: "Wyciskanie hantli"
+ *         equipment:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Equipment'
+ *           example: [ { id: 1, name: "Hantle" } ]
+ *         muscles:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Muscle'
+ *           example: [ { id: 1, name: "Biceps" } ]
+ *         user_id:
+ *           type: integer
+ *           example: 1
+ *           nullable: true
+ *           description: ID of user who created custom exercise, null if standard
+ *         exercise_type:
+ *           type: string
+ *           example: "custom"
+ *           enum: [standard, custom]
  */
