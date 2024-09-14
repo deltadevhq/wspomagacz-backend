@@ -41,7 +41,7 @@ const patchUser = async (req, res) => {
     const updatedUser = await userModel.patchUser(userId, displayName, gender, birthday, weights, height);
     delete updatedUser.password_hash;
 
-    return res.status(200).json({ user: updatedUser });
+    return res.status(200).json(updatedUser);
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ error: 'Internal server error' });

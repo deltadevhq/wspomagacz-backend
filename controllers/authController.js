@@ -19,7 +19,7 @@ const getUserByUsername = async (req, res) => {
         secure: true,
         sameSite: 'strict'
       });
-      return res.status(404).json({ message: 'Invalid user' });
+      return res.status(404).json({ error: 'Invalid user' });
     }
 
     delete user.password_hash;
@@ -34,21 +34,24 @@ const getUserByUsername = async (req, res) => {
 
 // Register new user
 const registerUser = async (req, res) => {
-  const { username, displayName, password, email } = req.body;
+  const { username, password, email } = req.body;
+  const displayName = username;
+
+  if (!username || !password || !email) {
+    return res.status(400).json({ error: 'One or more required parameters is missing' });
+  }
 
   try {
-    if (!displayName) displayName = username;
-    
     // Check if the email is already taken
     let existingUser = await authModel.getUserByEmail(email);
     if (existingUser) {
-      return res.status(409).json({ message: 'This email is already taken' });
+      return res.status(409).json({ error: 'This email is already taken' });
     }
 
     // Check if the username is already taken
     existingUser = await authModel.getUserByUsername(username);
     if (existingUser) {
-      return res.status(409).json({ message: 'This username is already taken' });
+      return res.status(409).json({ error: 'This username is already taken' });
     }
 
     // Hash the password
@@ -76,12 +79,12 @@ const loginUser = async (req, res) => {
     if (username && password) {
       const user = await authModel.getUserByUsername(username);
       if (!user) {
-        return res.status(401).json({ message: 'Invalid username or password' });
+        return res.status(401).json({ error: 'Invalid username or password' });
       }
 
       const isMatch = await bcrypt.compare(password, user.password_hash);
       if (!isMatch) {
-        return res.status(401).json({ message: 'Invalid username or password' });
+        return res.status(401).json({ error: 'Invalid username or password' });
       }
 
       await authModel.updateUserLastLogin(username);
@@ -131,7 +134,7 @@ const verifyToken = async (req, res, next) => {
   const token = req.cookies.token;
 
   if (!token) {
-    return res.status(401).json({ message: 'No token provided' });
+    return res.status(401).json({ error: 'No token provided' });
   }
 
   try {
@@ -139,7 +142,7 @@ const verifyToken = async (req, res, next) => {
     req.userId = decoded.id;
     next();
   } catch (error) {
-    return res.status(401).json({ message: 'Unauthorized' });
+    return res.status(401).json({ error: 'Unauthorized' });
   }
 };
 
