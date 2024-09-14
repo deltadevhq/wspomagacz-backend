@@ -21,8 +21,6 @@ module.exports = router;
  *     summary: Get user data
  *     description: This endpoint requires authorization token
  *     tags: [User Profile]
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -48,8 +46,6 @@ module.exports = router;
  *     summary: Patch user data
  *     description: This endpoint requires authorization token
  *     tags: [User Profile]
- *     security:
- *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
