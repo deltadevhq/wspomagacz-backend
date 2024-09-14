@@ -18,7 +18,7 @@ module.exports = router;
  * @swagger
  * /api/auth/register:
  *   post:
- *     summary: User register endpoint
+ *     summary: Creates new user account
  *     tags: [Authorization]
  *     requestBody:
  *       required: true
@@ -71,7 +71,7 @@ module.exports = router;
  *         description: Conflict - Email or username already taken
  * /api/auth/login:
  *   post:
- *     summary: User login endpoint
+ *     summary: Logs in user with provided credentials by setting authorization token as cookie
  *     tags: [Authorization]
  *     requestBody:
  *       required: true
@@ -97,14 +97,14 @@ module.exports = router;
  *           Set-Cookie:
  *             schema: 
  *               type: string
- *               example: token=abcde12345; Path=/; Secure; HttpOnly; SameSite=Strict
+ *               example: token=abcde12345; Max-Age:0; SameSite=Strict; Path=/; Secure; HttpOnly;
  *       400:
  *         description: Bad request - Invalid or missing login data
  *       401:
  *         description: Unauthorized - Invalid credentials
  * /api/auth/logout:
  *   get:
- *     summary: User logout endpoint
+ *     summary: Logs out currently logged user by removing cookie with token
  *     tags: [Authorization]
  *     responses:
  *       204:
@@ -121,11 +121,7 @@ module.exports = router;
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 user:
- *                   type: object
- *                   example: { "id": 10, "username": "testowicz", "display_name": "Test", "email": "testowicz@test.com", "gender": "Wolę nie podawać", "birthday": null, "status": "Aktywny", "level": 1, "exp": 0, "weights": [], "height": null, "last_logged_at": "2024-09-09T17:44:12.057Z", "created_at": "2024-09-08T18:19:39.627Z", "modified_at": "2024-09-09T17:44:12.057Z" }
+ *               $ref: '#/components/schemas/User'
  *       401:
  *         description: Unauthorized - Invalid or missing token
  *       404:
