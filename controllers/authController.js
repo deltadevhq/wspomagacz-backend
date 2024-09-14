@@ -55,20 +55,6 @@ const registerUser = async (req, res) => {
 
     // Create the user
     const newUser = await authModel.postUser(username, displayName, passwordHash, email);
-
-    // Create a JWT token
-    const token = jwt.sign({ id: newUser.id, username: newUser.username }, secretKey, {
-      expiresIn: '7d',  // CONSIDER: DETERMINE TOKEN EXPIRE TIME / CONSIDER AUTOMATIC TOKEN RENEWAL
-    });
-
-    // Set the cookie with the token
-    res.cookie('token', token, {
-      httpOnly: true,
-      secure: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      sameSite: 'strict'
-    });
-
     delete newUser.password_hash;
 
     res.status(201).json(newUser);
