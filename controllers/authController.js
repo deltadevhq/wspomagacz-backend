@@ -12,7 +12,7 @@ const getUserByUsername = async (req, res) => {
     const decoded = jwt.verify(token, secretKey);
     const user = await authModel.getUserByUsername(decoded.username);
 
-    // User associated to this token could be deleted 
+    // User associated to this token can be deleted in the meantime
     if (!user) {
       res.clearCookie('token', {
         httpOnly: true,
@@ -24,7 +24,7 @@ const getUserByUsername = async (req, res) => {
 
     delete user.password_hash;
 
-    res.status(200).json({ user: user });
+    res.status(200).json(user);
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ error: 'Internal server error' });
@@ -69,7 +69,7 @@ const registerUser = async (req, res) => {
       sameSite: 'strict'
     });
 
-    res.status(201).json({ user: newUser });
+    res.status(201).json(newUser);
   } catch (error) {
     console.error('Error registering user:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
