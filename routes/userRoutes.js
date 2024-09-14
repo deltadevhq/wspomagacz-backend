@@ -43,15 +43,50 @@ module.exports = router;
  *       404:
  *         description: Not Found - User not found
  *   patch:
- *     summary: Patch user data
- *     description: This endpoint requires authorization token
+ *     summary: Patch user data by providing new values
+ *     description: Only display_name, gender, birthday, weights and height can be updated through this endpoint
  *     tags: [User Profile]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/User'
+ *             type: object
+ *             properties:
+ *               display_name:
+ *                 type: string
+ *                 example: Test User
+ *                 nullable: true
+ *               gender:
+ *                 type: string
+ *                 example: Mężczyzna
+ *                 enum: [Mężczyzna, Kobieta, Wolę nie podawać]
+ *                 nullable: true
+ *               birthday:
+ *                 type: date
+ *                 example: 2001-03-05
+ *                 nullable: true
+ *               weights:
+ *                 type: array
+ *                 example: [ { "weight": 75, "date": "2024-09-08" } ]
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     weight:
+ *                       type: float
+ *                       example: 75
+ *                       minimum: 0
+ *                       nullable: true
+ *                     date:
+ *                       type: date
+ *                       example: 2024-09-08
+ *                       nullable: true
+ *                 nullable: true
+ *               height:
+ *                 type: integer
+ *                 example: 175
+ *                 nullable: true
+ *                 minimum: 0
  *     parameters:
  *       - in: path
  *         name: id
