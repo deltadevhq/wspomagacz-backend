@@ -37,6 +37,8 @@ const registerUser = async (req, res) => {
   const { username, displayName, password, email } = req.body;
 
   try {
+    if (!displayName) displayName = username;
+    
     // Check if the email is already taken
     let existingUser = await authModel.getUserByEmail(email);
     if (existingUser) {
