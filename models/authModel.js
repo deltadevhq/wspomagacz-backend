@@ -5,7 +5,7 @@ const postUser = async (username, displayName, passwordHash, email) => {
   const query = `
   INSERT INTO users (username, display_name, password_hash, email)
   VALUES ($1, $2, $3, $4)
-  RETURNING id, username, email;`
+  RETURNING *;`
 
   const values = [username, displayName, passwordHash, email];
 
