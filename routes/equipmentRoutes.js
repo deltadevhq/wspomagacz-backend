@@ -17,8 +17,6 @@ module.exports = router;
  *     summary: Get all equipment
  *     description: This endpoint requires authorization token
  *     tags: [Equipment]
- *     security:
- *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Successfully retrieved equipment
@@ -51,8 +49,6 @@ module.exports = router;
  *     summary: Get single equipment
  *     description: This endpoint requires authorization token
  *     tags: [Equipment]
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -65,14 +61,7 @@ module.exports = router;
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: int
- *                   example: 1
- *                 name:
- *                   type: string
- *                   example: "Sztanga"
+ *               $ref: '#/components/schemas/Equipment'
  *       400:
  *         description: Bad request - Invalid equipment ID
  *       401:
@@ -81,4 +70,15 @@ module.exports = router;
  *         description: Forbidden - Token does not have the required permissions
  *       404:
  *         description: Not Found - Equipment not found
+ * components:
+ *   schemas:
+ *     Equipment:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           example: 1
+ *         name:
+ *           type: string
+ *           example: "Sztanga"
  */
