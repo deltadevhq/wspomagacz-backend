@@ -17,10 +17,13 @@ const getExercises = async (userId, type) => {
 };
 
 // Fetch single exercise
-const getExerciseById = async (exerciseId) => {
+const getExerciseById = async (exerciseId, userId, type) => {
   try {
-    const query = 'SELECT * FROM exercises WHERE id = $1';
-    const values = [exerciseId];
+    const query = 'SELECT * FROM all_exercises WHERE exercise_id = $1 AND (user_id = COALESCE($2, user_id) OR user_id IS NULL) AND exercise_type = COALESCE($3, exercise_type)';
+    
+    if (userId && !type) type = 'custom';
+    else if (!type) type = 'standard';
+    const values = [exerciseId, userId, type];
 
     const result = await pool.query(query, values);
     return result.rows.length > 0 ? result.rows[0] : null;

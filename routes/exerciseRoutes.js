@@ -53,6 +53,17 @@ module.exports = router;
  *         required: true
  *         schema:
  *           type: integer
+ *       - in: query
+ *         name: user_id
+ *         schema:
+ *           type: integer
+ *         description: ID of user for which exercises will be shown 
+ *       - in: query
+ *         name: type
+ *         schema:
+ *           type: string
+ *           enum: [custom, standard]
+ *         description: Type of exercises which will be shown
  *     responses:
  *       200:
  *         description: Successfully retrieved exercise
