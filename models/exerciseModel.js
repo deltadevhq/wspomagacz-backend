@@ -5,7 +5,7 @@ const getExercises = async (userId, type) => {
   try {
     const query = 'SELECT * FROM all_exercises WHERE (user_id = COALESCE($1, user_id) OR user_id IS NULL) AND exercise_type = COALESCE($2, exercise_type)';
 
-    if (type.toLowerCase() === 'all') type = null;
+    if (type === 'all') type = null;
     const values = [userId, type];
 
     const result = await pool.query(query, values);
