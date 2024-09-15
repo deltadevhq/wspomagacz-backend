@@ -5,6 +5,8 @@ const authController = require('../controllers/authController');
 
 // AUTH ROUTES
 router.get('/', authController.verifyToken, workoutController.getWorkouts);
+router.get('/:id', authController.verifyToken, workoutController.getWorkoutById);
+
 
 module.exports = router;
 
@@ -47,6 +49,30 @@ module.exports = router;
  *         description: Forbidden - Token does not have the required permissions
  *       404:
  *         description: Not Found - Workouts not found
+* /api/workouts/{id}:
+ *   get:
+ *     summary: Get single workout by its ID
+ *     description: This endpoint requires authorization token
+ *     tags: [Workouts]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved workout
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Workout'
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       403:
+ *         description: Forbidden - Token does not have the required permissions
+ *       404:
+ *         description: Not Found - Workout not found
  * components:
  *   schemas:
  *     Workout:
