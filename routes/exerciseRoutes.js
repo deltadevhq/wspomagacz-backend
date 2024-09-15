@@ -6,6 +6,7 @@ const authController = require('../controllers/authController');
 // AUTH ROUTES
 router.get('/', authController.verifyToken, exerciseController.getExercises);
 router.get('/:id', authController.verifyToken, exerciseController.getExerciseById);
+router.post('/', authController.verifyToken, exerciseController.postExercise);
 
 // ENDPOINT: POST /api/exercises - Create new custom exercise
 
@@ -43,6 +44,39 @@ module.exports = router;
  *         description: Forbidden - Token does not have the required permissions
  *       404:
  *         description: Not Found - Exercises not found (there might be no exercises in database)
+ *   post:
+ *     summary: Post new custom exercises for current user
+ *     description: This endpoint requires authorization token
+ *     tags: [Exercises]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: Pompki
+ *               equipment:
+ *                 type: array
+ *                 example: [ { "id": 4, "name": "Sztanga" } ]
+ *               muscles:
+ *                 type: array
+ *                 example: [ { "id": 2, "name": "Biceps" } ]
+ *     responses:
+ *       201:
+ *         description: Successfully created new exercise
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Exercise'
+ *       400:
+ *         description: Bad Request - One or more required parameters is missing
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       403:
+ *         description: Forbidden - Token does not have the required permissions
  * /api/exercises/{id}:
  *   get:
  *     summary: Get single exercise

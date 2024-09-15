@@ -33,7 +33,25 @@ const getExerciseById = async (exerciseId, userId, type) => {
   }
 };
 
+// Create new custom exercise
+const postExercise = async (userId, name, equipment, muscles) => {
+  try {
+    const query = `
+    INSERT INTO custom_exercises (user_id, name, equipment, muscles)
+    VALUES ($1, $2, $3, $4)
+    RETURNING *;`
+    const values = [userId, name, equipment, muscles];
+
+    const result = await pool.query(query, values);
+    return result.rows.length > 0 ? result.rows : null;
+  } catch (error) {
+    console.error('Error executing query', error.stack);
+    throw error;
+  }
+};
+
 module.exports = {
   getExercises,
-  getExerciseById
+  getExerciseById,
+  postExercise
 };

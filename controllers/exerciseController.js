@@ -27,7 +27,7 @@ const getExercises = async (req, res) => {
       res.status(404).json({ error: 'Exercises not found' });
     }
   } catch (error) {
-    console.error(error.message);
+    console.error('Error getting exercises:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -37,8 +37,6 @@ const getExerciseById = async (req, res) => {
   const exerciseId = parseInt(req.params.id);
   const userId = req.query.user_id;
   const type = req.query.type;
-
-
 
   try {
     // Check if parameters are valid
@@ -64,7 +62,26 @@ const getExerciseById = async (req, res) => {
       res.status(404).json({ error: 'Exercise not found' });
     }
   } catch (error) {
-    console.error(error.message);
+    console.error('Error getting exercise by its ID:', error.stack);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+// Post new custom exercise
+const postExercise = async (req, res) => {
+  const userId = req.userId;
+  const { name, equipment, muscles } = req.body;
+
+  // Validate if required parameters are present in request
+  if (!userId || !name || !equipment || !muscles) return res.status(400).json({ error: 'One or more required parameters is missing' });
+
+  try {
+    // Create new custom exercise
+    const newExercise = await exerciseModel.postExercise(userId, name, equipment, muscles);
+
+    res.status(201).json(newExercise);
+  } catch (error) {
+    console.error('Error creating new exercise:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -72,5 +89,6 @@ const getExerciseById = async (req, res) => {
 
 module.exports = {
   getExercises,
-  getExerciseById
+  getExerciseById,
+  postExercise
 };
