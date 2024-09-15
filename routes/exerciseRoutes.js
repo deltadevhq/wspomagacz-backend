@@ -7,8 +7,7 @@ const authController = require('../controllers/authController');
 router.get('/', authController.verifyToken, exerciseController.getExercises);
 router.get('/:id', authController.verifyToken, exerciseController.getExerciseById);
 router.post('/', authController.verifyToken, exerciseController.postExercise);
-
-// ENDPOINT: POST /api/exercises - Create new custom exercise
+router.delete('/:id', authController.verifyToken, exerciseController.deleteExercise);
 
 module.exports = router;
 
@@ -102,6 +101,31 @@ module.exports = router;
  *     responses:
  *       200:
  *         description: Successfully retrieved exercise
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Exercise'
+ *       400:
+ *         description: Bad request - Invalid exercise ID
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       403:
+ *         description: Forbidden - Token does not have the required permissions
+ *       404:
+ *         description: Not Found - Exercise not found
+ *   delete:
+ *     summary: Delete custom exercise (You can only delete exercise for currently logged user)
+ *     description: This endpoint requires authorization token
+ *     tags: [Exercises]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Successfully deleted exercise
  *         content:
  *           application/json:
  *             schema:
