@@ -6,7 +6,7 @@ const getMuscles = async (req, res) => {
     const muscles = await muscleModel.getMuscles();
 
     if (muscles) {
-      res.json(muscles);
+      res.status(200).json(muscles);
     } else {
       res.status(404).json({ error: 'Muscles not found' });
     }
@@ -28,7 +28,7 @@ const getMuscleById = async (req, res) => {
     const muscle = await muscleModel.getMuscleById(muscleId);
 
     if (muscle) {
-      res.json(muscle);
+      res.status(200).json(muscle);
     } else {
       res.status(404).json({ error: 'Muscle not found' });
     }

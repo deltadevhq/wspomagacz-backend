@@ -5,7 +5,7 @@ const userModel = require('../models/userModel');
 // Fetch all exercises
 const getExercises = async (req, res) => {
   const userId = req.query.user_id;
-  const type = req.query.type;
+  const type = req.query.type.toLowerCase();
 
   try {
     // Check if parameter is valid and user exists
@@ -22,7 +22,7 @@ const getExercises = async (req, res) => {
     const exercises = await exerciseModel.getExercises(userId, type);
 
     if (exercises) {
-      res.json(exercises);
+      res.status(200).json(exercises);
     } else {
       res.status(404).json({ error: 'Exercises not found' });
     }
@@ -50,14 +50,14 @@ const getExerciseById = async (req, res) => {
       }
       const user = userModel.getUser(userId);
       if (!user) {
-        res.status(404).json({ error: 'Exercises not found' });
+        res.status(404).json({ error: 'User not found' });
       }
     }
 
     const exercise = await exerciseModel.getExerciseById(exerciseId, userId, type);
 
     if (exercise) {
-      res.json(exercise);
+      res.status(200).json(exercise);
     } else {
       res.status(404).json({ error: 'Exercise not found' });
     }

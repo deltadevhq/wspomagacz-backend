@@ -1,0 +1,37 @@
+const workoutModel = require('../models/workoutModel');
+const userModel = require('../models/userModel');
+
+// Fetch all workouts
+const getWorkouts = async (req, res) => {
+    const userId = req.query.user_id;
+    const status = req.query.status.charAt(0).toUpperCase() + req.query.status.slice(1).toLowerCase();
+  
+    try {
+      // Check if parameter is valid and user exists
+      if (userId) {
+        if (isNaN(userId)) {
+          return res.status(400).json({ error: 'Invalid user ID' });
+        }
+        const user = userModel.getUser(userId);
+        if (!user) {
+          res.status(404).json({ error: 'User not found' });
+        }
+      }
+  
+      const workouts = await workoutModel.getWorkouts(userId, status);
+  
+      if (workouts) {
+        res.status(200).json(workouts);
+      } else {
+        res.status(404).json({ error: 'Workouts not found' });
+      }
+    } catch (error) {
+      console.error('Error getting workouts:', error.stack);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+
+
+  module.exports = {
+    getWorkouts
+  };

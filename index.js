@@ -5,7 +5,7 @@ const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const swaggerUi = require('swagger-ui-express');
 const app = express();
-const { authRoutes, userRoutes, muscleRoutes, equipmentRoutes, exerciseRoutes } = require('./routes');
+const { authRoutes, userRoutes, muscleRoutes, equipmentRoutes, exerciseRoutes, workoutRoutes } = require('./routes');
 const { port, listener, swaggerDocs } = require('./config/settings')
 
 // Use morgan to log requests to the console
@@ -26,6 +26,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/muscles', muscleRoutes);
 app.use('/api/equipment', equipmentRoutes);
 app.use('/api/exercises', exerciseRoutes);
+app.use('/api/workouts', workoutRoutes);
 
 // Start the server
 app.listen(port, () => {

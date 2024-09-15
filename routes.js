@@ -3,6 +3,7 @@ const userRoutes = require('./routes/userRoutes');
 const muscleRoutes = require('./routes/muscleRoutes');
 const equipmentRoutes = require('./routes/equipmentRoutes');
 const exerciseRoutes = require('./routes/exerciseRoutes');
+const workoutRoutes = require('./routes/workoutRoutes');
 
 
 module.exports = {
@@ -10,5 +11,6 @@ module.exports = {
     userRoutes,
     muscleRoutes,
     equipmentRoutes,
-    exerciseRoutes
+    exerciseRoutes,
+    workoutRoutes
 }

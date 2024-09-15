@@ -18,7 +18,7 @@ const getUser = async (req, res) => {
       delete user.created_at;
       delete user.modified_at;
 
-      res.json(user);
+      res.status(200).json(user);
     } else {
       res.status(404).json({ error: 'User not found' });
     }

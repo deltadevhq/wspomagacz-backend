@@ -6,7 +6,7 @@ const getEquipment = async (req, res) => {
     const equipment = await equipmentModel.getEquipment();
 
     if (equipment) {
-      res.json(equipment);
+      res.status(200).json(equipment);
     } else {
       res.status(404).json({ error: 'Equipment not found' });
     }
@@ -28,7 +28,7 @@ const getEquipmentById = async (req, res) => {
     const equipment = await equipmentModel.getEquipmentById(equipmentId);
 
     if (equipment) {
-      res.json(equipment);
+      res.status(200).json(equipment);
     } else {
       res.status(404).json({ error: 'Equipment not found' });
     }
