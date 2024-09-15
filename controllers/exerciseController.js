@@ -69,8 +69,10 @@ const getExerciseById = async (req, res) => {
 
 // Post new custom exercise
 const postExercise = async (req, res) => {
-  const userId = req.userId;
   const { name, equipment, muscles } = req.body;
+  
+  // You can only create new exercise for yourself
+  const userId = req.userId;
 
   // Validate if required parameters are present in request
   if (!userId || !name || !equipment || !muscles) return res.status(400).json({ error: 'One or more required parameters is missing' });

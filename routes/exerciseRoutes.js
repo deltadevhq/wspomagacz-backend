@@ -45,7 +45,7 @@ module.exports = router;
  *       404:
  *         description: Not Found - Exercises not found (there might be no exercises in database)
  *   post:
- *     summary: Post new custom exercises for current user
+ *     summary: Create new custom exercise (You can only create exercise for current logged user)
  *     description: This endpoint requires authorization token
  *     tags: [Exercises]
  *     requestBody:

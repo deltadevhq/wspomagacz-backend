@@ -1,16 +1,14 @@
 const authModel = require('../models/authModel');
+const userModel = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
 const secretKey = process.env.API_SECRET;
 
 // Get user data by username from token
-const getUserByUsername = async (req, res) => {
-  const token = req.cookies.token;
-
+const getCurrentLoggedUser = async (req, res) => {
   try {
-    const decoded = jwt.verify(token, secretKey);
-    const user = await authModel.getUserByUsername(decoded.username);
+    const user = await userModel.getUser(req.userId);
 
     // User associated to this token can be deleted in the meantime
     if (!user) {
@@ -147,7 +145,7 @@ const verifyToken = async (req, res, next) => {
 };
 
 module.exports = {
-  getUserByUsername,
+  getCurrentLoggedUser,
   registerUser,
   loginUser,
   logoutUser,

@@ -7,7 +7,7 @@ router.post('/login', authController.loginUser);
 router.post('/register', authController.registerUser);
 
 // AUTH ROUTES
-router.get('/user', authController.verifyToken, authController.getUserByUsername);
+router.get('/user', authController.verifyToken, authController.getCurrentLoggedUser);
 router.get('/logout', authController.verifyToken, authController.logoutUser);
 
 // ENDPOINT: PASSWORD CHANGE ENDPOINT
