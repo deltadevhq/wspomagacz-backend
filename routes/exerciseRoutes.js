@@ -42,7 +42,7 @@ module.exports = router;
  *       403:
  *         description: Forbidden - Token does not have the required permissions
  *       404:
- *         description: Not Found - Exercises not found (there might be no exercises in database)
+ *         description: Not Found - Exercises not found
  *   post:
  *     summary: Create new custom exercise (You can only create exercise for currently logged user)
  *     description: This endpoint requires authorization token

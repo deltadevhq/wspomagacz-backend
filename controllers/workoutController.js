@@ -4,8 +4,9 @@ const userModel = require('../models/userModel');
 // Fetch all workouts
 const getWorkouts = async (req, res) => {
     const userId = req.query.user_id;
-    const status = req.query.status.charAt(0).toUpperCase() + req.query.status.slice(1).toLowerCase();
-  
+    let status = req.query.status;
+    if (status) status = status.toLowerCase();
+
     try {
       // Check if parameter is valid and user exists
       if (userId) {
