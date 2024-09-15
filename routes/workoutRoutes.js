@@ -7,14 +7,11 @@ const authController = require('../controllers/authController');
 router.get('/', authController.verifyToken, workoutController.getWorkouts);
 router.get('/:id', authController.verifyToken, workoutController.getWorkoutById);
 
-
 module.exports = router;
 
 // ENDPOINT: POST /api/workouts
 // ENDPOINT: PATCH /api/workouts/:id
 // ENDPOINT: DELETE /api/workouts/:id
-
-// TODO: SWAGGER DOCS
 
 /**
  * @swagger
