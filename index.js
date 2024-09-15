@@ -32,8 +32,6 @@ app.listen(port, () => {
   console.log(`API listening at http://${listener}:${port}`);
 });
 
-
-// TODO: CREATE A FUNCTION TO OMIT IDOR VULNERABILITY
 // TODO: VALIDATE PARAMS DATA
 // TODO: VALIDATE BODY DATA
 // TODO: LIMIT RATE LOGIN ENDPOINT

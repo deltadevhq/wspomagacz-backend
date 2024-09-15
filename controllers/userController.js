@@ -13,6 +13,11 @@ const getUser = async (req, res) => {
 
     if (user) {
       delete user.password_hash;
+      delete user.email;
+      delete user.last_logged_at;
+      delete user.created_at;
+      delete user.modified_at;
+
       res.json(user);
     } else {
       res.status(404).json({ error: 'User not found' });
@@ -27,6 +32,11 @@ const getUser = async (req, res) => {
 const patchUser = async (req, res) => {
   const userId = parseInt(req.params.id);
   const { displayName, gender, birthday, weights, height } = req.body;
+
+  // You can patch only currently logged user
+  if (userId != req.userId) {
+    return res.status(403).json({ error: 'Token does not have the required permissions' });
+  }
 
   if (isNaN(userId)) {
     return res.status(400).json({ error: 'Invalid user ID' });

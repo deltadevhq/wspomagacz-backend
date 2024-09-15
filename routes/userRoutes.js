@@ -30,7 +30,7 @@ module.exports = router;
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/User'
+ *               $ref: '#/components/schemas/UserProfile'
  *       400:
  *         description: Bad request - Invalid user ID
  *       401:
@@ -40,7 +40,7 @@ module.exports = router;
  *       404:
  *         description: Not Found - User not found
  *   patch:
- *     summary: Patch user data by providing new values
+ *     summary: Patch user data (You can only patch currently logged user)
  *     description: Only display_name, gender, birthday, weights and height can be updated through this endpoint
  *     tags: [User Profile]
  *     requestBody:
@@ -174,5 +174,53 @@ module.exports = router;
  *           example: 2024-09-09T17:44:12.057Z
  *           format: date-time
  *           description: Last time user data was modified
+ *           nullable: true
+ *     UserProfile:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           example: 10
+ *         username:
+ *           type: string
+ *           example: test_user
+ *         display_name:
+ *           type: string
+ *           example: Test User
+ *         gender:
+ *           type: string
+ *           example: Mężczyzna
+ *           enum: [Mężczyzna, Kobieta, Wolę nie podawać]
+ *         birthday:
+ *           type: date
+ *           example: 2001-03-05
+ *           nullable: true
+ *         status:
+ *           type: string
+ *           example: Aktywny
+ *           enum: [Aktywny, Nieaktywny, Zawieszony]
+ *         level:
+ *           type: integer
+ *           example: 1
+ *           minimum: 1
+ *         exp:
+ *           type: integer
+ *           example: 0
+ *           minimum: 0
+ *         weights:
+ *           type: array
+ *           example: [ { "weight": 75, "date": "2024-09-08" } ]
+ *           items:
+ *             type: object
+ *             properties:
+ *               weight:
+ *                  type: integer
+ *                  example: 75
+ *               date:
+ *                 type: date
+ *                 example: 2024-09-08
+ *         height:
+ *           type: integer
+ *           example: 175
  *           nullable: true
  */
