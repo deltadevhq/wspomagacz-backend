@@ -11,7 +11,6 @@ router.get('/:id', authController.verifyToken, workoutController.getWorkoutById)
 module.exports = router;
 
 // ENDPOINT: POST /api/workouts
-// ENDPOINT: GET /api/workouts/:id
 // ENDPOINT: PATCH /api/workouts/:id
 // ENDPOINT: DELETE /api/workouts/:id
 
