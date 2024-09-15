@@ -9,9 +9,6 @@ router.patch('/:id', authController.verifyToken, userController.patchUser);
 
 // CONSIDER: DELETE /api/users/:id - Delete user
 
-// ENDPOINT: GET /api/users/:user_id/exercises/:exercise_id - Retrieve an custom exercise by its ID
-// ENDPOINT: POST /api/users/:user_id/exercises - Create new custom exercise
-
 module.exports = router;
 
 /**

@@ -7,6 +7,7 @@ const authController = require('../controllers/authController');
 router.get('/', authController.verifyToken, exerciseController.getExercises);
 router.get('/:id', authController.verifyToken, exerciseController.getExerciseById);
 
+// ENDPOINT: POST /api/exercises - Create new custom exercise
 
 module.exports = router;
 
