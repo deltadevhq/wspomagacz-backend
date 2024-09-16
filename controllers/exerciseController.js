@@ -5,7 +5,8 @@ const userModel = require('../models/userModel');
 // Fetch all exercises
 const getExercises = async (req, res) => {
   const userId = req.query.user_id;
-  const type = req.query.type.toLowerCase();
+  let type = req.query.type;
+  if (type) type = type.toLowerCase();
 
   try {
     // Check if parameter is valid and user exists
