@@ -3,7 +3,7 @@ const pool = require('../config/database');
 // Fetch all workouts
 const getWorkouts = async (userId, status) => {
     try {
-        const query = 'SELECT * FROM workouts WHERE (user_id = COALESCE($1, user_id) OR user_id IS NULL) AND status = COALESCE($2, status)';
+        const query = 'SELECT * FROM workouts WHERE user_id = COALESCE($1, user_id) AND status = COALESCE($2, status)';
 
         if (status === 'all') status = null;
         const values = [userId, status];
@@ -16,7 +16,12 @@ const getWorkouts = async (userId, status) => {
     }
 };
 
+const getWorkoutById = async (userId, status) => {
+    throw new Error('Not implemented');
+};
+
 
 module.exports = {
-    getWorkouts
+    getWorkouts,
+    getWorkoutById
 };

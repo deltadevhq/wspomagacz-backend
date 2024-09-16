@@ -56,8 +56,29 @@ const getWorkoutById = async (req, res) => {
   }
 };
 
+const postWorkout = async (req, res) => {
+    // TODO: Implement POST /api/workouts
+
+    res.status(501).json({error: 'Not implemented'});
+};
+
+const patchWorkout = async (req, res) => {
+    // TODO: Implement PATCH /api/workouts/{id}
+
+    res.status(501).json({error: 'Not implemented'});
+};
+
+const deleteWorkout = async (req, res) => {
+    // TODO: Implement DELETE /api/workouts/{id}
+
+    res.status(501).json({error: 'Not implemented'});
+};
+
 
 module.exports = {
   getWorkouts,
-  getWorkoutById
+  getWorkoutById,
+  postWorkout,
+  patchWorkout,
+  deleteWorkout
 };
