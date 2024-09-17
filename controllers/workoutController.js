@@ -15,7 +15,7 @@ const getWorkouts = async (req, res) => {
       if (isNaN(user_id)) {
         return res.status(400).json({ error: 'Invalid user ID' });
       }
-      const user = userModel.getUser(user_id);
+      const user = userModel.getUserById(user_id);
       if (!user) {
         res.status(404).json({ error: 'User not found' });
       }
@@ -114,6 +114,8 @@ const patchWorkout = async (req, res) => {
     let parsedExercises;
     if (exercises) parsedExercises = JSON.stringify(exercises);
     else parsedExercises = JSON.stringify(workout.exercises);
+    
+    // TODO: VALIDATE EXERCISES DATA
 
     // Patch workout in database
     const updatedWorkout = await workoutModel.patchWorkout(workout_id, name, parsedExercises, date, started_at, finished_at, notes);

@@ -8,7 +8,7 @@ const secretKey = process.env.API_SECRET;
 // Get user data by username from token
 const getCurrentLoggedUser = async (req, res) => {
   try {
-    const user = await userModel.getUser(req.userId);
+    const user = await userModel.getUserById(req.userId);
 
     // User associated to this token can be deleted in the meantime
     if (!user) {

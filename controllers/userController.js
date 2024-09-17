@@ -9,7 +9,7 @@ const getUser = async (req, res) => {
   }
 
   try {
-    const user = await userModel.getUser(userId);
+    const user = await userModel.getUserById(userId);
 
     if (user) {
       delete user.password_hash;
@@ -43,7 +43,7 @@ const patchUser = async (req, res) => {
   }
 
   try {
-    const user = await userModel.getUser(userId);
+    const user = await userModel.getUserById(userId);
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }

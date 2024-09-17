@@ -14,7 +14,7 @@ const getExercises = async (req, res) => {
       if (isNaN(userId)) {
         return res.status(400).json({ error: 'Invalid user ID' });
       }
-      const user = userModel.getUser(userId);
+      const user = userModel.getUserById(userId);
       if (!user) {
         res.status(404).json({ error: 'Exercises not found' });
       }
@@ -49,7 +49,7 @@ const getExerciseById = async (req, res) => {
       if (isNaN(userId)) {
         return res.status(400).json({ error: 'Invalid user ID' });
       }
-      const user = userModel.getUser(userId);
+      const user = userModel.getUserById(userId);
       if (!user) {
         res.status(404).json({ error: 'User not found' });
       }
