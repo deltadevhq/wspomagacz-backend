@@ -16,10 +16,19 @@ const getWorkouts = async (userId, status) => {
     }
 };
 
-const getWorkoutById = async (userId, status) => {
-    throw new Error('Not implemented');
-};
+// Fetch single workout
+const getWorkoutById = async (workoutId) => {
+    try {
+        const query = 'SELECT * FROM workouts WHERE id = $1';
+        const values = [workoutId];
 
+        const result = await pool.query(query, values);
+        return result.rows.length > 0 ? result.rows[0] : null;
+    } catch (error) {
+        console.error('Error executing query', error.stack);
+        throw error;
+    }
+};
 
 module.exports = {
     getWorkouts,
