@@ -4,7 +4,7 @@ const userModel = require('../models/userModel');
 // Fetch all workouts
 const getWorkouts = async (req, res) => {
   const userId = req.query.user_id;
-  let status = req.query.status;
+  let status = req.query.status?.match(/^(planned|in_progress|completed|skipped)$/i) ? req.query.status : null;
   if (status) status = status.toLowerCase();
 
   // TODO: CREATE FILTER ON DATE
@@ -56,22 +56,47 @@ const getWorkoutById = async (req, res) => {
   }
 };
 
+// Create new workout
 const postWorkout = async (req, res) => {
-    // TODO: Implement POST /api/workouts
+  const { related_workout_id, name, exercises, date, notes } = req.body;
 
-    res.status(501).json({error: 'Not implemented'});
+  // You can only create new workout for yourself
+  const user_id = req.userId;
+
+  // Validate if required parameters are present in request
+  if (!name || !exercises || !date) return res.status(400).json({ error: 'One or more required parameters is missing' });
+
+  // Validate date
+  if (isNaN(Date.parse(date))) {
+    return res.status(400).json({ error: 'Invalid date format' });
+  }
+
+  // TODO: VALIDATE EXERCISES DATA
+
+  try {
+    // Serialize exercises array into JSON string
+    const parsedExercises = JSON.stringify(exercises);
+
+    // Create new workout in the database
+    const newWorkout = await workoutModel.postWorkout(related_workout_id, user_id, name, parsedExercises, date, notes);
+
+    res.status(201).json(newWorkout);
+  } catch (error) {
+    console.error('Error creating new workout:', error.stack);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 };
 
 const patchWorkout = async (req, res) => {
-    // TODO: Implement PATCH /api/workouts/{id}
+  // TODO: Implement PATCH /api/workouts/{id}
 
-    res.status(501).json({error: 'Not implemented'});
+  res.status(501).json({ error: 'Not implemented' });
 };
 
 const deleteWorkout = async (req, res) => {
-    // TODO: Implement DELETE /api/workouts/{id}
+  // TODO: Implement DELETE /api/workouts/{id}
 
-    res.status(501).json({error: 'Not implemented'});
+  res.status(501).json({ error: 'Not implemented' });
 };
 
 

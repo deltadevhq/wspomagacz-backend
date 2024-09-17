@@ -79,7 +79,6 @@ const postExercise = async (req, res) => {
   if (!userId || !name || !equipment || !muscles) return res.status(400).json({ error: 'One or more required parameters is missing' });
 
   try {
-    // Create new custom exercise
     const newExercise = await exerciseModel.postExercise(userId, name, equipment, muscles);
 
     res.status(201).json(newExercise);
