@@ -32,20 +32,20 @@ const getUser = async (req, res) => {
 const patchUser = async (req, res) => {
   const userId = parseInt(req.params.id);
   const { displayName, gender, birthday, weights, height } = req.body;
+  
+  if (isNaN(userId)) {
+    return res.status(400).json({ error: 'Invalid user ID' });
+  }
 
   // You can patch only currently logged user
   if (userId != req.userId) {
     return res.status(403).json({ error: 'Token does not have the required permissions' });
   }
 
-  if (isNaN(userId)) {
-    return res.status(400).json({ error: 'Invalid user ID' });
-  }
-
   try {
     const user = await userModel.getUser(userId);
     if (!user) {
-      res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: 'User not found' });
     }
 
     const updatedUser = await userModel.patchUser(userId, displayName, gender, birthday, weights, height);

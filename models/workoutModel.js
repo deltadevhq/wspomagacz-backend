@@ -1,12 +1,12 @@
 const pool = require('../config/database');
 
 // Fetch all workouts
-const getWorkouts = async (userId, status) => {
+const getWorkouts = async (user_id, status) => {
   try {
     const query = 'SELECT * FROM workouts WHERE user_id = COALESCE($1, user_id) AND status = COALESCE($2, status)';
 
     if (status === 'all') status = null;
-    const values = [userId, status];
+    const values = [user_id, status];
 
     const result = await pool.query(query, values);
     return result.rows.length > 0 ? result.rows : null;
@@ -17,10 +17,10 @@ const getWorkouts = async (userId, status) => {
 };
 
 // Fetch single workout
-const getWorkoutById = async (workoutId) => {
+const getWorkoutById = async (workout_id) => {
   try {
     const query = 'SELECT * FROM workouts WHERE id = $1';
-    const values = [workoutId];
+    const values = [workout_id];
 
     const result = await pool.query(query, values);
     return result.rows.length > 0 ? result.rows[0] : null;
@@ -47,11 +47,36 @@ const postWorkout = async (related_workout_id, user_id, name, exercises, date, n
   }
 };
 
+// Patch workout
+const patchWorkout = async (workout_id, name, exercises, date, started_at, finished_at, notes) => {
+  try {
+    const query = `
+        UPDATE workouts
+        SET 
+            name = COALESCE($2, name),
+            exercises = COALESCE($3, exercises),
+            date = COALESCE($4, date),
+            started_at = COALESCE($5, started_at),
+            finished_at = COALESCE($6, finished_at),
+            notes = COALESCE($7, notes)
+        WHERE id = $1
+        RETURNING *;
+    `;
+    const values = [workout_id, name, exercises, date, started_at, finished_at, notes];
+
+    const result = await pool.query(query, values);
+    return result.rows.length > 0 ? result.rows[0] : null;
+  } catch (error) {
+    console.error('Error executing query', error.stack);
+    throw error;
+  }
+};
+
 // Delete workout
-const deleteWorkout = async (workoutId) => {
+const deleteWorkout = async (workout_id) => {
   try {
     const query = 'DELETE FROM workouts WHERE id = $1 RETURNING *'
-    const values = [workoutId];
+    const values = [workout_id];
 
     const result = await pool.query(query, values);
     return result.rows.length > 0 ? result.rows[0] : null;
@@ -65,5 +90,6 @@ module.exports = {
   getWorkouts,
   getWorkoutById,
   postWorkout,
+  patchWorkout,
   deleteWorkout
 };
