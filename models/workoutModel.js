@@ -30,7 +30,6 @@ const getWorkoutById = async (workoutId) => {
   }
 };
 
-
 // Create new workout
 const postWorkout = async (related_workout_id, user_id, name, exercises, date, notes) => {
   try {
@@ -48,8 +47,23 @@ const postWorkout = async (related_workout_id, user_id, name, exercises, date, n
   }
 };
 
+// Delete workout
+const deleteWorkout = async (workoutId) => {
+  try {
+    const query = 'DELETE FROM workouts WHERE id = $1 RETURNING *'
+    const values = [workoutId];
+
+    const result = await pool.query(query, values);
+    return result.rows.length > 0 ? result.rows[0] : null;
+  } catch (error) {
+    console.error('Error executing query', error.stack);
+    throw error;
+  }
+};
+
 module.exports = {
   getWorkouts,
   getWorkoutById,
-  postWorkout
+  postWorkout,
+  deleteWorkout
 };

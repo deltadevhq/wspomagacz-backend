@@ -110,7 +110,7 @@ const deleteExercise = async (req, res) => {
       return res.status(403).json({ error: 'Token does not have the required permissions' });
     }
 
-    // Create new custom exercise
+    // Delete exercise from database
     const removedExercise = await exerciseModel.deleteExercise(exerciseId);
 
     res.status(200).json({ message: 'Exercise deleted successfully', exercise: removedExercise});

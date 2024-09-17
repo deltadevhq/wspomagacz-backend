@@ -94,9 +94,34 @@ const patchWorkout = async (req, res) => {
 };
 
 const deleteWorkout = async (req, res) => {
-  // TODO: Implement DELETE /api/workouts/{id}
+  const workoutId = parseInt(req.params.id);
 
-  res.status(501).json({ error: 'Not implemented' });
+  // Check if parameters are valid
+  if (isNaN(workoutId)) {
+    return res.status(400).json({ error: 'Invalid workout ID' });
+  }
+
+  try {
+    // You can only delete workout you own
+    const userId = req.userId;
+    const workout = await workoutModel.getWorkoutById(workoutId);
+
+    if (!workout) {
+      return res.status(404).json({ error: 'Workout not found' });
+    }
+
+    if (workout.user_id != userId) {
+      return res.status(403).json({ error: 'Token does not have the required permissions' });
+    }
+
+    // Delete workout from database
+    const removedWorkout = await workoutModel.deleteWorkout(workoutId);
+
+    res.status(200).json({ message: 'Workout deleted successfully', workout: removedWorkout });
+  } catch (error) {
+    console.error('Error deleting workout:', error.stack);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 };
 
 
