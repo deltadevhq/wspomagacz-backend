@@ -2,14 +2,14 @@ const userModel = require('../models/userModel');
 
 // Get user data
 const getUser = async (req, res) => {
-  const userId = parseInt(req.params.id);
+  const user_id = parseInt(req.params.id);
 
-  if (isNaN(userId)) {
+  if (isNaN(user_id)) {
     return res.status(400).json({ error: 'Invalid user ID' });
   }
 
   try {
-    const user = await userModel.getUserById(userId);
+    const user = await userModel.getUserById(user_id);
 
     if (user) {
       delete user.password_hash;
@@ -30,28 +30,28 @@ const getUser = async (req, res) => {
 
 // Patch user data
 const patchUser = async (req, res) => {
-  const userId = parseInt(req.params.id);
-  const { displayName, gender, birthday, weights, height } = req.body;
+  const user_id = parseInt(req.params.id);
+  const { display_name, gender, birthday, weights, height } = req.body;
   
-  if (isNaN(userId)) {
+  if (isNaN(user_id)) {
     return res.status(400).json({ error: 'Invalid user ID' });
   }
 
   // You can patch only currently logged user
-  if (userId != req.userId) {
+  if (user_id != req.user_id) {
     return res.status(403).json({ error: 'Token does not have the required permissions' });
   }
 
   try {
-    const user = await userModel.getUserById(userId);
+    const user = await userModel.getUserById(user_id);
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    const updatedUser = await userModel.patchUser(userId, displayName, gender, birthday, weights, height);
-    delete updatedUser.password_hash;
+    const patched_user = await userModel.patchUser(user_id, display_name, gender, birthday, weights, height);
+    delete patched_user.password_hash;
 
-    return res.status(200).json(updatedUser);
+    return res.status(200).json(patched_user);
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ error: 'Internal server error' });

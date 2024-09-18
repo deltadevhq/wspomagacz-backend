@@ -72,12 +72,12 @@ const postWorkout = async (req, res) => {
 
   try {
     // Serialize exercises array into JSON string
-    const parsedExercises = JSON.stringify(exercises);
+    const parsed_exercises = JSON.stringify(exercises);
 
     // Create new workout in the database
-    const newWorkout = await workoutModel.postWorkout(related_workout_id, req.userId, name, parsedExercises, date, notes);
+    const new_workout = await workoutModel.postWorkout(related_workout_id, req.user_id, name, parsed_exercises, date, notes);
 
-    res.status(201).json(newWorkout);
+    res.status(201).json(new_workout);
   } catch (error) {
     console.error('Error creating new workout:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
@@ -101,7 +101,7 @@ const patchWorkout = async (req, res) => {
     }
 
     // You can only patch workout you own
-    if (workout.user_id != req.userId) {
+    if (workout.user_id != req.user_id) {
       return res.status(403).json({ error: 'Token does not have the required permissions' });
     }
 
@@ -111,16 +111,16 @@ const patchWorkout = async (req, res) => {
     if (finished_at && isNaN(Date.parse(finished_at))) return res.status(400).json({ error: 'Invalid finished_at format' });
 
     // Serialize exercises array into JSON string
-    let parsedExercises;
-    if (exercises) parsedExercises = JSON.stringify(exercises);
-    else parsedExercises = JSON.stringify(workout.exercises);
+    let parsed_exercises;
+    if (exercises) parsed_exercises = JSON.stringify(exercises);
+    else parsed_exercises = JSON.stringify(workout.exercises);
     
     // TODO: VALIDATE EXERCISES DATA
 
     // Patch workout in database
-    const updatedWorkout = await workoutModel.patchWorkout(workout_id, name, parsedExercises, date, started_at, finished_at, notes);
+    const patched_workout = await workoutModel.patchWorkout(workout_id, name, parsed_exercises, date, started_at, finished_at, notes);
 
-    res.status(200).json(updatedWorkout);
+    res.status(200).json(patched_workout);
   } catch (error) {
     console.error('Error patching workout:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
@@ -143,14 +143,14 @@ const deleteWorkout = async (req, res) => {
     }
 
     // You can only delete workout you own
-    if (workout.user_id != req.userId) {
+    if (workout.user_id != req.user_id) {
       return res.status(403).json({ error: 'Token does not have the required permissions' });
     }
 
     // Delete workout from database
-    const removedWorkout = await workoutModel.deleteWorkout(workout_id);
+    const deleted_workout = await workoutModel.deleteWorkout(workout_id);
 
-    res.status(200).json({ message: 'Workout deleted successfully', workout: removedWorkout });
+    res.status(200).json({ message: 'Workout deleted successfully', workout: deleted_workout });
   } catch (error) {
     console.error('Error deleting workout:', error.stack);
     res.status(500).json({ error: 'Internal server error' });

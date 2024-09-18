@@ -4,23 +4,23 @@ const userModel = require('../models/userModel');
 
 // Fetch all exercises
 const getExercises = async (req, res) => {
-  const userId = req.query.user_id;
+  const user_id = req.query.user_id;
   let type = req.query.type;
   if (type) type = type.toLowerCase();
 
   try {
     // Check if parameter is valid and user exists
-    if (userId) {
-      if (isNaN(userId)) {
+    if (user_id) {
+      if (isNaN(user_id)) {
         return res.status(400).json({ error: 'Invalid user ID' });
       }
-      const user = userModel.getUserById(userId);
+      const user = userModel.getUserById(user_id);
       if (!user) {
         res.status(404).json({ error: 'Exercises not found' });
       }
     }
 
-    const exercises = await exerciseModel.getExercises(userId, type);
+    const exercises = await exerciseModel.getExercises(user_id, type);
 
     if (exercises) {
       res.status(200).json(exercises);
@@ -35,27 +35,27 @@ const getExercises = async (req, res) => {
 
 // Fetch single exercise
 const getExerciseById = async (req, res) => {
-  const exerciseId = parseInt(req.params.id);
-  const userId = req.query.user_id;
+  const exercise_id = parseInt(req.params.id);
+  const user_id = req.query.user_id;
   const type = req.query.type;
 
   try {
     // Check if parameters are valid
-    if (isNaN(exerciseId)) {
+    if (isNaN(exercise_id)) {
       return res.status(400).json({ error: 'Invalid exercise ID' });
     }
 
-    if (userId) {
-      if (isNaN(userId)) {
+    if (user_id) {
+      if (isNaN(user_id)) {
         return res.status(400).json({ error: 'Invalid user ID' });
       }
-      const user = userModel.getUserById(userId);
+      const user = userModel.getUserById(user_id);
       if (!user) {
         res.status(404).json({ error: 'User not found' });
       }
     }
 
-    const exercise = await exerciseModel.getExerciseById(exerciseId, userId, type);
+    const exercise = await exerciseModel.getExerciseById(exercise_id, user_id, type);
 
     if (exercise) {
       res.status(200).json(exercise);
@@ -73,15 +73,15 @@ const postExercise = async (req, res) => {
   const { name, equipment, muscles } = req.body;
 
   // You can only create new exercise for yourself
-  const userId = req.userId;
+  const user_id = req.user_id;
 
   // Validate if required parameters are present in request
-  if (!userId || !name || !equipment || !muscles) return res.status(400).json({ error: 'One or more required parameters is missing' });
+  if (!user_id || !name || !equipment || !muscles) return res.status(400).json({ error: 'One or more required parameters is missing' });
 
   try {
-    const newExercise = await exerciseModel.postExercise(userId, name, equipment, muscles);
+    const new_exercise = await exerciseModel.postExercise(user_id, name, equipment, muscles);
 
-    res.status(201).json(newExercise);
+    res.status(201).json(new_exercise);
   } catch (error) {
     console.error('Error creating new exercise:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
@@ -90,30 +90,30 @@ const postExercise = async (req, res) => {
 
 // Delete custom exercise
 const deleteExercise = async (req, res) => {
-  const exerciseId = parseInt(req.params.id);
+  const exercise_id = parseInt(req.params.id);
 
   // Check if parameters are valid
-  if (isNaN(exerciseId)) {
+  if (isNaN(exercise_id)) {
     return res.status(400).json({ error: 'Invalid exercise ID' });
   }
 
   try {
     // You can only delete exercise you own
-    const userId = req.userId;
-    const exercise = await exerciseModel.getExerciseById(exerciseId, null, 'custom');
+    const user_id = req.user_id;
+    const exercise = await exerciseModel.getExerciseById(exercise_id, null, 'custom');
 
     if (!exercise) {
       return res.status(404).json({ error: 'Exercise not found' });
     }
 
-    if (exercise.user_id != userId) {
+    if (exercise.user_id != user_id) {
       return res.status(403).json({ error: 'Token does not have the required permissions' });
     }
 
     // Delete exercise from database
-    const removedExercise = await exerciseModel.deleteExercise(exerciseId);
+    const deleted_exercise = await exerciseModel.deleteExercise(exercise_id);
 
-    res.status(200).json({ message: 'Exercise deleted successfully', exercise: removedExercise});
+    res.status(200).json({ message: 'Exercise deleted successfully', exercise: deleted_exercise});
   } catch (error) {
     console.error('Error deleting exercise:', error.stack);
     res.status(500).json({ error: 'Internal server error' });

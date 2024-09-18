@@ -18,14 +18,14 @@ const getMuscles = async (req, res) => {
 
 // Fetch single muscle
 const getMuscleById = async (req, res) => {
-  const muscleId = parseInt(req.params.id);
+  const muscle_id = parseInt(req.params.id);
 
-  if (isNaN(muscleId)) {
+  if (isNaN(muscle_id)) {
     return res.status(400).json({ error: 'Invalid muscle ID' });
   }
 
   try {
-    const muscle = await muscleModel.getMuscleById(muscleId);
+    const muscle = await muscleModel.getMuscleById(muscle_id);
 
     if (muscle) {
       res.status(200).json(muscle);

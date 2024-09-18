@@ -3,12 +3,12 @@ const userModel = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
-const secretKey = process.env.API_SECRET;
+const secret_key = process.env.API_SECRET;
 
 // Get user data by username from token
 const getCurrentLoggedUser = async (req, res) => {
   try {
-    const user = await userModel.getUserById(req.userId);
+    const user = await userModel.getUserById(req.user_id);
 
     // User associated to this token can be deleted in the meantime
     if (!user) {
@@ -33,7 +33,7 @@ const getCurrentLoggedUser = async (req, res) => {
 // Register new user
 const registerUser = async (req, res) => {
   const { username, password, email } = req.body;
-  const displayName = username;
+  const display_name = username;
 
   if (!username || !password || !email) {
     return res.status(400).json({ error: 'One or more required parameters is missing' });
@@ -41,26 +41,26 @@ const registerUser = async (req, res) => {
 
   try {
     // Check if the email is already taken
-    let existingUser = await authModel.getUserByEmail(email);
-    if (existingUser) {
+    let existing_user = await authModel.getUserByEmail(email);
+    if (existing_user) {
       return res.status(409).json({ error: 'This email is already taken' });
     }
 
     // Check if the username is already taken
-    existingUser = await authModel.getUserByUsername(username);
-    if (existingUser) {
+    existing_user = await authModel.getUserByUsername(username);
+    if (existing_user) {
       return res.status(409).json({ error: 'This username is already taken' });
     }
 
     // Hash the password
     const salt = await bcrypt.genSalt(10);
-    const passwordHash = await bcrypt.hash(password, salt);
+    const password_hash = await bcrypt.hash(password, salt);
 
     // Create the user
-    const newUser = await authModel.postUser(username, displayName, passwordHash, email);
-    delete newUser.password_hash;
+    const new_user = await authModel.postUser(username, display_name, password_hash, email);
+    delete new_user.password_hash;
 
-    res.status(201).json(newUser);
+    res.status(201).json(new_user);
   } catch (error) {
     console.error('Error registering user:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
@@ -80,14 +80,14 @@ const loginUser = async (req, res) => {
         return res.status(401).json({ error: 'Invalid username or password' });
       }
 
-      const isMatch = await bcrypt.compare(password, user.password_hash);
-      if (!isMatch) {
+      const is_match = await bcrypt.compare(password, user.password_hash);
+      if (!is_match) {
         return res.status(401).json({ error: 'Invalid username or password' });
       }
 
       await authModel.updateUserLastLogin(username);
 
-      const token = jwt.sign({ id: user.id, username: user.username }, secretKey, {
+      const token = jwt.sign({ id: user.id, username: user.username }, secret_key, {
         expiresIn: '7d', // CONSIDER: DETERMINE TOKEN EXPIRE TIME / CONSIDER AUTOMATIC TOKEN RENEWAL
       });
 
@@ -136,8 +136,8 @@ const verifyToken = async (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, secretKey);
-    req.userId = decoded.id;
+    const decoded = jwt.verify(token, secret_key);
+    req.user_id = decoded.id;
     next();
   } catch (error) {
     return res.status(401).json({ error: 'Unauthorized' });

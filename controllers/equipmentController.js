@@ -18,14 +18,14 @@ const getEquipment = async (req, res) => {
 
 // Fetch single equipment
 const getEquipmentById = async (req, res) => {
-  const equipmentId = parseInt(req.params.id);
+  const equipment_id = parseInt(req.params.id);
 
-  if (isNaN(equipmentId)) {
+  if (isNaN(equipment_id)) {
     return res.status(400).json({ error: 'Invalid equipment ID' });
   }
 
   try {
-    const equipment = await equipmentModel.getEquipmentById(equipmentId);
+    const equipment = await equipmentModel.getEquipmentById(equipment_id);
 
     if (equipment) {
       res.status(200).json(equipment);
