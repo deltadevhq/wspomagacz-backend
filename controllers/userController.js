@@ -1,59 +1,58 @@
 const userModel = require('../models/userModel');
 
-// Get user data
+// Get user data by its ID
 const getUser = async (req, res) => {
-  const user_id = parseInt(req.params.id);
+  const user_id = Number(req.params.id);
 
-  if (isNaN(user_id)) {
-    return res.status(400).json({ error: 'Invalid user ID' });
-  }
+  // Validate user ID
+  if (isNaN(user_id) || user_id <= 0) return res.status(400).json({ error: 'Invalid user ID' });
 
   try {
+    // Fetch user from database
     const user = await userModel.getUserById(user_id);
 
-    if (user) {
-      delete user.password_hash;
-      delete user.email;
-      delete user.last_logged_at;
-      delete user.created_at;
-      delete user.modified_at;
+    // Check if anything was returned
+    if (!user) return res.status(404).json({ error: 'User not found' });
 
-      res.status(200).json(user);
-    } else {
-      res.status(404).json({ error: 'User not found' });
-    }
+    // Omit sensitive fields using destructuring
+    const { password_hash, email, last_logged_at, created_at, modified_at, ...publicUserData } = user;
+
+    // Successful response with sanitized user data
+    res.status(200).json(publicUserData);
   } catch (error) {
-    console.error(error.message);
+    console.error('Error fetching user by ID:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
 
 // Patch user data
 const patchUser = async (req, res) => {
-  const user_id = parseInt(req.params.id);
+  const user_id = Number(req.params.id);
   const { display_name, gender, birthday, weights, height } = req.body;
-  
-  if (isNaN(user_id)) {
-    return res.status(400).json({ error: 'Invalid user ID' });
-  }
 
-  // You can patch only currently logged user
-  if (user_id != req.user_id) {
-    return res.status(403).json({ error: 'Token does not have the required permissions' });
-  }
+  // Validate user ID
+  if (isNaN(user_id) || user_id <= 0) return res.status(400).json({ error: 'Invalid user ID' });
+
+  // Check if the request is for the currently logged-in user
+  if (user_id !== req.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
 
   try {
+    // Fetch user from database
     const user = await userModel.getUserById(user_id);
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
 
+    // Check if anything was returned
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    // Update user data in database
     const patched_user = await userModel.patchUser(user_id, display_name, gender, birthday, weights, height);
+
+    // Remove sensitive data before sending the response
     delete patched_user.password_hash;
 
-    return res.status(200).json(patched_user);
+    // Successful response with updated user data
+    res.status(200).json(patched_user);
   } catch (error) {
-    console.error(error.message);
+    console.error('Error patching user:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
