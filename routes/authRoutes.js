@@ -28,16 +28,12 @@ module.exports = router;
  *             type: object
  *             required:
  *               - username
- *               - display_name
  *               - password
  *               - email
  *             properties:
  *               username:
  *                 type: string
  *                 example: testowicz
- *               display_name:
- *                 type: string
- *                 example: Test
  *               password:
  *                 type: string
  *                 example: Test123!

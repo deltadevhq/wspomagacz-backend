@@ -3,7 +3,6 @@ const pool = require('../config/database');
 // Fetch all workouts
 const getWorkouts = async (user_id, status) => {
   const query = 'SELECT * FROM workouts WHERE user_id = COALESCE($1, user_id) AND status = COALESCE($2, status)';
-  if (status === 'all') status = null;
   const values = [user_id, status];
 
   try {

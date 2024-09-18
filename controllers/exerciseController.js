@@ -3,7 +3,7 @@ const userModel = require('../models/userModel');
 
 // Fetch all exercises
 const getExercises = async (req, res) => {
-  const user_id = Number(req.query.user_id);
+  const user_id = req.query.user_id ? Number(req.query.user_id) : null;
   let type = req.query.type?.match(/^(all|custom|standard)$/i) ? req.query.type : null;
 
   try {
@@ -33,7 +33,7 @@ const getExercises = async (req, res) => {
 // Fetch single exercise by its ID
 const getExerciseById = async (req, res) => {
   const exercise_id = Number(req.params.id);
-  const user_id = Number(req.query.user_id);
+  const user_id = req.query.user_id ? Number(req.query.user_id) : null;
   let type = req.query.type?.match(/^(all|custom|standard)$/i) ? req.query.type : null;
 
   // Validate exercise ID

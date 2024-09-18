@@ -28,7 +28,7 @@ module.exports = router;
  *         required: false
  *         schema:
  *           type: string
- *           enum: [completed, in-progress, planned, skipped]
+ *           enum: [completed, in_progress, planned, skipped]
  *     responses:
  *       200:
  *         description: Successfully retrieved all workouts
@@ -71,17 +71,6 @@ module.exports = router;
  *         name: id
  *         required: true
  *         description: Workout ID
- *       - in: query
- *         name: user_id
- *         required: false
- *         description: User ID
- *       - in: query
- *         name: status
- *         required: false
- *         description: Workout status
- *         schema:
- *           type: string
- *           enum: [completed, in-progress, planned, skipped]
  *     responses:
  *       200:
  *         description: Successfully retrieved workout data
@@ -253,7 +242,7 @@ module.exports = router;
  *         status:
  *           type: string
  *           example: completed
- *           enum: [completed, in-progress, planned, skipped]
+ *           enum: [completed, in_progress, planned, skipped]
  *         notes:
  *           type: string
  *           example: 'Great workout!'

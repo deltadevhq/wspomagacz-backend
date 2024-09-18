@@ -56,8 +56,8 @@ module.exports = router;
  *                 nullable: true
  *               gender:
  *                 type: string
- *                 example: Mężczyzna
- *                 enum: [Mężczyzna, Kobieta, Wolę nie podawać]
+ *                 example: Male
+ *                 enum: [Male, Female, Not specified]
  *                 nullable: true
  *               birthday:
  *                 type: date
@@ -124,8 +124,8 @@ module.exports = router;
  *           example: test@user.com
  *         gender:
  *           type: string
- *           example: Mężczyzna
- *           enum: [Mężczyzna, Kobieta, Wolę nie podawać]
+ *           example: Male
+ *           enum: [Male, Female, Not specified]
  *         birthday:
  *           type: date
  *           example: 2001-03-05
@@ -189,8 +189,8 @@ module.exports = router;
  *           example: Test User
  *         gender:
  *           type: string
- *           example: Mężczyzna
- *           enum: [Mężczyzna, Kobieta, Wolę nie podawać]
+ *           example: Male
+ *           enum: [Male, Female, Not specified]
  *         birthday:
  *           type: date
  *           example: 2001-03-05

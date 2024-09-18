@@ -36,6 +36,9 @@ const patchUser = async (req, res) => {
   // Check if the request is for the currently logged-in user
   if (user_id !== req.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
 
+  // Serialize weights array into JSON string
+  const parsed_weights = JSON.stringify(weights);
+
   try {
     // Fetch user from database
     const user = await userModel.getUserById(user_id);
@@ -44,7 +47,7 @@ const patchUser = async (req, res) => {
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     // Update user data in database
-    const patched_user = await userModel.patchUser(user_id, display_name, gender, birthday, weights, height);
+    const patched_user = await userModel.patchUser(user_id, display_name, gender, birthday, parsed_weights, height);
 
     // Remove sensitive data before sending the response
     delete patched_user.password_hash;

@@ -3,7 +3,7 @@ const userModel = require('../models/userModel');
 
 // Fetch all workouts
 const getWorkouts = async (req, res) => {
-  const user_id = Number(req.query.user_id);
+  const user_id = req.query.user_id ? Number(req.query.user_id) : null;
   let status = req.query.status?.match(/^(planned|in_progress|completed|skipped)$/i) ? req.query.status : null;
 
   // TODO: CREATE FILTER ON DATE
