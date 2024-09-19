@@ -38,7 +38,22 @@ const patchUser = async (user_id, display_name, gender, birthday, weights, heigh
   }
 };
 
+// Delete user
+const deleteUser = async (user_id) => {
+  const query = 'DELETE FROM users WHERE id = $1 RETURNING *';
+  const values = [user_id];
+
+  try {
+    const result = await pool.query(query, values);
+    return result.rows.length > 0 ? result.rows : null;
+  } catch (error) {
+    console.error('Error executing query', error.stack);
+    throw error;
+  }
+};
+
 module.exports = {
   getUserById,
-  patchUser
+  patchUser,
+  deleteUser
 };

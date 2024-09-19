@@ -6,8 +6,7 @@ const authController = require('../controllers/authController');
 // AUTH ROUTES
 router.get('/:id', authController.verifyToken, userController.getUser);
 router.patch('/:id', authController.verifyToken, userController.patchUser);
-
-// CONSIDER: DELETE /api/users/:id - Delete user
+router.delete('/:id', authController.verifyToken, userController.deleteUser)
 
 module.exports = router;
 
@@ -27,6 +26,31 @@ module.exports = router;
  *     responses:
  *       200:
  *         description: Successfully retrieved user profile
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProfile'
+ *       400:
+ *         description: Bad request - Invalid user ID
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       403:
+ *         description: Forbidden - Token does not have the required permissions
+ *       404:
+ *         description: Not Found - User not found
+ *   delete:
+ *     summary: Delete user
+ *     description: This endpoint requires authorization token
+ *     tags: [User Profile]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Successfully deleted user
  *         content:
  *           application/json:
  *             schema:

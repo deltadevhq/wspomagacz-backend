@@ -60,7 +60,38 @@ const patchUser = async (req, res) => {
   }
 };
 
+// Delete user
+const deleteUser = async (req, res) => {
+  const user_id = Number(req.params.id);
+
+  // Validate user ID
+  if (isNaN(user_id) || user_id <= 0) return res.status(400).json({ error: 'Invalid user ID' });
+
+  // Check if the request is for the currently logged-in user
+  if (user_id !== req.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
+
+  // CONSIDER: OPERATIONS_TO_EXECUTE TABLE IN DATABASE 
+
+  try {
+    // Fetch user from database
+    const user = await userModel.getUserById(user_id);
+
+    // Check if anything was returned
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    // Delete user from database
+    await userModel.deleteUser(user_id);
+
+    // Successful response confirming deletion
+    res.status(200).json({ message: 'User deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting user:', error.stack);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
 module.exports = {
   getUser,
-  patchUser
+  patchUser,
+  deleteUser
 };
