@@ -47,20 +47,18 @@ const postWorkout = async (related_workout_id, user_id, name, exercises, date, n
 };
 
 // Patch workout
-const patchWorkout = async (workout_id, name, exercises, date, started_at, finished_at, notes) => {
+const patchWorkout = async (workout_id, name, exercises, date, notes) => {
   const query = `
     UPDATE workouts
     SET 
         name = COALESCE($2, name),
         exercises = COALESCE($3, exercises),
         date = COALESCE($4, date),
-        started_at = COALESCE($5, started_at),
-        finished_at = COALESCE($6, finished_at),
-        notes = COALESCE($7, notes)
+        notes = COALESCE($5, notes)
     WHERE id = $1
     RETURNING *
   `;
-  const values = [workout_id, name, exercises, date, started_at, finished_at, notes];
+  const values = [workout_id, name, exercises, date, notes];
 
   try {
     const result = await pool.query(query, values);
@@ -85,10 +83,52 @@ const deleteWorkout = async (workout_id) => {
   }
 };
 
+// Start workout
+const startWorkout = async (workout_id) => {
+  const query = `
+    UPDATE workouts
+    SET 
+        started_at = NOW(),
+    WHERE id = $1
+    RETURNING *
+  `;
+  const values = [workout_id];
+
+  try {
+    const result = await pool.query(query, values);
+    return result.rows.length > 0 ? result.rows[0] : null;
+  } catch (error) {
+    console.error('Error executing query', error.stack);
+    throw error;
+  }
+};
+
+// Finish workout
+const finishWorkout = async (workout_id) => {
+  const query = `
+    UPDATE workouts
+    SET 
+        finished_at = NOW(),
+    WHERE id = $1
+    RETURNING *
+  `;
+  const values = [workout_id];
+
+  try {
+    const result = await pool.query(query, values);
+    return result.rows.length > 0 ? result.rows[0] : null;
+  } catch (error) {
+    console.error('Error executing query', error.stack);
+    throw error;
+  }
+};
+
 module.exports = {
   getWorkouts,
   getWorkoutById,
   postWorkout,
   patchWorkout,
-  deleteWorkout
+  deleteWorkout,
+  startWorkout,
+  finishWorkout
 };

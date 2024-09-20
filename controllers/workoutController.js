@@ -84,7 +84,7 @@ const postWorkout = async (req, res) => {
 // Patch workout data
 const patchWorkout = async (req, res) => {
   const workout_id = Number(req.params.id);
-  const { name, exercises, date, started_at, finished_at, notes } = req.body;
+  const { name, exercises, date, notes } = req.body;
 
   // Validate workout ID
   if (isNaN(workout_id) || workout_id <= 0) return res.status(400).json({ error: 'Invalid workout ID' });
@@ -97,10 +97,8 @@ const patchWorkout = async (req, res) => {
     // Check if the request is for the currently logged-in user
     if (workout.user_id !== req.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
 
-    // Validate dates if they exists
+    // Validate date if exists
     if (date && isNaN(Date.parse(date))) return res.status(400).json({ error: 'Invalid date format' });
-    if (started_at && isNaN(Date.parse(started_at))) return res.status(400).json({ error: 'Invalid started_at date format' });
-    if (finished_at && isNaN(Date.parse(finished_at))) return res.status(400).json({ error: 'Invalid finished_at date format' });
 
     // Serialize exercises array into JSON string
     const parsed_exercises = exercises ? JSON.stringify(exercises) : JSON.stringify(workout.exercises);
@@ -108,7 +106,7 @@ const patchWorkout = async (req, res) => {
     // TODO: VALIDATE EXERCISES DATA
 
     // Patch workout data in database
-    const patched_workout = await workoutModel.patchWorkout(workout_id, name, parsed_exercises, date, started_at, finished_at, notes);
+    const patched_workout = await workoutModel.patchWorkout(workout_id, name, parsed_exercises, date, notes);
 
     // Successful response with updated workout data
     res.status(200).json(patched_workout);
@@ -144,10 +142,64 @@ const deleteWorkout = async (req, res) => {
   }
 };
 
+// Start workout by making update on started_at column in database
+const startWorkout = async (req, res) => {
+  const workout_id = Number(req.params.id);
+
+  // Validate workout ID
+  if (isNaN(workout_id) || workout_id <= 0) return res.status(400).json({ error: 'Invalid workout ID' });
+
+  try {
+    // Check if workout exists
+    const workout = await workoutModel.getWorkoutById(workout_id);
+    if (!workout) return res.status(404).json({ error: 'Workout not found' });
+
+    // Check if the request is for the currently logged-in user
+    if (workout.user_id !== req.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
+
+    // Patch started_at for workout in database
+    const started_workout = await workoutModel.startWorkout(workout_id);
+
+    // Successful response with updated workout data
+    res.status(200).json(started_workout);
+  } catch (error) {
+    console.error('Error starting workout:', error.stack);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+// Finish workout by making update on finished_at column in database
+const finishWorkout = async (req, res) => {
+  const workout_id = Number(req.params.id);
+
+  // Validate workout ID
+  if (isNaN(workout_id) || workout_id <= 0) return res.status(400).json({ error: 'Invalid workout ID' });
+
+  try {
+    // Check if workout exists
+    const workout = await workoutModel.getWorkoutById(workout_id);
+    if (!workout) return res.status(404).json({ error: 'Workout not found' });
+
+    // Check if the request is for the currently logged-in user
+    if (workout.user_id !== req.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
+
+    // Patch finished_at for workout in database
+    const finished_workout = await workoutModel.finishWorkout(workout_id);
+
+    // Successful response with updated workout data
+    res.status(200).json(finished_workout);
+  } catch (error) {
+    console.error('Error finishing workout:', error.stack);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
 module.exports = {
   getWorkouts,
   getWorkoutById,
   postWorkout,
   patchWorkout,
-  deleteWorkout
+  deleteWorkout,
+  startWorkout,
+  finishWorkout
 };
