@@ -168,6 +168,32 @@ const startWorkout = async (req, res) => {
   }
 };
 
+// Stop workout by making update on started_at column in database
+const stopWorkout = async (req, res) => {
+  const workout_id = Number(req.params.id);
+
+  // Validate workout ID
+  if (isNaN(workout_id) || workout_id <= 0) return res.status(400).json({ error: 'Invalid workout ID' });
+
+  try {
+    // Check if workout exists
+    const workout = await workoutModel.getWorkoutById(workout_id);
+    if (!workout) return res.status(404).json({ error: 'Workout not found' });
+
+    // Check if the request is for the currently logged-in user
+    if (workout.user_id !== req.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
+
+    // Patch started_at for workout in database
+    const stopped_workout = await workoutModel.stopWorkout(workout_id);
+
+    // Successful response with updated workout data
+    res.status(200).json(stopped_workout);
+  } catch (error) {
+    console.error('Error stopping workout:', error.stack);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
 // Finish workout by making update on finished_at column in database
 const finishWorkout = async (req, res) => {
   const workout_id = Number(req.params.id);
@@ -201,5 +227,6 @@ module.exports = {
   patchWorkout,
   deleteWorkout,
   startWorkout,
+  stopWorkout,
   finishWorkout
 };

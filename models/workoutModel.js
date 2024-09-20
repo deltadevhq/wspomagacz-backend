@@ -103,6 +103,26 @@ const startWorkout = async (workout_id) => {
   }
 };
 
+// Stop workout
+const stopWorkout = async (workout_id) => {
+  const query = `
+    UPDATE workouts
+    SET 
+        started_at = null,
+    WHERE id = $1
+    RETURNING *
+  `;
+  const values = [workout_id];
+
+  try {
+    const result = await pool.query(query, values);
+    return result.rows.length > 0 ? result.rows[0] : null;
+  } catch (error) {
+    console.error('Error executing query', error.stack);
+    throw error;
+  }
+};
+
 // Finish workout
 const finishWorkout = async (workout_id) => {
   const query = `
@@ -130,5 +150,6 @@ module.exports = {
   patchWorkout,
   deleteWorkout,
   startWorkout,
+  stopWorkout,
   finishWorkout
 };

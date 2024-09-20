@@ -10,6 +10,7 @@ router.get('/:id', authController.verifyToken, workoutController.getWorkoutById)
 router.patch('/:id', authController.verifyToken, workoutController.patchWorkout);
 router.delete('/:id', authController.verifyToken, workoutController.deleteWorkout);
 router.post('/:id/start', authController.verifyToken, workoutController.startWorkout);
+router.post('/:id/stop', authController.verifyToken, workoutController.stopWorkout);
 router.post('/:id/finish', authController.verifyToken, workoutController.finishWorkout);
 
 module.exports = router;
