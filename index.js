@@ -4,9 +4,12 @@ const cors = require('cors');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const swaggerUi = require('swagger-ui-express');
+const cron = require('node-cron');
 const app = express();
 const { authRoutes, userRoutes, muscleRoutes, equipmentRoutes, exerciseRoutes, workoutRoutes } = require('./routes');
-const { port, listener, swaggerDocs } = require('./config/settings')
+const { port, listener, swaggerDocs } = require('./config/settings');
+const jobs = require('./utilities/jobs');
+
 
 // Use morgan to log requests to the console
 app.use(morgan('[:date[clf]] Request: :method :url HTTP/:http-version, Response: :status, ResponseTime: :response-time ms'));
@@ -33,7 +36,13 @@ app.listen(port, () => {
   console.log(`API listening at http://${listener}:${port}`);
 });
 
+// Daily jobs definition
+cron.schedule('0 0 * * *', () => {
+  jobs.closeSkippedWorkouts();
+  jobs.closeUnfinishedWorkouts();
+});
+
 // TODO: VALIDATE PARAMS DATA
 // TODO: VALIDATE BODY DATA
 // TODO: LIMIT RATE LOGIN ENDPOINT
-// TODO: CRONTAB FOR CLOSING UNCOMPLETED WORKOUTS AT 23:59
+// TODO: ADD TIMESTAMP FOR EVERY LOG
