@@ -1,5 +1,6 @@
 const authModel = require('../models/authModel');
 const userModel = require('../models/userModel');
+const userSchema = require('../schemas/userSchema');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
@@ -32,27 +33,25 @@ const getCurrentLoggedUser = async (req, res) => {
 
 // Register new user
 const registerUser = async (req, res) => {
-  const { username, password, email } = req.body;
-  const display_name = username;
-
-  // Validation for missing parameters
-  if (!username || !password || !email) return res.status(400).json({ error: 'One or more required parameters is missing' });
+  // Validate input data
+  const { error } = userSchema.registerSchema.validate(req.body);
+  if (error) return res.status(400).json({ error: error.details[0].message });
 
   try {
     // Check if the email is already taken
-    let existing_user = await authModel.getUserByEmail(email);
+    let existing_user = await authModel.getUserByEmail(req.body.email);
     if (existing_user) return res.status(409).json({ error: 'This email is already taken' });
 
     // Check if the username is already taken
-    existing_user = await authModel.getUserByUsername(username);
+    existing_user = await authModel.getUserByUsername(req.body.username);
     if (existing_user) return res.status(409).json({ error: 'This username is already taken' });
 
     // Hash the password
     const salt = await bcrypt.genSalt(10);
-    const password_hash = await bcrypt.hash(password, salt);
+    const password_hash = await bcrypt.hash(req.body.password, salt);
 
     // Create new user in the database
-    const new_user = await authModel.postUser(username, display_name, password_hash, email);
+    const new_user = await authModel.postUser(req.body.username, req.body.password_hash, req.body.email);
 
     // Remove sensitive data before sending the response
     delete new_user.password_hash;
@@ -67,25 +66,24 @@ const registerUser = async (req, res) => {
 
 // Login to get JWT token cookie
 const loginUser = async (req, res) => {
-  const { username, password } = req.body;
+  // Validate input data
+  const { error } = userSchema.loginSchema.validate(req.body);
+  if (error) return res.status(400).json({ error: error.details[0].message });
 
   // OPTIONAL: USER LOGIN BY EMAIL
   // CONSIDER: DETERMINE TOKEN EXPIRE TIME / CONSIDER AUTOMATIC TOKEN RENEWAL
 
-  // Validation for missing parameters
-  if (!username || !password) return res.status(400).json({ error: 'One or more required parameters is missing' });
-
   try {
     // Check if the user exists
-    const user = await authModel.getUserByUsername(username);
+    const user = await authModel.getUserByUsername(req.body.username);
     if (!user) return res.status(401).json({ error: 'Invalid username or password' });
 
     // Check if provided password is correct
-    const is_match = await bcrypt.compare(password, user.password_hash);
+    const is_match = await bcrypt.compare(req.body.password, user.password_hash);
     if (!is_match) return res.status(401).json({ error: 'Invalid username or password' });
 
     // Update last login timestamp in database
-    await authModel.updateUserLastLogin(username);
+    await authModel.updateUserLastLogin(req.body.username);
 
     // Generate JWT token
     const token = jwt.sign({ id: user.id, username: user.username }, process.env.API_SECRET, {

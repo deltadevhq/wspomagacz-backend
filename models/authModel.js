@@ -29,13 +29,14 @@ const getUserByEmail = async (email) => {
 };
 
 // Create new user
-const postUser = async (username, display_name, password_hash, email) => {
+const postUser = async (username, password_hash, email) => {
   const query = `
     INSERT INTO users (username, display_name, password_hash, email)
     VALUES ($1, $2, $3, $4)
     RETURNING *
   `;
-  const values = [username, display_name, password_hash, email];
+  // display_name is username by default
+  const values = [username, username, password_hash, email]; 
 
   try {
     const result = await pool.query(query, values);
