@@ -67,8 +67,6 @@ const postWorkout = async (req, res) => {
   // Serialize exercises array into JSON string
   const parsed_exercises = JSON.stringify(exercises);
 
-  // TODO: VALIDATE EXERCISES DATA
-
   try {
     // Create new workout in the database
     const new_workout = await workoutModel.postWorkout(related_workout_id, req.user_id, name, parsed_exercises, date, notes);
@@ -103,7 +101,6 @@ const patchWorkout = async (req, res) => {
     // Serialize exercises array into JSON string
     const parsed_exercises = exercises ? JSON.stringify(exercises) : JSON.stringify(workout.exercises);
 
-    // TODO: VALIDATE EXERCISES DATA
 
     // Patch workout data in database
     const patched_workout = await workoutModel.patchWorkout(workout_id, name, parsed_exercises, date, notes);

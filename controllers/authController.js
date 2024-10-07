@@ -69,7 +69,7 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
   const { username, password } = req.body;
 
-  // CONSIDER: USER LOGIN BY EMAIL
+  // OPTIONAL: USER LOGIN BY EMAIL
   // CONSIDER: DETERMINE TOKEN EXPIRE TIME / CONSIDER AUTOMATIC TOKEN RENEWAL
 
   // Validation for missing parameters

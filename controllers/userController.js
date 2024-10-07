@@ -70,7 +70,7 @@ const deleteUser = async (req, res) => {
   // Check if the request is for the currently logged-in user
   if (user_id !== req.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
 
-  // CONSIDER: OPERATIONS_TO_EXECUTE TABLE IN DATABASE 
+  // OPTIONAL: OPERATIONS_TO_EXECUTE TABLE IN DATABASE 
 
   try {
     // Fetch user from database
