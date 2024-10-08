@@ -1,6 +1,6 @@
 const Joi = require('joi');
 
-// Base validation schema for user data
+// Base validation schema for equipment data
 const baseEquipmentSchema = {
   id: Joi.number()
     .integer()
