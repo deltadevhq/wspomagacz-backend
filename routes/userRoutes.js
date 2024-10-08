@@ -4,7 +4,7 @@ const userController = require('../controllers/userController');
 const authController = require('../controllers/authController');
 
 // AUTH ROUTES
-router.get('/:id', authController.verifyToken, userController.getUser);
+router.get('/:id', authController.verifyToken, userController.getUserProfile);
 router.patch('/:id', authController.verifyToken, userController.patchUser);
 router.delete('/:id', authController.verifyToken, userController.deleteUser)
 

@@ -1,15 +1,15 @@
 const userModel = require('../models/userModel');
+const userSchema = require('../schemas/userSchema');
 
-// Get user data by its ID
-const getUser = async (req, res) => {
-  const user_id = Number(req.params.id);
-
-  // Validate user ID
-  if (isNaN(user_id) || user_id <= 0) return res.status(400).json({ error: 'Invalid user ID' });
+// Get user profile data by its ID
+const getUserProfile = async (req, res) => {
+  // Validate params data
+  const { error } = userSchema.getUserProfileSchema.validate(req.params);
+  if (error) return res.status(400).json({ error: error.details[0].message });
 
   try {
     // Fetch user from database
-    const user = await userModel.getUserById(user_id);
+    const user = await userModel.getUserById(req.params.id);
 
     // Check if anything was returned
     if (!user) return res.status(404).json({ error: 'User not found' });
@@ -27,27 +27,25 @@ const getUser = async (req, res) => {
 
 // Patch user data
 const patchUser = async (req, res) => {
-  const user_id = Number(req.params.id);
-  const { display_name, gender, birthday, weights, height } = req.body;
-
-  // Validate user ID
-  if (isNaN(user_id) || user_id <= 0) return res.status(400).json({ error: 'Invalid user ID' });
+  // Validate params and body data
+  const { error } = userSchema.patchUserSchema.validate({ id: req.params.id, ...req.body});
+  if (error) return res.status(400).json({ error: error.details[0].message });
 
   // Check if the request is for the currently logged-in user
-  if (user_id !== req.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
+  if (Number(req.params.id) !== req.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
 
   // Serialize weights array into JSON string
-  const parsed_weights = JSON.stringify(weights);
+  const parsed_weights = JSON.stringify(req.body.weights);
 
   try {
-    // Fetch user from database
-    const user = await userModel.getUserById(user_id);
+    // Fetch user from database  
+    const user = await userModel.getUserById(req.params.id);
 
     // Check if anything was returned
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     // Update user data in database
-    const patched_user = await userModel.patchUser(user_id, display_name, gender, birthday, parsed_weights, height);
+    const patched_user = await userModel.patchUser(req.params.id, req.body.display_name, req.body.gender, req.body.birthday, parsed_weights, req.body.height);
 
     // Remove sensitive data before sending the response
     delete patched_user.password_hash;
@@ -62,25 +60,24 @@ const patchUser = async (req, res) => {
 
 // Delete user
 const deleteUser = async (req, res) => {
-  const user_id = Number(req.params.id);
-
-  // Validate user ID
-  if (isNaN(user_id) || user_id <= 0) return res.status(400).json({ error: 'Invalid user ID' });
+  // Validate params data
+  const { error } = userSchema.deleteUserSchema.validate(req.params);
+  if (error) return res.status(400).json({ error: error.details[0].message });
 
   // Check if the request is for the currently logged-in user
-  if (user_id !== req.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
+  if (Number(req.params.id) !== req.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
 
   // OPTIONAL: OPERATIONS_TO_EXECUTE TABLE IN DATABASE 
 
   try {
     // Fetch user from database
-    const user = await userModel.getUserById(user_id);
+    const user = await userModel.getUserById(req.params.id);
 
     // Check if anything was returned
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     // Delete user from database
-    await userModel.deleteUser(user_id);
+    await userModel.deleteUser(req.params.id);
 
     // Successful response confirming deletion
     res.status(200).json({ message: 'User deleted successfully' });
@@ -91,7 +88,7 @@ const deleteUser = async (req, res) => {
 };
 
 module.exports = {
-  getUser,
+  getUserProfile,
   patchUser,
   deleteUser
 };

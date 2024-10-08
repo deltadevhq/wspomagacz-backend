@@ -33,7 +33,7 @@ const getCurrentLoggedUser = async (req, res) => {
 
 // Register new user
 const registerUser = async (req, res) => {
-  // Validate input data
+  // Validate body data
   const { error } = userSchema.registerSchema.validate(req.body);
   if (error) return res.status(400).json({ error: error.details[0].message });
 
@@ -51,7 +51,7 @@ const registerUser = async (req, res) => {
     const password_hash = await bcrypt.hash(req.body.password, salt);
 
     // Create new user in the database
-    const new_user = await authModel.postUser(req.body.username, req.body.password_hash, req.body.email);
+    const new_user = await authModel.postUser(req.body.username, password_hash, req.body.email);
 
     // Remove sensitive data before sending the response
     delete new_user.password_hash;
@@ -66,7 +66,7 @@ const registerUser = async (req, res) => {
 
 // Login to get JWT token cookie
 const loginUser = async (req, res) => {
-  // Validate input data
+  // Validate body data
   const { error } = userSchema.loginSchema.validate(req.body);
   if (error) return res.status(400).json({ error: error.details[0].message });
 
