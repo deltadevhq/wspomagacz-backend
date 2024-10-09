@@ -151,6 +151,7 @@ const registerSchema = Joi.object({
 });
 
 module.exports = {
+  baseUserSchema,
   getUserProfileSchema,
   patchUserSchema,
   deleteUserSchema,

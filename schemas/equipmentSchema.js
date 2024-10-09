@@ -28,5 +28,6 @@ const getEquipmentSchema = Joi.object({
 });
 
 module.exports = {
+  baseEquipmentSchema,
   getEquipmentSchema
 };

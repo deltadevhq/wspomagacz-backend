@@ -20,7 +20,7 @@ const getMuscles = async (req, res) => {
 
 // Fetch single muscle by its ID
 const getMuscleById = async (req, res) => {
-  // Validate params data
+  // Validate input data
   const { error } = muscleSchema.getMuscleSchema.validate(req.params);
   if (error) return res.status(400).json({ error: error.details[0].message });
 

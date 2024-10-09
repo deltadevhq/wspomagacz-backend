@@ -3,7 +3,7 @@ const userSchema = require('../schemas/userSchema');
 
 // Get user profile data by its ID
 const getUserProfile = async (req, res) => {
-  // Validate params data
+  // Validate input data
   const { error } = userSchema.getUserProfileSchema.validate(req.params);
   if (error) return res.status(400).json({ error: error.details[0].message });
 
@@ -27,7 +27,7 @@ const getUserProfile = async (req, res) => {
 
 // Patch user data
 const patchUser = async (req, res) => {
-  // Validate params and body data
+  // Validate input data
   const { error } = userSchema.patchUserSchema.validate({ id: req.params.id, ...req.body});
   if (error) return res.status(400).json({ error: error.details[0].message });
 
@@ -60,7 +60,7 @@ const patchUser = async (req, res) => {
 
 // Delete user
 const deleteUser = async (req, res) => {
-  // Validate params data
+  // Validate input data
   const { error } = userSchema.deleteUserSchema.validate(req.params);
   if (error) return res.status(400).json({ error: error.details[0].message });
 

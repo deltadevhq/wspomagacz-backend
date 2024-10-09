@@ -10,7 +10,6 @@ const { authRoutes, userRoutes, muscleRoutes, equipmentRoutes, exerciseRoutes, w
 const { port, listener, swaggerDocs } = require('./config/settings');
 const jobs = require('./utilities/jobs');
 
-
 // Use morgan to log requests to the console
 app.use(morgan('[:date[clf]] Request: :method :url HTTP/:http-version, Response: :status, ResponseTime: :response-time ms'));
 // Use cookieparser to parse cookies
@@ -46,6 +45,7 @@ cron.schedule('0 0 * * *', () => {
 // TODO: VALIDATE BODY DATA
 // TODO: LIMIT RATE LOGIN ENDPOINT
 // TODO: ADD TIMESTAMP FOR EVERY LOG
+// TODO: CREATE EXTENDED COMMENTS FOR EVERY FUNCTION
 
 // ENDPOINT: /LEVEL/FOR-XP DO SPRAWDZANIA ILE POTRZEBA EXPA DO KONKRETNEGO POZIOMU Z PARAMETREM ?LVL=3
 // TODO: WYMYŚLIC TYMCZASOWĄ FUNKCJE DO POZIOMÓW DOŚWIADCZENIA

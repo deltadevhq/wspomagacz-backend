@@ -1,23 +1,22 @@
 const exerciseModel = require('../models/exerciseModel');
 const userModel = require('../models/userModel');
+const exerciseSchema = require('../schemas/exerciseSchema.js');
 
 // Fetch all exercises
 const getExercises = async (req, res) => {
-  const user_id = req.query.user_id ? Number(req.query.user_id) : null;
-  let type = req.query.type?.match(/^(all|custom|standard)$/i) ? req.query.type : null;
+  // Validate input data
+  const { error } = exerciseSchema.getExerciseSchema.validate(req.query);
+  if (error) return res.status(400).json({ error: error.details[0].message })
 
   try {
-    // Validate user_id if provided
-    if (user_id) {
-      if (isNaN(user_id) || user_id <= 0) return res.status(400).json({ error: 'Invalid user ID' });
-
-      // Check user existence
-      const user = await userModel.getUserById(user_id);
+    // Check user existence if user_id is provided
+    if (req.query.user_id) {
+      const user = await userModel.getUserById(req.query.user_id);
       if (!user) return res.status(404).json({ error: 'User not found' });
     }
 
     // Fetch exercises from database
-    const exercises = await exerciseModel.getExercises(user_id, type);
+    const exercises = await exerciseModel.getExercises(req.query.user_id, req.query.type);
 
     // Check if anything was returned
     if (!exercises) return res.status(404).json({ error: 'Exercises not found' });
@@ -32,25 +31,19 @@ const getExercises = async (req, res) => {
 
 // Fetch single exercise by its ID
 const getExerciseById = async (req, res) => {
-  const exercise_id = Number(req.params.id);
-  const user_id = req.query.user_id ? Number(req.query.user_id) : null;
-  let type = req.query.type?.match(/^(all|custom|standard)$/i) ? req.query.type : null;
-
-  // Validate exercise ID
-  if (isNaN(exercise_id) || exercise_id <= 0) return res.status(400).json({ error: 'Invalid exercise ID' });
+  // Validate input data
+  const { error } = exerciseSchema.getExerciseByIdSchema.validate({ id: req.params.id, ...req.query });
+  if (error) return res.status(400).json({ error: error.details[0].message })
 
   try {
-    // Validate user_id if provided
-    if (user_id) {
-      if (isNaN(user_id) || user_id <= 0) return res.status(400).json({ error: 'Invalid user ID' });
-
-      // Check user existence
-      const user = await userModel.getUserById(user_id);
+    // Check user existence if user_id is provided
+    if (req.query.user_id) {
+      const user = await userModel.getUserById(req.query.user_id);
       if (!user) return res.status(404).json({ error: 'User not found' });
     }
 
     // Fetch exercise from database
-    const exercise = await exerciseModel.getExerciseById(exercise_id, user_id, type);
+    const exercise = await exerciseModel.getExerciseById(req.params.id, req.query.user_id, req.query.type);
 
     // Check if anything was returned
     if (!exercise) return res.status(404).json({ error: 'Exercise not found' });
@@ -65,18 +58,17 @@ const getExerciseById = async (req, res) => {
 
 // Post new exercise
 const postExercise = async (req, res) => {
-  const { name, equipment, muscles } = req.body;
-
-  // Validation for missing parameters
-  if (!name || !equipment || !muscles) return res.status(400).json({ error: 'One or more required parameters is missing' });
-
-  // Serialize equipment and muscles arrays into JSON strings
-  const parsed_equipment = JSON.stringify(equipment);
-  const parsed_muscles = JSON.stringify(muscles);
+  // Validate input data
+  const { error } = exerciseSchema.postExerciseSchema.validate(req.body);
+  if (error) return res.status(400).json({ error: error.details[0].message })
 
   try {
+    // Serialize equipment and muscles arrays into JSON strings
+    const parsed_equipment = JSON.stringify(req.body.equipment);
+    const parsed_muscles = JSON.stringify(req.body.muscles);
+
     // Create new exercise in the database
-    const new_exercise = await exerciseModel.postExercise(req.user_id, name, parsed_equipment, parsed_muscles);
+    const new_exercise = await exerciseModel.postExercise(req.user_id, req.body.name, parsed_equipment, parsed_muscles);
 
     // Successful response with created exercise data
     res.status(201).json(new_exercise);
@@ -88,21 +80,20 @@ const postExercise = async (req, res) => {
 
 // Delete exercise
 const deleteExercise = async (req, res) => {
-  const exercise_id = Number(req.params.id);
-
-  // Validate exercise ID
-  if (isNaN(exercise_id) || exercise_id <= 0) return res.status(400).json({ error: 'Invalid exercise ID' });
+  // Validate input data
+  const { error } = exerciseSchema.deleteExerciseSchema.validate(req.params);
+  if (error) return res.status(400).json({ error: error.details[0].message })
 
   try {
     // Fetch exercise details to check existence and ownership
-    const exercise = await exerciseModel.getExerciseById(exercise_id, null, 'custom');
+    const exercise = await exerciseModel.getExerciseById(req.params.id, null, 'custom');
     if (!exercise) return res.status(404).json({ error: 'Exercise not found' });
 
     // Check if the exercise belongs to the currently logged-in user
     if (exercise.user_id !== req.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
 
     // Delete exercise from database
-    await exerciseModel.deleteExercise(exercise_id);
+    await exerciseModel.deleteExercise(req.params.id);
 
     // Successful response confirming deletion
     res.status(200).json({ message: 'Exercise deleted successfully' });

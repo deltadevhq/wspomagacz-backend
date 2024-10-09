@@ -20,7 +20,7 @@ const getEquipment = async (req, res) => {
 
 // Fetch single equipment by its ID
 const getEquipmentById = async (req, res) => {
-  // Validate params data
+  // Validate input data
   const { error } = equipmentSchema.getEquipmentSchema.validate(req.params);
   if (error) return res.status(400).json({ error: error.details[0].message });
 

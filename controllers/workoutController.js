@@ -79,6 +79,64 @@ const postWorkout = async (req, res) => {
   }
 };
 
+/** 
+ * Create new workout or edit existing
+ */
+const putWorkout = async (req, res) => {
+  const { id, related_workout_id, name, exercises, date, notes } = req.body;
+
+  // TODO: FINISH THIS ENDPOINT
+
+  if (id) {
+    // Validate workout ID
+    if (isNaN(workout_id) || workout_id <= 0) return res.status(400).json({ error: 'Invalid workout ID' });
+
+    try {
+      // Check if workout exists
+      const workout = await workoutModel.getWorkoutById(workout_id);
+      if (!workout) return res.status(404).json({ error: 'Workout not found' });
+
+      // Check if the request is for the currently logged-in user
+      if (workout.user_id !== req.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
+
+      // Validate date if exists
+      if (date && isNaN(Date.parse(date))) return res.status(400).json({ error: 'Invalid date format' });
+
+      // Serialize exercises array into JSON string
+      const parsed_exercises = exercises ? JSON.stringify(exercises) : JSON.stringify(workout.exercises);
+
+      // Patch workout data in database
+      const patched_workout = await workoutModel.patchWorkout(workout_id, name, parsed_exercises, date, notes);
+
+      // Successful response with updated workout data
+      res.status(200).json(patched_workout);
+    } catch (error) {
+      console.error('Error patching workout:', error.stack);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  } else {
+    // Validation for missing parameters
+    if (!name || !exercises || !date) return res.status(400).json({ error: 'One or more required parameters is missing' });
+
+    // Validate date format
+    if (isNaN(Date.parse(date))) return res.status(400).json({ error: 'Invalid date format' });
+
+    // Serialize exercises array into JSON string
+    const parsed_exercises = JSON.stringify(exercises);
+
+    try {
+      // Create new workout in the database
+      const new_workout = await workoutModel.postWorkout(related_workout_id, req.user_id, name, parsed_exercises, date, notes);
+
+      // Successful response with created workout data
+      res.status(201).json(new_workout);
+    } catch (error) {
+      console.error('Error creating new workout:', error.stack);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+};
+
 // Patch workout data
 const patchWorkout = async (req, res) => {
   const workout_id = Number(req.params.id);

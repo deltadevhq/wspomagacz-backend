@@ -28,5 +28,6 @@ const getMuscleSchema = Joi.object({
 });
 
 module.exports = {
+  baseMuscleSchema,
   getMuscleSchema
 };
