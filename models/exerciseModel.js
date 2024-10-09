@@ -2,7 +2,7 @@ const pool = require('../config/database');
 
 // Fetch all exercises
 const getExercises = async (user_id, type) => {
-  const query = 'SELECT * FROM all_exercises WHERE (user_id = COALESCE($1, user_id) OR user_id IS NULL) AND exercise_type = COALESCE($2, exercise_type)';
+  const query = 'SELECT * FROM all_exercises WHERE (user_id = COALESCE($1, user_id) OR user_id IS NULL) AND exercise_type = COALESCE($2, exercise_type) ORDER BY exercise_type DESC, exercise_id';
   if (type === 'all') type = null;
   const values = [user_id, type];
 
