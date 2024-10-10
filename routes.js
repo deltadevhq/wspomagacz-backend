@@ -4,7 +4,7 @@ const muscleRoutes = require('./routes/muscleRoutes');
 const equipmentRoutes = require('./routes/equipmentRoutes');
 const exerciseRoutes = require('./routes/exerciseRoutes');
 const workoutRoutes = require('./routes/workoutRoutes');
-
+const levelRoutes = require('./routes/levelRoutes');
 
 module.exports = {
     authRoutes,
@@ -12,5 +12,6 @@ module.exports = {
     muscleRoutes,
     equipmentRoutes,
     exerciseRoutes,
-    workoutRoutes
-}
+    workoutRoutes,
+    levelRoutes,
+};
