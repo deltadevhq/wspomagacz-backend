@@ -98,7 +98,7 @@ const baseUserSchema = {
           .required()
           .messages({
             'date.less': 'Date must be a date before today',
-            'date.greater': 'Birthday must be after January 1st, 1900',
+            'date.greater': 'Date must be after January 1st, 1900',
             'date.base': 'Date must be a valid date',
             'date.iso': 'Date must be in the format YYYY-MM-DD',
             'any.required': 'Date is required'
