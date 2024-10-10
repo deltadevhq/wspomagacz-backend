@@ -29,7 +29,7 @@ const getWorkoutById = async (workout_id) => {
 };
 
 // Create new workout
-const postWorkout = async (related_workout_id, user_id, name, exercises, date, notes) => {
+const createWorkout = async (related_workout_id, user_id, name, exercises, date, notes) => {
   const query = `
     INSERT INTO workouts (related_workout_id, user_id, name, exercises, date, status, notes)
     VALUES ($1, $2, $3, $4, $5, 'planned', $6)
@@ -46,8 +46,8 @@ const postWorkout = async (related_workout_id, user_id, name, exercises, date, n
   }
 };
 
-// Patch workout
-const patchWorkout = async (workout_id, name, exercises, date, notes) => {
+// Update workout
+const updateWorkout = async (workout_id, name, exercises, date, notes) => {
   const query = `
     UPDATE workouts
     SET 
@@ -146,8 +146,8 @@ const finishWorkout = async (workout_id) => {
 module.exports = {
   getWorkouts,
   getWorkoutById,
-  postWorkout,
-  patchWorkout,
+  createWorkout,
+  updateWorkout,
   deleteWorkout,
   startWorkout,
   stopWorkout,

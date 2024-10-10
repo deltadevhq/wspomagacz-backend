@@ -2,6 +2,47 @@ const Joi = require('joi');
 const { baseUserSchema } = require('./userSchema');
 const { baseExerciseSchema } = require('./exerciseSchema');
 
+// Base validation schema for sets data
+const baseSetsSchema = {
+  reps: Joi.number()
+    .integer()
+    .positive()
+    .max(1000)
+    .required()
+    .messages({
+      'number.base': 'Reps must be a number',
+      'number.integer': 'Reps must be an integer',
+      'number.positive': 'Reps must be a positive number',
+      'number.max': 'Reps must be less than or equal to 1000',
+      'any.required': 'Reps are required'
+    }),
+
+  weight: Joi.number()
+    .integer()
+    .positive()
+    .max(500)
+    .required()
+    .messages({
+      'number.base': 'Weight must be a number',
+      'number.integer': 'Weight must be an integer',
+      'number.positive': 'Weight must be a positive number',
+      'number.max': 'Weight must be less than or equal to 500',
+      'any.required': 'Weight is required'
+    }),
+
+  order: Joi.number()
+    .integer()
+    .positive()
+    .max(50)
+    .required()
+    .messages({
+      'number.base': 'Order must be a number',
+      'number.integer': 'Order must be an integer',
+      'number.positive': 'Order must be a positive number',
+      'number.max': 'Order must be less than or equal to 50',
+      'any.required': 'Order is required'
+    })
+}
 
 // Base validation schema for exercise data
 const baseWorkoutSchema = {
@@ -118,52 +159,60 @@ const baseWorkoutSchema = {
     })
 };
 
-// Base validation schema for sets data
-const baseSetsSchema = {
-  reps: Joi.number()
-    .integer()
-    .positive()
-    .max(1000)
-    .required()
-    .messages({
-      'number.base': 'Reps must be a number',
-      'number.integer': 'Reps must be an integer',
-      'number.positive': 'Reps must be a positive number',
-      'number.max': 'Reps must be less than or equal to 1000',
-      'any.required': 'Reps are required'
-    }),
+// Specific validation schema for fetching workouts
+const getWorkoutSchema = Joi.object({
+  status: baseWorkoutSchema.status,
+  user_id: baseUserSchema.id
+});
 
-  weight: Joi.number()
-    .integer()
-    .positive()
-    .max(500)
-    .required()
-    .messages({
-      'number.base': 'Weight must be a number',
-      'number.integer': 'Weight must be an integer',
-      'number.positive': 'Weight must be a positive number',
-      'number.max': 'Weight must be less than or equal to 500',
-      'any.required': 'Weight is required'
-    }),
+// Specific validation schema for fetching workout by its id
+const getWorkoutByIdSchema = Joi.object({
+  id: baseWorkoutSchema.id.required().messages({ 'any.required': 'ID is required' })
+});
 
-  order: Joi.number()
-    .integer()
-    .positive()
-    .max(50)
-    .required()
-    .messages({
-      'number.base': 'Order must be a number',
-      'number.integer': 'Order must be an integer',
-      'number.positive': 'Order must be a positive number',
-      'number.max': 'Order must be less than or equal to 50',
-      'any.required': 'Order is required'
-    })
-}
+// Specific validation schema for workout creation
+const createWorkoutSchema = Joi.object({
+  name: baseWorkoutSchema.name.required().messages({ 'any.required': 'Name is required' }),
+  exercises: baseWorkoutSchema.exercises.required().messages({ 'any.required': 'Exercises are required' }),
+  date: baseWorkoutSchema.date.required().messages({ 'any.required': 'Date are required' }),
+  ...baseWorkoutSchema
+});
 
+// Specific validation schema for workout update
+const updateWorkoutSchema = Joi.object({
+  id: baseWorkoutSchema.id.required().messages({ 'any.required': 'ID is required' }),
+  ...baseWorkoutSchema
+});
 
-// TODO: FINISH
+// Specific validation schema for deleting workout
+const deleteWorkoutSchema = Joi.object({
+  id: baseWorkoutSchema.id.required().messages({ 'any.required': 'ID is required' })
+});
+
+// Specific validation schema for starting workout
+const startWorkoutSchema = Joi.object({
+  id: baseWorkoutSchema.id.required().messages({ 'any.required': 'ID is required' })
+});
+
+// Specific validation schema for stopping workout
+const stopWorkoutSchema = Joi.object({
+  id: baseWorkoutSchema.id.required().messages({ 'any.required': 'ID is required' })
+});
+
+// Specific validation schema for finishing workout
+const finishWorkoutSchema = Joi.object({
+  id: baseWorkoutSchema.id.required().messages({ 'any.required': 'ID is required' })
+});
 
 module.exports = {
   baseWorkoutSchema,
-  baseSetsSchema
+  baseSetsSchema,
+  getWorkoutSchema,
+  getWorkoutByIdSchema,
+  createWorkoutSchema,
+  updateWorkoutSchema,
+  deleteWorkoutSchema,
+  startWorkoutSchema,
+  stopWorkoutSchema,
+  finishWorkoutSchema
 };

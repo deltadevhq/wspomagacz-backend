@@ -5,9 +5,8 @@ const authController = require('../controllers/authController');
 
 // AUTH ROUTES
 router.get('/', authController.verifyToken, workoutController.getWorkouts);
-router.post('/', authController.verifyToken, workoutController.postWorkout);
 router.get('/:id', authController.verifyToken, workoutController.getWorkoutById);
-router.patch('/:id', authController.verifyToken, workoutController.patchWorkout);
+router.put('/', authController.verifyToken, workoutController.putWorkout);
 router.delete('/:id', authController.verifyToken, workoutController.deleteWorkout);
 router.post('/:id/start', authController.verifyToken, workoutController.startWorkout);
 router.post('/:id/stop', authController.verifyToken, workoutController.stopWorkout);
