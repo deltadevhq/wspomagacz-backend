@@ -58,10 +58,11 @@ const baseWorkoutSchema = {
   related_workout_id: Joi.number()
     .integer()
     .positive()
+    .allow(null)
     .messages({
-      'number.base': 'ID must be a number',
-      'number.integer': 'ID must be an integer',
-      'number.positive': 'ID must be a positive number'
+      'number.base': 'Related workout ID must be a number',
+      'number.integer': 'Related workout ID must be an integer',
+      'number.positive': 'Related workout ID must be a positive number'
     }),
 
   user_id: baseUserSchema.id,
@@ -88,7 +89,9 @@ const baseWorkoutSchema = {
           .items(
             baseSetsSchema
           )
+          .required()
           .messages({
+            'any.required': 'Sets are required',
             'array.base': 'Sets must be an array of set objects'
           }),
         order: Joi.number()

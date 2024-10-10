@@ -70,7 +70,7 @@ const putWorkout = async (req, res) => {
       if (workout.user_id !== req.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
 
       // Serialize exercises array into JSON string
-      const parsed_exercises = req.body.exercises ? JSON.stringify(exercises) : JSON.stringify(workout.exercises);
+      const parsed_exercises = req.body.exercises ? JSON.stringify(req.body.exercises) : JSON.stringify(workout.exercises);
 
       // Patch workout data in database
       const updated_workout = await workoutModel.updateWorkout(req.body.id, req.body.name, parsed_exercises, req.body.date, req.body.notes);
