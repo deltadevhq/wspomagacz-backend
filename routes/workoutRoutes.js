@@ -47,57 +47,10 @@ module.exports = router;
  *         description: Forbidden - Token does not have the required permissions
  *       404:
  *         description: Not Found - No workouts found
- *   post:
- *     summary: Create a new workout
- *     description: This endpoint requires authorization token
+ *   put:
+ *     summary: Creates or updates a workout
+ *     description: This endpoint requires authorization token, you can only put workout for currently logged user
  *     tags: [Workouts]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Workout'
- *     responses:
- *       201:
- *         description: Successfully created a new workout
- *       400:
- *         description: Bad request - Invalid workout data
- *       401:
- *         description: Unauthorized - Invalid or missing token
- * /api/workouts/{id}:
- *   get:
- *     summary: Get workout data
- *     description: This endpoint requires authorization token
- *     tags: [Workouts]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: Workout ID
- *     responses:
- *       200:
- *         description: Successfully retrieved workout data
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Workout'
- *       400:
- *         description: Bad request - Invalid workout ID
- *       401:
- *         description: Unauthorized - Invalid or missing token
- *       403:
- *         description: Forbidden - Token does not have the required permissions
- *       404:
- *         description: Not Found - Workout not found
- *   patch:
- *     summary: Patch workout data
- *     description: This endpoint requires authorization token, you can only patch workout for currently logged user
- *     tags: [Workouts]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: Workout ID
  *     requestBody:
  *       required: true
  *       content:
@@ -105,6 +58,15 @@ module.exports = router;
  *           schema:
  *             type: object
  *             properties:
+ *               id:
+ *                 type: integer
+ *                 example: 1
+ *                 minimum: 0
+ *                 nullable: true
+ *               related_workout_id:
+ *                 type: integer
+ *                 example: null
+ *                 nullable: true
  *               name:
  *                 type: string
  *                 example: 'Arm day'
@@ -142,20 +104,37 @@ module.exports = router;
  *                 type: date
  *                 example: 2024-09-08
  *                 nullable: true
- *               started_at:
- *                 type: date
- *                 example: 2024-09-08T10:00:00
- *                 nullable: true
- *               finished_at:
- *                 type: date
- *                 example: 2024-09-08T11:00:00
- *                 nullable: true
  *               notes:
  *                 type: string
  *                 example: 'Great workout!'
  *     responses:
  *       200:
  *         description: Successfully updated workout data
+ *       400:
+ *         description: Bad request - Invalid workout ID
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       403:
+ *         description: Forbidden - Token does not have the required permissions
+ *       404:
+ *         description: Not Found - Workout not found
+ * /api/workouts/{id}:
+ *   get:
+ *     summary: Get workout data
+ *     description: This endpoint requires authorization token
+ *     tags: [Workouts]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: Workout ID
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved workout data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Workout'
  *       400:
  *         description: Bad request - Invalid workout ID
  *       401:
@@ -176,6 +155,69 @@ module.exports = router;
  *     responses:
  *       200:
  *         description: Successfully deleted workout
+ *       400:
+ *         description: Bad request - Invalid workout ID
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       403:
+ *         description: Forbidden - Token does not have the required permissions
+ *       404:
+ *         description: Not Found - Workout not found
+ * /api/workouts/{id}/start:
+ *   post:
+ *     summary: Sets the workout start time to current time
+ *     description: This endpoint requires authorization token
+ *     tags: [Workouts]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: Workout ID
+ *     responses:
+ *       200:
+ *         description: Successfully started the workout
+ *       400:
+ *         description: Bad request - Invalid workout ID
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       403:
+ *         description: Forbidden - Token does not have the required permissions
+ *       404:
+ *         description: Not Found - Workout not found
+ * /api/workouts/{id}/stop:
+ *   post:
+ *     summary: Removes the workout start time
+ *     description: This endpoint requires authorization token
+ *     tags: [Workouts]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: Workout ID
+ *     responses:
+ *       200:
+ *         description: Successfully stopped the workout
+ *       400:
+ *         description: Bad request - Invalid workout ID
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       403:
+ *         description: Forbidden - Token does not have the required permissions
+ *       404:
+ *         description: Not Found - Workout not found
+ * /api/workouts/{id}/finish:
+ *   post:
+ *     summary: Sets the workout finish time to current time
+ *     description: This endpoint requires authorization token
+ *     tags: [Workouts]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: Workout ID
+ *     responses:
+ *       200:
+ *         description: Successfully finished the workout
  *       400:
  *         description: Bad request - Invalid workout ID
  *       401:
