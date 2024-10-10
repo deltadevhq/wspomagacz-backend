@@ -1,0 +1,85 @@
+const express = require('express');
+const router = express.Router();
+const levelController = require('../controllers/levelController.js');
+const authController = require('../controllers/authController');
+
+// AUTH ROUTES
+router.get('/level-by-xp', authController.verifyToken, levelController.getLevelByXp);
+router.get('/xp-by-level', authController.verifyToken, levelController.getXpByLevel);
+
+module.exports = router;
+
+/**
+ * @swagger
+ * /api/levels/level-by-xp:
+ *   get:
+ *     summary: What level is granted by given XP
+ *     tags: [Levels]
+ *     parameters:
+ *       - in: query
+ *         name: xp
+ *         schema:
+ *           type: integer
+ *         description: XP value
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved level by XP
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 level:
+ *                   type: integer
+ *                   example: 2
+ *                   description: Level granted by given XP
+ *                 xp:
+ *                   type: integer
+ *                   example: 250
+ *                   description: XP value
+ *                 progress:
+ *                   type: number
+ *                   example: 0.5
+ *                   description: Progress to the next level as a percentage
+ *                 missing_xp:
+ *                   type: integer
+ *                   example: 250
+ *                   description: How much XP is needed to reach the next level
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       403:
+ *         description: Forbidden - Token does not have the required permissions
+ *       404:
+ *         description: Not Found - Exercises not found
+ * /api/levels/xp-by-level:
+ *   get:
+ *     summary: How much XP is needed for given level
+ *     tags: [Levels]
+ *     parameters:
+ *       - in: query
+ *         name: level
+ *         schema:
+ *           type: integer
+ *         description: Level value
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved XP by level
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 level:
+ *                   type: integer
+ *                   example: 2
+ *                 xp:
+ *                   type: integer
+ *                   example: 200
+ *                   description: How much XP is needed for given level
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       403:
+ *         description: Forbidden - Token does not have the required permissions
+ *       404:
+ *         description: Not Found - Exercises not found
+ */

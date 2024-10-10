@@ -6,7 +6,15 @@ const cookieParser = require('cookie-parser');
 const swaggerUi = require('swagger-ui-express');
 const cron = require('node-cron');
 const app = express();
-const { authRoutes, userRoutes, muscleRoutes, equipmentRoutes, exerciseRoutes, workoutRoutes } = require('./routes');
+const {
+    authRoutes,
+    userRoutes,
+    muscleRoutes,
+    equipmentRoutes,
+    exerciseRoutes,
+    workoutRoutes,
+    levelRoutes,
+} = require('./routes');
 const { port, listener, swaggerDocs } = require('./config/settings');
 const jobs = require('./utilities/jobs');
 
@@ -17,7 +25,7 @@ app.use(cookieParser());
 // Use CORS to control allow origin access
 app.use(cors({
     origin: process.env.CORS_ORIGIN,
-    credentials: true
+    credentials: true,
 }));
 app.use(express.json());
 
@@ -29,16 +37,17 @@ app.use('/api/muscles', muscleRoutes);
 app.use('/api/equipment', equipmentRoutes);
 app.use('/api/exercises', exerciseRoutes);
 app.use('/api/workouts', workoutRoutes);
+app.use('/api/levels', levelRoutes);
 
 // Start the server
 app.listen(port, () => {
-  console.log(`API listening at http://${listener}:${port}`);
+    console.log(`API listening at http://${listener}:${port}`);
 });
 
 // Daily jobs definition
 cron.schedule('0 0 * * *', () => {
-  jobs.closeSkippedWorkouts();
-  jobs.closeUnfinishedWorkouts();
+    jobs.closeSkippedWorkouts();
+    jobs.closeUnfinishedWorkouts();
 });
 
 // TODO: VALIDATE PARAMS DATA
