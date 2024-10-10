@@ -76,9 +76,6 @@ const loginUser = async (req, res) => {
   const { error } = userSchema.loginSchema.validate(req.body);
   if (error) return res.status(400).json({ error: error.details[0].message });
 
-  // OPTIONAL: USER LOGIN BY EMAIL
-  // CONSIDER: DETERMINE TOKEN EXPIRE TIME / CONSIDER AUTOMATIC TOKEN RENEWAL
-
   try {
     // Check if the user exists
     const user = await authModel.getUserByUsername(req.body.username);

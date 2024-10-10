@@ -10,8 +10,6 @@ router.post('/register', authController.registerUser);
 router.get('/user', authController.verifyToken, authController.getCurrentLoggedUser);
 router.get('/logout', authController.verifyToken, authController.logoutUser);
 
-// CONSIDER: PASSWORD CHANGE ENDPOINT
-
 module.exports = router;
 
 /**
