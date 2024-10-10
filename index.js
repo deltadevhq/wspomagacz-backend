@@ -6,15 +6,7 @@ const cookieParser = require('cookie-parser');
 const swaggerUi = require('swagger-ui-express');
 const cron = require('node-cron');
 const app = express();
-const {
-    authRoutes,
-    userRoutes,
-    muscleRoutes,
-    equipmentRoutes,
-    exerciseRoutes,
-    workoutRoutes,
-    levelRoutes,
-} = require('./routes');
+const routes = require('./routes');
 const { port, listener, swaggerDocs } = require('./config/settings');
 const jobs = require('./utilities/jobs');
 
@@ -25,19 +17,19 @@ app.use(cookieParser());
 // Use CORS to control allow origin access
 app.use(cors({
     origin: process.env.CORS_ORIGIN,
-    credentials: true,
+    credentials: true
 }));
 app.use(express.json());
 
 // Define specific routes
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/muscles', muscleRoutes);
-app.use('/api/equipment', equipmentRoutes);
-app.use('/api/exercises', exerciseRoutes);
-app.use('/api/workouts', workoutRoutes);
-app.use('/api/levels', levelRoutes);
+app.use('/api/auth', routes.authRoutes);
+app.use('/api/users', routes.userRoutes);
+app.use('/api/muscles', routes.muscleRoutes);
+app.use('/api/equipment', routes.equipmentRoutes);
+app.use('/api/exercises', routes.exerciseRoutes);
+app.use('/api/workouts', routes.workoutRoutes);
+app.use('/api/levels', routes.levelRoutes);
 
 // Start the server
 app.listen(port, () => {
