@@ -1,6 +1,8 @@
 const pool = require('../config/database');
 
-// Fetch all workouts
+/**
+ * Select all workouts from database
+ */
 const getWorkouts = async (user_id, status) => {
   const query = 'SELECT * FROM workouts WHERE user_id = COALESCE($1, user_id) AND status = COALESCE($2, status)';
   const values = [user_id, status];
@@ -14,7 +16,9 @@ const getWorkouts = async (user_id, status) => {
   }
 };
 
-// Fetch single workout by its ID
+/**
+ * Select single workout from database by its ID
+ */
 const getWorkoutById = async (workout_id) => {
   const query = 'SELECT * FROM workouts WHERE id = $1';
   const values = [workout_id];
@@ -28,7 +32,9 @@ const getWorkoutById = async (workout_id) => {
   }
 };
 
-// Create new workout
+/**
+ * Insert workout to database
+ */
 const createWorkout = async (related_workout_id, user_id, name, exercises, date, notes) => {
   const query = `
     INSERT INTO workouts (related_workout_id, user_id, name, exercises, date, status, notes)
@@ -46,7 +52,9 @@ const createWorkout = async (related_workout_id, user_id, name, exercises, date,
   }
 };
 
-// Update workout
+/**
+ * Update workout in database by its ID
+ */
 const updateWorkout = async (workout_id, name, exercises, date, notes) => {
   const query = `
     UPDATE workouts
@@ -69,7 +77,9 @@ const updateWorkout = async (workout_id, name, exercises, date, notes) => {
   }
 };
 
-// Delete workout
+/**
+ * Delete workout from database by its ID
+ */
 const deleteWorkout = async (workout_id) => {
   const query = 'DELETE FROM workouts WHERE id = $1 RETURNING *';
   const values = [workout_id];
@@ -83,7 +93,9 @@ const deleteWorkout = async (workout_id) => {
   }
 };
 
-// Start workout
+/**
+ * Start workout by updating started_at column in database
+ */
 const startWorkout = async (workout_id) => {
   const query = `
     UPDATE workouts
@@ -103,7 +115,9 @@ const startWorkout = async (workout_id) => {
   }
 };
 
-// Stop workout
+/**
+ * Stop workout by updating started_at column in database
+ */
 const stopWorkout = async (workout_id) => {
   const query = `
     UPDATE workouts
@@ -123,7 +137,9 @@ const stopWorkout = async (workout_id) => {
   }
 };
 
-// Finish workout
+/**
+ * Finish workout by updating finished_at column in database
+ */
 const finishWorkout = async (workout_id) => {
   const query = `
     UPDATE workouts

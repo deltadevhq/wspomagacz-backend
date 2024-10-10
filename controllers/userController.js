@@ -1,7 +1,9 @@
 const userModel = require('../models/userModel');
 const userSchema = require('../schemas/userSchema');
 
-// Get user profile data by its ID
+/**
+ * Get user profile data by its ID
+ */
 const getUserProfile = async (req, res) => {
   // Validate input data
   const { error } = userSchema.getUserProfileSchema.validate(req.params);
@@ -25,7 +27,9 @@ const getUserProfile = async (req, res) => {
   }
 };
 
-// Patch user data
+/**
+ * Patch user data by its ID (You can only patch currently logged user)
+ */
 const patchUser = async (req, res) => {
   // Validate input data
   const { error } = userSchema.patchUserSchema.validate({ id: req.params.id, ...req.body});
@@ -58,7 +62,9 @@ const patchUser = async (req, res) => {
   }
 };
 
-// Delete user
+/**
+ * Delete user by its ID (You can only delete currently logged user)
+ */
 const deleteUser = async (req, res) => {
   // Validate input data
   const { error } = userSchema.deleteUserSchema.validate(req.params);

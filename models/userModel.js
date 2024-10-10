@@ -1,6 +1,8 @@
 const pool = require('../config/database');
 
-// Fetch single user by its ID
+/**
+ * Select single user from database by its ID
+ */
 const getUserById = async (user_id) => {
   const query = 'SELECT * FROM users WHERE id = $1';
   const values = [user_id];
@@ -14,7 +16,9 @@ const getUserById = async (user_id) => {
   }
 };
 
-// Patch user
+/**
+ * Update user in database by its ID
+ */
 const patchUser = async (user_id, display_name, gender, birthday, weights, height) => {
   const query = `
     UPDATE users
@@ -38,7 +42,9 @@ const patchUser = async (user_id, display_name, gender, birthday, weights, heigh
   }
 };
 
-// Delete user
+/**
+ * Delete user from database by its ID
+ */
 const deleteUser = async (user_id) => {
   const query = 'DELETE FROM users WHERE id = $1 RETURNING *';
   const values = [user_id];

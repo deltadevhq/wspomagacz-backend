@@ -4,7 +4,9 @@ const userSchema = require('../schemas/userSchema');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
-// Get user data by its ID
+/**
+ * Returns user data by token provided in cookie
+ */
 const getCurrentLoggedUser = async (req, res) => {
   try {
     // Fetch user from database
@@ -31,7 +33,9 @@ const getCurrentLoggedUser = async (req, res) => {
   }
 };
 
-// Register new user
+/**
+ * Creates new user account
+ */
 const registerUser = async (req, res) => {
   // Validate input data
   const { error } = userSchema.registerSchema.validate(req.body);
@@ -64,7 +68,9 @@ const registerUser = async (req, res) => {
   }
 };
 
-// Login to get JWT token cookie
+/**
+ * Logs in user with provided credentials by setting authorization token as cookie
+ */
 const loginUser = async (req, res) => {
   // Validate input data
   const { error } = userSchema.loginSchema.validate(req.body);
@@ -106,7 +112,9 @@ const loginUser = async (req, res) => {
   }
 };
 
-// Logout to remove JWT token cookie
+/**
+ * Logs out currently logged user by removing cookie with token
+ */
 const logoutUser = async (req, res) => {
   try {
     // Clear the token cookie
@@ -124,7 +132,9 @@ const logoutUser = async (req, res) => {
   }
 };
 
-// Verify JWT token cookie
+/**
+ * Verify JWT token cookie
+ */
 const verifyToken = async (req, res, next) => {
   const token = req.cookies.token;
 

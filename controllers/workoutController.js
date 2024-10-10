@@ -2,7 +2,9 @@ const workoutModel = require('../models/workoutModel');
 const userModel = require('../models/userModel');
 const workoutSchema = require('../schemas/workoutSchema');
 
-// Fetch all workouts
+/**
+ * Fetch all workouts
+ */
 const getWorkouts = async (req, res) => {
   // Validate input data
   const { error } = workoutSchema.getWorkoutSchema.validate(req.query);
@@ -31,7 +33,9 @@ const getWorkouts = async (req, res) => {
   }
 };
 
-// Fetch single workout by its ID
+/**
+ * Fetch single workout by its ID
+ */
 const getWorkoutById = async (req, res) => {
   // Validate input data
   const { error } = workoutSchema.getWorkoutByIdSchema.validate(req.params);
@@ -102,7 +106,9 @@ const putWorkout = async (req, res) => {
   }
 };
 
-// Delete workout
+/**
+ * Delete workout by its ID
+ */
 const deleteWorkout = async (req, res) => {
   // Validate input data
   const { error } = workoutSchema.deleteWorkoutSchema.validate(req.params);
@@ -127,7 +133,9 @@ const deleteWorkout = async (req, res) => {
   }
 };
 
-// Start workout by making update on started_at column in database
+/**
+ * Sets the workout start time to current time
+ */
 const startWorkout = async (req, res) => {
   // Validate input data
   const { error } = workoutSchema.startWorkoutSchema.validate(req.params);
@@ -152,7 +160,9 @@ const startWorkout = async (req, res) => {
   }
 };
 
-// Stop workout by making update on started_at column in database
+/**
+ * Removes the workout start time
+ */
 const stopWorkout = async (req, res) => {
   // Validate input data
   const { error } = workoutSchema.stopWorkoutSchema.validate(req.params);
@@ -177,7 +187,9 @@ const stopWorkout = async (req, res) => {
   }
 };
 
-// Finish workout by making update on finished_at column in database
+/**
+ * Sets the workout finish time to current time
+ */
 const finishWorkout = async (req, res) => {
   // Validate input data
   const { error } = workoutSchema.finishWorkoutSchema.validate(req.params);

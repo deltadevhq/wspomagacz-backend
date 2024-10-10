@@ -1,7 +1,9 @@
 const equipmentModel = require('../models/equipmentModel');
 const equipmentSchema = require('../schemas/equipmentSchema');
 
-// Fetch all equipment
+/**
+ * Fetch all equipment
+ */
 const getEquipment = async (req, res) => {
   try {
     // Fetch equipment from database
@@ -18,7 +20,9 @@ const getEquipment = async (req, res) => {
   }
 };
 
-// Fetch single equipment by its ID
+/**
+ * Fetch single equipment by its ID
+ */
 const getEquipmentById = async (req, res) => {
   // Validate input data
   const { error } = equipmentSchema.getEquipmentSchema.validate(req.params);

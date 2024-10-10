@@ -14,7 +14,7 @@ module.exports = router;
  * @swagger
  * /api/users/{id}:
  *   get:
- *     summary: Get user data
+ *     summary: Get user profile data by its ID
  *     description: This endpoint requires authorization token
  *     tags: [User Profile]
  *     parameters:
@@ -39,7 +39,7 @@ module.exports = router;
  *       404:
  *         description: Not Found - User not found
  *   delete:
- *     summary: Delete user
+ *     summary: Delete user by its ID (You can only delete currently logged user)
  *     description: This endpoint requires authorization token
  *     tags: [User Profile]
  *     parameters:
@@ -64,7 +64,7 @@ module.exports = router;
  *       404:
  *         description: Not Found - User not found
  *   patch:
- *     summary: Patch user data (You can only patch currently logged user)
+ *     summary: Patch user data by its ID (You can only patch currently logged user)
  *     description: Only display_name, gender, birthday, weights and height can be updated through this endpoint
  *     tags: [User Profile]
  *     requestBody:
