@@ -17,7 +17,7 @@ const closeSkippedWorkouts = async () => {
 // Close all in progress workouts which were not finished
 const closeUnfinishedWorkouts = async () => {
   console.log(`[${new Date().toLocaleString()}] Starting closeUnfinishedWorkoutsJob`);
-  const query = `UPDATE workouts SET status = 'completed' WHERE "date" <= now() AND status = 'in_progress'`;
+  const query = `UPDATE workouts SET status = 'completed' WHERE "date" <= now() - INTERVAL '2 hours' AND status = 'in_progress'`;
 
   try {
     const result = await pool.query(query);
