@@ -1,7 +1,6 @@
 const Joi = require('joi');
 const { baseEquipmentSchema } = require('./equipmentSchema');
 const { baseMuscleSchema } = require('./muscleSchema');
-const { baseUserSchema } = require('./userSchema');
 
 // Base validation schema for exercise data
 const baseExerciseSchema = {
@@ -40,7 +39,15 @@ const baseExerciseSchema = {
             'array.base': 'Muscles must be an array of muscle objects',
         }),
 
-    user_id: baseUserSchema.id,
+    user_id: Joi.number()
+        .integer()
+        .positive()
+        .allow(null)
+        .messages({
+            'number.base': 'ID must be a number',
+            'number.integer': 'ID must be an integer',
+            'number.positive': 'ID must be a positive number',
+        }),
 
     exercise_type: Joi.string()
         .valid('all', 'custom', 'standard')
