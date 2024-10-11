@@ -2,7 +2,9 @@ const exerciseModel = require('../models/exerciseModel');
 const userModel = require('../models/userModel');
 const exerciseSchema = require('../schemas/exerciseSchema.js');
 
-// Fetch all exercises
+/**
+ * Fetch all exercises
+ */ 
 const getExercises = async (req, res) => {
   // Validate input data
   const { error } = exerciseSchema.getExerciseSchema.validate(req.query);
@@ -29,7 +31,9 @@ const getExercises = async (req, res) => {
   }
 };
 
-// Fetch single exercise by its ID
+/**
+ * Fetch single exercise by its ID
+ */
 const getExerciseById = async (req, res) => {
   // Validate input data
   const { error } = exerciseSchema.getExerciseByIdSchema.validate({ id: req.params.id, ...req.query });
@@ -56,7 +60,9 @@ const getExerciseById = async (req, res) => {
   }
 };
 
-// Post new exercise
+/**
+ * Create custom exercise (You can only create exercise for currently logged user)
+ */
 const postExercise = async (req, res) => {
   // Validate input data
   const { error } = exerciseSchema.postExerciseSchema.validate(req.body);
@@ -78,7 +84,9 @@ const postExercise = async (req, res) => {
   }
 };
 
-// Delete exercise
+/**
+ * Delete custom exercise (You can only delete exercise for currently logged user)
+ */
 const deleteExercise = async (req, res) => {
   // Validate input data
   const { error } = exerciseSchema.deleteExerciseSchema.validate(req.params);
@@ -102,7 +110,6 @@ const deleteExercise = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
-
 
 module.exports = {
   getExercises,

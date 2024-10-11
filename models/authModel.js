@@ -1,6 +1,8 @@
 const pool = require('../config/database');
 
-// Get single user by its username
+/**
+ * Select single user from database by its username
+ */
 const getUserByUsername = async (username) => {
   const query = 'SELECT * FROM users WHERE username = $1';
   const values = [username];
@@ -14,7 +16,9 @@ const getUserByUsername = async (username) => {
   }
 };
 
-// Get single user by its email
+/**
+ * Select single user from database by its email 
+ */
 const getUserByEmail = async (email) => {
   const query = 'SELECT * FROM users WHERE email = $1';
   const values = [email];
@@ -28,7 +32,9 @@ const getUserByEmail = async (email) => {
   }
 };
 
-// Create new user
+/**
+ * Insert user to database
+ */
 const postUser = async (username, password_hash, email) => {
   const query = `
     INSERT INTO users (username, display_name, password_hash, email)
@@ -47,7 +53,9 @@ const postUser = async (username, password_hash, email) => {
   }
 }
 
-// Update last_logged_at column on user login
+/**
+ * Update last_logged_at column in database on user login
+ */
 const updateUserLastLogin = async (username) => {
   const query = 'UPDATE users SET last_logged_at = NOW() WHERE username = $1';
   const values = [username];

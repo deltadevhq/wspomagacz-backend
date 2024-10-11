@@ -1,6 +1,8 @@
 const pool = require('../config/database');
 
-// Fetch all muscles
+/**
+ * Select all muscles from database
+ */
 const getMuscles = async () => {
   const query = 'SELECT * FROM muscles';
 
@@ -13,7 +15,9 @@ const getMuscles = async () => {
   }
 };
 
-// Fetch single muscle by its ID
+/**
+ * Select single muscle from database by its ID
+ */
 const getMuscleById = async (muscle_id) => {
   const query = 'SELECT * FROM muscles WHERE id = $1';
   const values = [muscle_id];

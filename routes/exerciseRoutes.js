@@ -15,7 +15,7 @@ module.exports = router;
  * @swagger
  * /api/exercises:
  *   get:
- *     summary: Get all exercises
+ *     summary: Fetch all exercises
  *     description: This endpoint requires authorization token
  *     tags: [Exercises]
  *     parameters:
@@ -44,7 +44,7 @@ module.exports = router;
  *       404:
  *         description: Not Found - Exercises not found
  *   post:
- *     summary: Create new custom exercise (You can only create exercise for currently logged user)
+ *     summary: Create custom exercise (You can only create exercise for currently logged user)
  *     description: This endpoint requires authorization token
  *     tags: [Exercises]
  *     requestBody:
@@ -78,7 +78,7 @@ module.exports = router;
  *         description: Forbidden - Token does not have the required permissions
  * /api/exercises/{id}:
  *   get:
- *     summary: Get single exercise
+ *     summary: Fetch single exercise by its ID
  *     description: This endpoint requires authorization token
  *     tags: [Exercises]
  *     parameters:

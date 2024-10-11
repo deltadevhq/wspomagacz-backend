@@ -14,7 +14,7 @@ module.exports = router;
  * @swagger
  * /api/muscles:
  *   get:
- *     summary: Get all muscles
+ *     summary: Fetch all muscle groups
  *     description: This endpoint requires authorization token
  *     tags: [Muscles]
  *     responses:
@@ -39,7 +39,7 @@ module.exports = router;
  *         description: Not Found - Muscles not found (there might be no muscles in database)
  * /api/muscles/{id}:
  *   get:
- *     summary: Get single muscle
+ *     summary: Fetch single muscle group by its ID
  *     description: This endpoint requires authorization token
  *     tags: [Muscles]
  *     parameters:

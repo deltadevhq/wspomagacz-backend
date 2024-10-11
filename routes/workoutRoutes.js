@@ -18,7 +18,7 @@ module.exports = router;
  * @swagger
  * /api/workouts:
  *   get:
- *     summary: Get all workouts
+ *     summary: Fetch all workouts
  *     description: This endpoint requires authorization token
  *     tags: [Workouts]
  *     parameters:
@@ -47,7 +47,7 @@ module.exports = router;
  *       404:
  *         description: Not Found - No workouts found
  *   put:
- *     summary: Creates or updates a workout
+ *     summary: Create new workout or edit existing
  *     description: This endpoint requires authorization token, you can only put workout for currently logged user
  *     tags: [Workouts]
  *     requestBody:
@@ -119,7 +119,7 @@ module.exports = router;
  *         description: Not Found - Workout not found
  * /api/workouts/{id}:
  *   get:
- *     summary: Get workout data
+ *     summary: Fetch single workout by its ID
  *     description: This endpoint requires authorization token
  *     tags: [Workouts]
  *     parameters:
@@ -143,7 +143,7 @@ module.exports = router;
  *       404:
  *         description: Not Found - Workout not found
  *   delete:
- *     summary: Delete workout
+ *     summary: Delete workout by its ID
  *     description: This endpoint requires authorization token, you can only delete workout for currently logged user
  *     tags: [Workouts]
  *     parameters:

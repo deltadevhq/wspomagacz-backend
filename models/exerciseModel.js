@@ -1,6 +1,8 @@
 const pool = require('../config/database');
-
-// Fetch all exercises
+ 
+/**
+ * Select all exercises from database
+ */
 const getExercises = async (user_id, type) => {
   const query = 'SELECT * FROM all_exercises WHERE (user_id = COALESCE($1, user_id) OR user_id IS NULL) AND exercise_type = COALESCE($2, exercise_type) ORDER BY exercise_type DESC, exercise_id';
   if (type === 'all') type = null;
@@ -15,7 +17,9 @@ const getExercises = async (user_id, type) => {
   }
 };
 
-// Fetch single exercise by its ID
+/**
+ * Select single exercise from database by its ID
+ */
 const getExerciseById = async (exercise_id, user_id, type) => {
   const query = 'SELECT * FROM all_exercises WHERE exercise_id = $1 AND (user_id = COALESCE($2, user_id) OR user_id IS NULL) AND exercise_type = COALESCE($3, exercise_type)';
   if (user_id && !type) type = 'custom';
@@ -31,7 +35,9 @@ const getExerciseById = async (exercise_id, user_id, type) => {
   }
 };
 
-// Create new exercise
+/**
+ * Insert custom exercise to database
+ */
 const postExercise = async (user_id, name, equipment, muscles) => {
   const query = `
     INSERT INTO custom_exercises (user_id, name, equipment, muscles)
@@ -49,7 +55,9 @@ const postExercise = async (user_id, name, equipment, muscles) => {
   }
 };
 
-// Delete exercise
+/**
+ * Delete exercise from database by its ID
+ */
 const deleteExercise = async (exercise_id) => {
   const query = 'DELETE FROM custom_exercises WHERE id = $1 RETURNING *';
   const values = [exercise_id];

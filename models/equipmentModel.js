@@ -1,6 +1,8 @@
 const pool = require('../config/database');
 
-// Fetch all equipment
+/**
+ * Select all equipment from database
+ */
 const getEquipment = async () => {
   const query = 'SELECT * FROM equipment';
 
@@ -13,7 +15,9 @@ const getEquipment = async () => {
   }
 };
 
-// Fetch single equipment by its ID
+/**
+ * Select single equipment from database by its ID
+ */
 const getEquipmentById = async (equipment_id) => {
   const query = 'SELECT * FROM equipment WHERE id = $1';
   const values = [equipment_id];

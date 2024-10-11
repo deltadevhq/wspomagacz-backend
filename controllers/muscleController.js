@@ -1,7 +1,9 @@
 const muscleModel = require('../models/muscleModel');
 const muscleSchema = require('../schemas/muscleSchema');
 
-// Fetch all muscles
+/**
+ * Fetch all muscle groups
+ */
 const getMuscles = async (req, res) => {
   try {
     // Fetch muscles from database
@@ -18,7 +20,9 @@ const getMuscles = async (req, res) => {
   }
 };
 
-// Fetch single muscle by its ID
+/**
+ * Fetch single muscle group by its ID
+ */
 const getMuscleById = async (req, res) => {
   // Validate input data
   const { error } = muscleSchema.getMuscleSchema.validate(req.params);

@@ -14,7 +14,7 @@ module.exports = router;
  * @swagger
  * /api/equipment:
  *   get:
- *     summary: Get all equipment
+ *     summary: Fetch all equipment
  *     description: This endpoint requires authorization token
  *     tags: [Equipment]
  *     responses:
@@ -46,7 +46,7 @@ module.exports = router;
  *         description: Not Found - Equipment not found (there might be no equipment in database)
  * /api/equipment/{id}:
  *   get:
- *     summary: Get single equipment
+ *     summary: Fetch single equipment by its ID
  *     description: This endpoint requires authorization token
  *     tags: [Equipment]
  *     parameters:
