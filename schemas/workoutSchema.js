@@ -114,10 +114,10 @@ const baseWorkoutSchema = {
 
     date: Joi.date()
         .iso()
-        .less('now')
+        .less('2100-01-01')
         .greater('1900-01-01')
         .messages({
-            'date.less': 'Date must be a date before today',
+            'date.less': 'Date must be a date before January 1st, 2100',
             'date.greater': 'Date must be after January 1st, 1900',
             'date.base': 'Date must be a valid date',
             'date.iso': 'Date must be in the format YYYY-MM-DD',
@@ -152,8 +152,8 @@ const baseWorkoutSchema = {
         }),
 
     notes: Joi.string()
-        .min(3)
         .max(100)
+        .allow(null)
         .pattern(/^(?!.*\s{2,})[A-Za-z0-9ĄąĆćĘęŁłŃńÓóŚśŹźŻż]+(?: [A-Za-z0-9ĄąĆćĘęŁłŃńÓóŚśŹźŻż]+)*$/)
         .messages({
             'string.max': 'Notes must be at most 100 characters long',
