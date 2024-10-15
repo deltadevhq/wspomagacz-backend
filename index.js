@@ -29,7 +29,7 @@ app.use('/api/muscles', routes.muscleRoutes);
 app.use('/api/equipment', routes.equipmentRoutes);
 app.use('/api/exercises', routes.exerciseRoutes);
 app.use('/api/workouts', routes.workoutRoutes);
-app.use('/api/levels', routes.levelRoutes);
+app.use('/api/experience', routes.experienceRoutes);
 
 // Start the server
 app.listen(port, () => {
@@ -44,8 +44,8 @@ cron.schedule('0 0 * * *', () => {
 
 // TODO: ADD UNITED TIMESTAMP FOR EVERY LOG
 
-// ENDPOINT: GET /API/LEVELS/LEVEL-BY-XP
-// ENDPOINT: GET /API/LEVELS/XP-BY-LEVEL
+// ENDPOINT: GET /API/EXPERIENCE/LEVEL-BY-XP
+// ENDPOINT: GET /API/EXPERIENCE/XP-BY-LEVEL
 // TODO: CREATE MEANWHILE FUNCTION FOR XP POINTS
 
 // ENDPOINT: GET /API/USERS/{ID}/NOTIFICATIONS - FETCH ALL NOTIFICATIONS FOR USER 
@@ -62,5 +62,6 @@ cron.schedule('0 0 * * *', () => {
 // CONSIDER: LIMIT RATE ENDPOINTS - DDS PROTECTION
 // OPTIONAL: USER LOGIN BY EMAIL
 // OPTIONAL: PASSWORD CHANGE ENDPOINT
+// OPTIONAL: REDIS FOR CACHE DATA
 
 // TODO: ŚLAD WĘGLOWY WORKOUTU

@@ -1,20 +1,20 @@
 const express = require('express');
 const router = express.Router();
-const levelController = require('../controllers/levelController.js');
+const experienceController = require('../controllers/experienceController.js');
 const authController = require('../controllers/authController');
 
 // AUTH ROUTES
-router.get('/level-by-xp', authController.verifyToken, levelController.getLevelByXp);
-router.get('/xp-by-level', authController.verifyToken, levelController.getXpByLevel);
+router.get('/level-by-xp', authController.verifyToken, experienceController.getLevelByXp);
+router.get('/xp-by-level', authController.verifyToken, experienceController.getXpByLevel);
 
 module.exports = router;
 
 /**
  * @swagger
- * /api/levels/level-by-xp:
+ * /api/experience/level-by-xp:
  *   get:
  *     summary: What level is granted by given XP
- *     tags: [Levels]
+ *     tags: [Experience]
  *     parameters:
  *       - in: query
  *         name: xp
@@ -51,10 +51,10 @@ module.exports = router;
  *         description: Forbidden - Token does not have the required permissions
  *       404:
  *         description: Not Found - Exercises not found
- * /api/levels/xp-by-level:
+ * /api/experience/xp-by-level:
  *   get:
  *     summary: How much XP is needed for given level
- *     tags: [Levels]
+ *     tags: [Experience]
  *     parameters:
  *       - in: query
  *         name: level
