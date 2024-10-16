@@ -39,12 +39,8 @@ const getExerciseById = async (exercise_id, user_id, type) => {
  * Insert custom exercise to database
  */
 const postExercise = async (user_id, name, equipment, muscles) => {
-  const query = `
-    INSERT INTO custom_exercises (user_id, name, equipment, muscles)
-    VALUES ($1, $2, $3, $4)
-    RETURNING *
-  `;
-  const values = [user_id, name, equipment, muscles];
+  const query = "SELECT add_custom_exercise($1, $2, $3, $4)";
+  const values = [name,  equipment, muscles, user_id];
 
   try {
     const result = await pool.query(query, values);
