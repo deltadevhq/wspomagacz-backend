@@ -149,6 +149,16 @@ const startWorkout = async (req, res) => {
     // Check if the request is for the currently logged-in user
     if (workout.user_id !== req.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
 
+    // Check if workout is finished
+    if (workout.finished_at) return res.status(409).json({ error: 'Workout is already finished' });
+
+    // Check if workout is started
+    if (workout.started_at) return res.status(409).json({ error: 'Workout is already started' });
+
+    // Check if workout date is not in future
+    const { error } = workoutSchema.dateCheckSchema.validate({ date: workout.date });
+    if (error) return res.status(400).json({ error: error.details[0].message });
+
     // Patch started_at for workout in database
     const started_workout = await workoutModel.startWorkout(req.params.id);
 
@@ -176,6 +186,16 @@ const stopWorkout = async (req, res) => {
     // Check if the request is for the currently logged-in user
     if (workout.user_id !== req.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
 
+    // Check if workout is finished
+    if (workout.finished_at) return res.status(409).json({ error: 'Workout is already finished' });
+
+    // Check if workout is not started yet
+    if (!workout.started_at) return res.status(409).json({ error: 'Workout is not started yet' });
+
+    // Check if workout date is not in future
+    const { error } = workoutSchema.dateCheckSchema.validate({ date: workout.date });
+    if (error) return res.status(400).json({ error: error.details[0].message });
+
     // Patch started_at for workout in database
     const stopped_workout = await workoutModel.stopWorkout(req.params.id);
 
@@ -202,6 +222,16 @@ const finishWorkout = async (req, res) => {
 
     // Check if the request is for the currently logged-in user
     if (workout.user_id !== req.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
+
+    // Check if workout is finished
+    if (workout.finished_at) return res.status(409).json({ error: 'Workout is already finished' });
+
+    // Check if workout is not started yet
+    if (!workout.started_at) return res.status(409).json({ error: 'Workout is not started yet' });
+
+    // Check if workout date is not in future
+    const { error } = workoutSchema.dateCheckSchema.validate({ date: workout.date });
+    if (error) return res.status(400).json({ error: error.details[0].message });
 
     // Patch finished_at for workout in database
     const finished_workout = await workoutModel.finishWorkout(req.params.id);

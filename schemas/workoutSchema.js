@@ -1,6 +1,8 @@
 const Joi = require('joi');
 const { baseUserSchema } = require('./userSchema');
 const { baseExerciseSchema } = require('./exerciseSchema');
+const tomorrow = new Date();
+tomorrow.setDate(tomorrow.getDate() + 1);
 
 // Base validation schema for sets data
 const baseSetsSchema = {
@@ -206,6 +208,13 @@ const finishWorkoutSchema = Joi.object({
     id: baseWorkoutSchema.id.required().messages({ 'any.required': 'ID is required' }),
 });
 
+const dateCheckSchema = Joi.object({
+    date: baseWorkoutSchema.date.less(tomorrow).required().messages({
+        'any.required': 'Date is required',
+        'date.less': 'Workout date must be a date before tommorow',
+    }),
+});
+
 module.exports = {
     baseWorkoutSchema,
     baseSetsSchema,
@@ -217,4 +226,5 @@ module.exports = {
     startWorkoutSchema,
     stopWorkoutSchema,
     finishWorkoutSchema,
+    dateCheckSchema,
 };

@@ -100,7 +100,7 @@ const startWorkout = async (workout_id) => {
   const query = `
     UPDATE workouts
     SET 
-        started_at = NOW(),
+        started_at = NOW()
     WHERE id = $1
     RETURNING *
   `;
@@ -122,7 +122,7 @@ const stopWorkout = async (workout_id) => {
   const query = `
     UPDATE workouts
     SET 
-        started_at = null,
+        started_at = null
     WHERE id = $1
     RETURNING *
   `;
@@ -144,7 +144,7 @@ const finishWorkout = async (workout_id) => {
   const query = `
     UPDATE workouts
     SET 
-        finished_at = NOW(),
+        finished_at = NOW()
     WHERE id = $1
     RETURNING *
   `;
