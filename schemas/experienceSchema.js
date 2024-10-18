@@ -15,7 +15,7 @@ const baseExperienceSchema = {
       'number.max': 'Level must be at most 1000',
     }),
 
-    xp: Joi.number()
+  xp: Joi.number()
     .integer()
     .positive()
     .max(10100000)
