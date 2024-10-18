@@ -76,7 +76,7 @@ const baseWorkoutSchema = {
         .messages({
             'string.min': 'Workout name must be at least 3 characters long',
             'string.max': 'Workout name must be at most 100 characters long',
-            'string.pattern.base': 'Workout name must contain only letters, numbers, and spaces. You are required to use atleast 3 alphanumeric symbols and can only use one spacebar between words.',
+            'string.pattern.base': 'Workout name must contain only letters, numbers, and spaces. You are required to use at least 3 alphanumeric symbols and can only use one space between words.',
         }),
 
     exercises: Joi.array()
@@ -159,7 +159,7 @@ const baseWorkoutSchema = {
         .pattern(/^(?!.*\s{2,})[A-Za-z0-9ĄąĆćĘęŁłŃńÓóŚśŹźŻż]+(?: [A-Za-z0-9ĄąĆćĘęŁłŃńÓóŚśŹźŻż]+)*$/)
         .messages({
             'string.max': 'Notes must be at most 100 characters long',
-            'string.pattern.base': 'Notes must contain only letters, numbers, and spaces. You are required to use atleast 3 alphanumeric symbols and can only use one spacebar between words.',
+            'string.pattern.base': 'Notes must contain only letters, numbers, and spaces. You are required to use at least 3 alphanumeric symbols and can only use one space between words.',
         }),
 };
 
@@ -211,7 +211,7 @@ const finishWorkoutSchema = Joi.object({
 const dateCheckSchema = Joi.object({
     date: baseWorkoutSchema.date.less(tomorrow).required().messages({
         'any.required': 'Date is required',
-        'date.less': 'Workout date must be a date before tommorow',
+        'date.less': 'Workout date must be a date before tomorrow',
     }),
 });
 

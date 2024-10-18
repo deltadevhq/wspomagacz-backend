@@ -21,7 +21,7 @@ const baseEquipmentSchema = {
         .messages({
             'string.min': 'Equipment name must be at least 3 characters long',
             'string.max': 'Equipment name must be at most 100 characters long',
-            'string.pattern.base': 'Equipment name must contain only letters, numbers, and spaces. You are required to use atleast 3 alphanumeric symbols and can only use one spacebar between words.',
+            'string.pattern.base': 'Equipment name must contain only letters, numbers, and spaces. You are required to use at least 3 alphanumeric symbols and can only use one space between words.',
             'any.required': 'Equipment name is required',
         }),
 };
