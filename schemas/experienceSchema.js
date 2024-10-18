@@ -1,6 +1,8 @@
 const Joi = require('joi');
 
-// Base validation schema for experience data
+/**
+ * Base validation schema for experience data
+ */
 const baseExperienceSchema = {
   level: Joi.number()
     .integer()
@@ -25,12 +27,16 @@ const baseExperienceSchema = {
     }),
 };
 
-// Specific validation schema for getting expierience by level
+/**
+ * Specific validation schema for getting experience by level
+ */
 const getXpByLevelSchema = Joi.object({
   level: baseExperienceSchema.level.required().messages({ 'any.required': 'Level is required' }),
 });
 
-// Specific validation schema for getting level by experience
+/**
+ * Specific validation schema for getting level by experience
+ */
 const getLevelByXpSchema = Joi.object({
   xp: baseExperienceSchema.xp.required().messages({ 'any.required': 'XP is required' }),
 });

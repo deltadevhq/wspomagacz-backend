@@ -1,6 +1,8 @@
 const Joi = require('joi');
 
-// Base validation schema for equipment data
+/**
+ * Base validation schema for equipment data
+ */
 const baseEquipmentSchema = {
     id: Joi.number()
         .integer()
@@ -26,7 +28,9 @@ const baseEquipmentSchema = {
         }),
 };
 
-// Specific validation schema for fetching single equipment by its id
+/**
+ * Specific validation schema for fetching single equipment by its id
+ */
 const getEquipmentSchema = Joi.object({
     id: baseEquipmentSchema.id,
 });

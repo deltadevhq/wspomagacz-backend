@@ -2,7 +2,9 @@ const Joi = require('joi');
 const { baseEquipmentSchema } = require('./equipmentSchema');
 const { baseMuscleSchema } = require('./muscleSchema');
 
-// Base validation schema for exercise data
+/**
+ * Base validation schema for exercise data
+ */
 const baseExerciseSchema = {
     id: Joi.number()
         .integer()
@@ -57,27 +59,35 @@ const baseExerciseSchema = {
 
 };
 
-// Specific validation schema for fetching exercises
+/**
+ * Specific validation schema for fetching exercises
+ */
 const getExerciseSchema = Joi.object({
     type: baseExerciseSchema.exercise_type,
     user_id: baseExerciseSchema.user_id,
 });
 
-// Specific validation schema for fetching exercise by its id
+/**
+ * Specific validation schema for fetching exercise by its id
+ */
 const getExerciseByIdSchema = Joi.object({
     id: baseExerciseSchema.id.required().messages({ 'any.required': 'ID is required' }),
     type: baseExerciseSchema.exercise_type,
     user_id: baseExerciseSchema.user_id,
 });
 
-// Specific validation schema for posting exercise
+/**
+ * Specific validation schema for posting exercise
+ */
 const postExerciseSchema = Joi.object({
     name: baseExerciseSchema.name.required().messages({ 'any.required': 'Exercise name is required' }),
     equipment: baseExerciseSchema.equipment.required().messages({ 'any.required': 'Equipment is required' }),
     muscles: baseExerciseSchema.muscles.required().messages({ 'any.required': 'Muscles are required' }),
 });
 
-// Specific validation schema for deleting exercise
+/**
+ * Specific validation schema for deleting exercise
+ */
 const deleteExerciseSchema = Joi.object({
     id: baseExerciseSchema.id.required().messages({ 'any.required': 'ID is required' }),
 });

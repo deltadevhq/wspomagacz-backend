@@ -2,7 +2,9 @@ const Joi = require('joi');
 const { joiPasswordExtendCore } = require('joi-password');
 const JoiPassword = Joi.extend(joiPasswordExtendCore);
 
-// Base validation schema for user data
+/**
+ * Base validation schema for user data
+ */
 const baseUserSchema = {
     id: Joi.number()
         .integer()
@@ -121,29 +123,39 @@ const baseUserSchema = {
         }),
 };
 
-// Specific validation schema for fetching user profile
+/**
+ * Specific validation schema for fetching user profile
+ */
 const getUserProfileSchema = Joi.object({
     id: baseUserSchema.id.required().messages({ 'any.required': 'ID is required' }),
 });
 
-// Specific validation schema for patching user
+/**
+ * Specific validation schema for patching user
+ */
 const patchUserSchema = Joi.object({
     id: baseUserSchema.id.required().messages({ 'any.required': 'ID is required' }),
     ...baseUserSchema,
 });
 
-// Specific validation schema for deleting user
+/**
+ * Specific validation schema for deleting user
+ */
 const deleteUserSchema = Joi.object({
     id: baseUserSchema.id.required().messages({ 'any.required': 'ID is required' }),
 });
 
-// Specific validation schema for user login
+/**
+ * Specific validation schema for user login
+ */
 const loginSchema = Joi.object({
     username: baseUserSchema.username.required().messages({ 'any.required': 'Username is required' }),
     password: baseUserSchema.password.required().messages({ 'any.required': 'Password is required' }),
 });
 
-// Specific validation schema for user registration
+/**
+ * Specific validation schema for user registration
+ */
 const registerSchema = Joi.object({
     username: baseUserSchema.username.required().messages({ 'any.required': 'Username is required' }),
     password: baseUserSchema.password.required().messages({ 'any.required': 'Password is required' }),

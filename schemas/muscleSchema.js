@@ -1,6 +1,8 @@
 const Joi = require('joi');
 
-// Base validation schema for muscle data
+/**
+ * Base validation schema for muscle data
+ */
 const baseMuscleSchema = {
     id: Joi.number()
         .integer()
@@ -26,7 +28,9 @@ const baseMuscleSchema = {
         }),
 };
 
-// Specific validation schema for fetching single muscle by its id
+/**
+ * Specific validation schema for fetching single muscle by its id
+ */
 const getMuscleSchema = Joi.object({
     id: baseMuscleSchema.id,
 });
