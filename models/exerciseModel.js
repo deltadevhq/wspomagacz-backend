@@ -44,7 +44,7 @@ const postExercise = async (user_id, name, equipment, muscles) => {
 
     try {
         const result = await pool.query(query, values);
-        return result.rows.length > 0 ? result.rows : null;
+        return result.rows.length > 0 ? result.rows[0] : null;
     } catch (error) {
         console.error('Error executing query', error.stack);
         throw error;

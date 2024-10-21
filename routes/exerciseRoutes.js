@@ -69,7 +69,8 @@ module.exports = router;
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Exercise'
+ *               type: object
+ *               example: { "insert_custom_exercise": 1 }
  *       400:
  *         description: Bad Request - One or more required parameters is missing
  *       401:
@@ -129,7 +130,8 @@ module.exports = router;
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Exercise'
+ *               type: object
+ *               example: { "message": "Exercise deleted successfully" }
  *       400:
  *         description: Bad request - Invalid exercise ID
  *       401:
@@ -143,10 +145,10 @@ module.exports = router;
  *     Exercise:
  *       type: object
  *       properties:
- *         id:
+ *         exercise_id:
  *           type: integer
  *           example: 1
- *         name:
+ *         exercise_name:
  *           type: string
  *           example: "Wyciskanie hantli"
  *         equipment:

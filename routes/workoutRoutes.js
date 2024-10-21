@@ -105,7 +105,7 @@ module.exports = router;
  *                 nullable: true
  *               notes:
  *                 type: string
- *                 example: 'Great workout!'
+ *                 example: 'Great workout'
  *     responses:
  *       200:
  *         description: Successfully updated workout data
@@ -154,6 +154,11 @@ module.exports = router;
  *     responses:
  *       200:
  *         description: Successfully deleted workout
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               example: { "message": "Workout deleted successfully" }
  *       400:
  *         description: Bad request - Invalid workout ID
  *       401:
@@ -289,5 +294,5 @@ module.exports = router;
  *           enum: [completed, in_progress, planned, skipped]
  *         notes:
  *           type: string
- *           example: 'Great workout!'
+ *           example: 'Great workout'
  */

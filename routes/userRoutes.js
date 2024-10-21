@@ -54,7 +54,8 @@ module.exports = router;
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/UserProfile'
+ *               type: object
+ *               example: { "message": "User deleted successfully" }
  *       400:
  *         description: Bad request - Invalid user ID
  *       401:
