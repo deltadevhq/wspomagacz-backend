@@ -32,7 +32,7 @@ describe('Muscle validation schema', () => {
         });
 
         test('ID with string should fail', () => {
-            const id = '1';
+            const id = '1a';
 
             const { error } = baseMuscleSchema.id.validate(id);
 

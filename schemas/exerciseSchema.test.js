@@ -32,7 +32,7 @@ describe('Exercise validation schema', () => {
         });
 
         test('ID with string should fail', () => {
-            const id = '1';
+            const id = '1a';
 
             const { error } = baseExerciseSchema.exercise_id.validate(id);
 
@@ -254,7 +254,7 @@ describe('Exercise validation schema', () => {
         });
 
         test('User ID with string should fail', () => {
-            const user_id = '1';
+            const user_id = '1a';
 
             const { error } = baseExerciseSchema.user_id.validate(user_id);
 

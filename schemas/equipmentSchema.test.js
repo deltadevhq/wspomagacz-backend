@@ -32,7 +32,7 @@ describe('Equipment validation schema', () => {
         });
 
         test('ID with string should fail', () => {
-            const id = '1';
+            const id = '1a';
 
             const { error } = baseEquipmentSchema.id.validate(id);
 

@@ -32,7 +32,7 @@ describe('Workout validation schema', () => {
     });
 
     test('ID with string should fail', () => {
-      const id = '1';
+      const id = '1a';
 
       const { error } = baseWorkoutSchema.id.validate(id);
 
@@ -88,7 +88,7 @@ describe('Workout validation schema', () => {
     });
 
     test('Related workout ID with string should fail', () => {
-      const relatedWorkoutId = '1';
+      const relatedWorkoutId = '1a';
 
       const { error } = baseWorkoutSchema.related_workout_id.validate(relatedWorkoutId);
 
@@ -152,7 +152,7 @@ describe('Workout validation schema', () => {
     });
 
     test('User ID with string should fail', () => {
-      const userId = '1';
+      const userId = '1a';
 
       const { error } = baseWorkoutSchema.user_id.validate(userId);
 
