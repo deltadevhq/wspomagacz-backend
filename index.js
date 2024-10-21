@@ -2,18 +2,43 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
+const moment = require('moment-timezone');
 const cookieParser = require('cookie-parser');
 const swaggerUi = require('swagger-ui-express');
 const cron = require('node-cron');
 const app = express();
 const routes = require('./routes');
-const { port, listener, swaggerDocs } = require('./config/settings');
+const { port, listener, timezone, swaggerDocs } = require('./config/settings');
 const jobs = require('./utilities/jobs');
 
+// Function to generate a timestamp in timezone from configuration
+const getTimestamp = () => {
+    return moment().tz(timezone).format('YYYY-MM-DD HH:mm:ss');
+};
+
+// Override console.log to include a timestamp
+const baseConsoleLog = console.log;
+console.log = function(...args) {
+    baseConsoleLog(`[INFO][${getTimestamp()}]`, ...args);
+};
+
+// Override console.error to include a timestamp
+const baseConsoleError = console.error;
+console.error = function(...args) {
+    baseConsoleError(`[ERROR][${getTimestamp()}]`, ...args);
+};
+
+// Define a custom token for the date in timezone from configuration
+morgan.token('date', () => {
+    return getTimestamp();
+});
+
 // Use morgan to log requests to the console
-app.use(morgan('[:date[clf]] Request: :method :url HTTP/:http-version, Response: :status, ResponseTime: :response-time ms'));
+app.use(morgan('[INFO][:date] Request: :method :url HTTP/:http-version, Response: :status, ResponseTime: :response-time ms'));
+
 // Use cookieparser to parse cookies
 app.use(cookieParser());
+
 // Use CORS to control allow origin access
 app.use(cors({
     origin: process.env.CORS_ORIGIN,
@@ -41,12 +66,6 @@ cron.schedule('0 0 * * *', () => {
     jobs.closeSkippedWorkouts();
     jobs.closeUnfinishedWorkouts();
 });
-
-// TODO: ADD UNITED TIMESTAMP FOR EVERY LOG
-
-// ENDPOINT: GET /API/EXPERIENCE/LEVEL-BY-XP
-// ENDPOINT: GET /API/EXPERIENCE/XP-BY-LEVEL
-// TODO: CREATE MEANWHILE FUNCTION FOR XP POINTS
 
 // ENDPOINT: GET /API/USERS/{ID}/NOTIFICATIONS - FETCH ALL NOTIFICATIONS FOR USER 
 // ENDPOINT: GET /API/USERS/{ID}/NOTIFICATIONS/READ - READ ALL NOTIFICATION FOR USER 

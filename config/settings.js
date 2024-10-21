@@ -3,6 +3,7 @@ const swaggerJsDoc = require('swagger-jsdoc');
 // Listener definition
 const port = 3000;
 const listener = 'localhost';
+const timezone = 'Europe/Warsaw';
 
 // Swagger definition
 const swaggerOptions = {
@@ -38,6 +39,7 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions);
 module.exports = {
   port,
   listener,
+  timezone,
   swaggerOptions,
   swaggerDocs
 }
