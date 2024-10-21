@@ -1,15 +1,10 @@
 const exerciseModel = require('../models/exerciseModel');
 const userModel = require('../models/userModel');
-const exerciseSchema = require('../schemas/exerciseSchema.js');
 
 /**
  * Fetch all exercises
- */ 
+ */
 const getExercises = async (req, res) => {
-  // Validate input data
-  const { error } = exerciseSchema.getExerciseSchema.validate(req.query);
-  if (error) return res.status(400).json({ error: error.details[0].message })
-
   try {
     // Check user existence if user_id is provided
     if (req.query.user_id) {
@@ -35,10 +30,6 @@ const getExercises = async (req, res) => {
  * Fetch single exercise by its ID
  */
 const getExerciseById = async (req, res) => {
-  // Validate input data
-  const { error } = exerciseSchema.getExerciseByIdSchema.validate({ id: req.params.id, ...req.query });
-  if (error) return res.status(400).json({ error: error.details[0].message })
-
   try {
     // Check user existence if user_id is provided
     if (req.query.user_id) {
@@ -64,10 +55,6 @@ const getExerciseById = async (req, res) => {
  * Create custom exercise (You can only create exercise for currently logged user)
  */
 const postExercise = async (req, res) => {
-  // Validate input data
-  const { error } = exerciseSchema.postExerciseSchema.validate(req.body);
-  if (error) return res.status(400).json({ error: error.details[0].message })
-
   try {
     // Serialize equipment and muscles arrays into JSON strings
     const parsed_equipment = JSON.stringify(req.body.equipment);
@@ -88,10 +75,6 @@ const postExercise = async (req, res) => {
  * Delete custom exercise (You can only delete exercise for currently logged user)
  */
 const deleteExercise = async (req, res) => {
-  // Validate input data
-  const { error } = exerciseSchema.deleteExerciseSchema.validate(req.params);
-  if (error) return res.status(400).json({ error: error.details[0].message })
-
   try {
     // Fetch exercise details to check existence and ownership
     const exercise = await exerciseModel.getExerciseById(req.params.id, null, 'custom');

@@ -1,6 +1,5 @@
 const authModel = require('../models/authModel');
 const userModel = require('../models/userModel');
-const userSchema = require('../schemas/userSchema');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
@@ -37,10 +36,6 @@ const getCurrentLoggedUser = async (req, res) => {
  * Creates new user account
  */
 const registerUser = async (req, res) => {
-  // Validate input data
-  const { error } = userSchema.registerSchema.validate(req.body);
-  if (error) return res.status(400).json({ error: error.details[0].message });
-
   try {
     // Check if the email is already taken
     let existing_user = await authModel.getUserByEmail(req.body.email);
@@ -72,10 +67,6 @@ const registerUser = async (req, res) => {
  * Logs in user with provided credentials by setting authorization token as cookie
  */
 const loginUser = async (req, res) => {
-  // Validate input data
-  const { error } = userSchema.loginSchema.validate(req.body);
-  if (error) return res.status(400).json({ error: error.details[0].message });
-
   try {
     // Check if the user exists
     const user = await authModel.getUserByUsername(req.body.username);

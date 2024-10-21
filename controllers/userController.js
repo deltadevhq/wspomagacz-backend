@@ -1,14 +1,9 @@
 const userModel = require('../models/userModel');
-const userSchema = require('../schemas/userSchema');
 
 /**
  * Get user profile data by its ID
  */
 const getUserProfile = async (req, res) => {
-  // Validate input data
-  const { error } = userSchema.getUserProfileSchema.validate(req.params);
-  if (error) return res.status(400).json({ error: error.details[0].message });
-
   try {
     // Fetch user from database
     const user = await userModel.getUserById(req.params.id);
@@ -31,10 +26,6 @@ const getUserProfile = async (req, res) => {
  * Patch user data by its ID (You can only patch currently logged user)
  */
 const patchUser = async (req, res) => {
-  // Validate input data
-  const { error } = userSchema.patchUserSchema.validate({ id: req.params.id, ...req.body});
-  if (error) return res.status(400).json({ error: error.details[0].message });
-
   // Check if the request is for the currently logged-in user
   if (Number(req.params.id) !== req.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
 
@@ -66,10 +57,6 @@ const patchUser = async (req, res) => {
  * Delete user by its ID (You can only delete currently logged user)
  */
 const deleteUser = async (req, res) => {
-  // Validate input data
-  const { error } = userSchema.deleteUserSchema.validate(req.params);
-  if (error) return res.status(400).json({ error: error.details[0].message });
-
   // Check if the request is for the currently logged-in user
   if (Number(req.params.id) !== req.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
 

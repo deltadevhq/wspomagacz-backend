@@ -1,10 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
+const userSchema = require('../schemas/userSchema');
+const { validateInput } = require('../utilities/validation');
 
 // NO AUTH ROUTES
-router.post('/login', authController.loginUser);
-router.post('/register', authController.registerUser);
+router.post('/login', validateInput(userSchema.loginSchema), authController.loginUser);
+router.post('/register', validateInput(userSchema.registerSchema), authController.registerUser);
 
 // AUTH ROUTES
 router.get('/user', authController.verifyToken, authController.getCurrentLoggedUser);

@@ -6,9 +6,6 @@ const workoutSchema = require('../schemas/workoutSchema');
  * Fetch all workouts
  */
 const getWorkouts = async (req, res) => {
-  // Validate input data
-  const { error } = workoutSchema.getWorkoutSchema.validate(req.query);
-  if (error) return res.status(400).json({ error: error.details[0].message });
 
   // TODO: CREATE FILTER ON DATE
 
@@ -37,10 +34,6 @@ const getWorkouts = async (req, res) => {
  * Fetch single workout by its ID
  */
 const getWorkoutById = async (req, res) => {
-  // Validate input data
-  const { error } = workoutSchema.getWorkoutByIdSchema.validate(req.params);
-  if (error) return res.status(400).json({ error: error.details[0].message });
-
   try {
     // Fetch workout from database
     const workout = await workoutModel.getWorkoutById(req.params.id);
@@ -61,10 +54,6 @@ const getWorkoutById = async (req, res) => {
  */
 const putWorkout = async (req, res) => {
   if (req.body.id) {
-    // Validate input data
-    const { error } = workoutSchema.updateWorkoutSchema.validate(req.body);
-    if (error) return res.status(400).json({ error: error.details[0].message });
-
     try {
       // Check if workout exists
       const workout = await workoutModel.getWorkoutById(req.body.id);
@@ -86,10 +75,6 @@ const putWorkout = async (req, res) => {
       res.status(500).json({ error: 'Internal server error' });
     }
   } else {
-    // Validate input data
-    const { error } = workoutSchema.createWorkoutSchema.validate(req.body);
-    if (error) return res.status(400).json({ error: error.details[0].message });
-
     // Serialize exercises array into JSON string
     const parsed_exercises = JSON.stringify(req.body.exercises);
 
@@ -110,10 +95,6 @@ const putWorkout = async (req, res) => {
  * Delete workout by its ID
  */
 const deleteWorkout = async (req, res) => {
-  // Validate input data
-  const { error } = workoutSchema.deleteWorkoutSchema.validate(req.params);
-  if (error) return res.status(400).json({ error: error.details[0].message });
-
   try {
     // Fetch workout details to check existence and ownership
     const workout = await workoutModel.getWorkoutById(req.params.id);
@@ -137,10 +118,6 @@ const deleteWorkout = async (req, res) => {
  * Sets the workout start time to current time
  */
 const startWorkout = async (req, res) => {
-  // Validate input data
-  const { error } = workoutSchema.startWorkoutSchema.validate(req.params);
-  if (error) return res.status(400).json({ error: error.details[0].message });
-
   try {
     // Check if workout exists
     const workout = await workoutModel.getWorkoutById(req.params.id);
@@ -174,10 +151,6 @@ const startWorkout = async (req, res) => {
  * Removes the workout start time
  */
 const stopWorkout = async (req, res) => {
-  // Validate input data
-  const { error } = workoutSchema.stopWorkoutSchema.validate(req.params);
-  if (error) return res.status(400).json({ error: error.details[0].message });
-
   try {
     // Check if workout exists
     const workout = await workoutModel.getWorkoutById(req.params.id);
@@ -211,10 +184,6 @@ const stopWorkout = async (req, res) => {
  * Sets the workout finish time to current time
  */
 const finishWorkout = async (req, res) => {
-  // Validate input data
-  const { error } = workoutSchema.finishWorkoutSchema.validate(req.params);
-  if (error) return res.status(400).json({ error: error.details[0].message });
-
   try {
     // Check if workout exists
     const workout = await workoutModel.getWorkoutById(req.params.id);

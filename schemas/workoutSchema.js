@@ -186,20 +186,12 @@ const getWorkoutByIdSchema = Joi.object({
 });
 
 /**
- * Specific validation schema for workout creation
+ * Specific validation schema for workout creation or update
  */
-const createWorkoutSchema = Joi.object({
+const putWorkoutSchema = Joi.object({
   name: baseWorkoutSchema.name.required().messages({ 'any.required': 'Name is required' }),
   exercises: baseWorkoutSchema.exercises.required().messages({ 'any.required': 'Exercises are required' }),
   date: baseWorkoutSchema.date.required().messages({ 'any.required': 'Date is required' }),
-  ...baseWorkoutSchema,
-});
-
-/**
- * Specific validation schema for workout update
- */
-const updateWorkoutSchema = Joi.object({
-  id: baseWorkoutSchema.id.required().messages({ 'any.required': 'ID is required' }),
   ...baseWorkoutSchema,
 });
 
@@ -243,8 +235,7 @@ module.exports = {
   baseSetsSchema,
   getWorkoutSchema,
   getWorkoutByIdSchema,
-  createWorkoutSchema,
-  updateWorkoutSchema,
+  putWorkoutSchema,
   deleteWorkoutSchema,
   startWorkoutSchema,
   stopWorkoutSchema,
