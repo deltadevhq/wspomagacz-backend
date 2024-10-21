@@ -1,8 +1,9 @@
 const Joi = require('joi');
+const moment = require('moment-timezone');
 const { baseUserSchema } = require('./userSchema');
 const { baseExerciseSchema } = require('./exerciseSchema');
-const tomorrow = new Date();
-tomorrow.setDate(tomorrow.getDate() + 1);
+
+const tomorrow = () => moment().tz('Europe/Warsaw').startOf('day').add(1, 'days').format();
 
 /**
  * Base validation schema for sets data
@@ -231,7 +232,7 @@ const finishWorkoutSchema = Joi.object({
 });
 
 const dateCheckSchema = Joi.object({
-  date: baseWorkoutSchema.date.less(tomorrow).required().messages({
+  date: baseWorkoutSchema.date.less(tomorrow()).required().messages({
     'any.required': 'Date is required',
     'date.less': 'Workout date must be a date before tomorrow',
   }),
