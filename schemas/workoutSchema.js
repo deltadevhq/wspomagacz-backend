@@ -163,7 +163,7 @@ const baseWorkoutSchema = {
   notes: Joi.string()
     .max(100)
     .allow(null, '')
-    .pattern(/^(?!.*\s{,100})[A-Za-z0-9ĄąĆćĘęŁłŃńÓóŚśŹźŻż]+(?: [A-Za-z0-9ĄąĆćĘęŁłŃńÓóŚśŹźŻż]+)*$/)
+    .pattern(/^(?!.*\s{,100})[A-Za-z0-9ĄąĆćĘęŁłŃńÓóŚśŹźŻż!.,]+(?: [A-Za-z0-9ĄąĆćĘęŁłŃńÓóŚśŹźŻż!.,]+)*$/)
     .messages({
       'string.max': 'Notes must be at most 100 characters long',
       'string.pattern.base': 'Notes must contain only letters, numbers, and spaces. You are required to use at least 3 alphanumeric symbols and can only use one space between words.',

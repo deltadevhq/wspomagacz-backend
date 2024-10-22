@@ -1,6 +1,7 @@
 const workoutModel = require('../models/workoutModel');
 const userModel = require('../models/userModel');
 const workoutSchema = require('../schemas/workoutSchema');
+const experienceController = require('./experienceController');
 
 /**
  * Fetch all workouts
@@ -204,9 +205,10 @@ const finishWorkout = async (req, res) => {
 
     // Patch finished_at for workout in database
     const finished_workout = await workoutModel.finishWorkout(req.params.id);
+    const experience_grant = await experienceController.userExperienceHandler(finished_workout);
 
     // Successful response with updated workout data
-    res.status(200).json(finished_workout);
+    res.status(200).json({finished_workout, experience_grant});
   } catch (error) {
     console.error('Error finishing workout:', error.stack);
     res.status(500).json({ error: 'Internal server error' });

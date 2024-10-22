@@ -78,15 +78,21 @@ app.use('/api/experience', routes.experienceRoutes);
         jobs.closeUnfinishedWorkouts();
       });
 
-      // Handle user experience
-      // const experience = require('./utilities/experience');
-      // experience.userExperienceHandler({ id: 1, user_id: 4 });
+      require('./utilities/workoutGenerator');
+
     });
   } catch (error) {
     console.error('Failed to start the server:', error);
     process.exit(1);
   }
 })();
+
+// TODO: VERIFY MUSCLE EXISTENCE
+// TODO: VERIFY EQUIPMENT EXISTENCE
+// TODO: VERIFY EXERCISE EXISTIENCE
+// TODO: VERIFY EXERCISE - EQUIPMENT/MUSCLE OWNERSHIP
+// CONSIDER: VERIFY WORKOUT - EXERCISE OWNERSHIP
+// CONSIDER: EVENTS FOR SPECIFIC EXERCISES / MUSCLES GROUPS
 
 // ENDPOINT: GET /API/USERS/{ID}/NOTIFICATIONS - FETCH ALL NOTIFICATIONS FOR USER
 // ENDPOINT: GET /API/USERS/{ID}/NOTIFICATIONS/READ - READ ALL NOTIFICATION FOR USER
