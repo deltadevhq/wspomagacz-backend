@@ -1,4 +1,5 @@
 const swaggerJsDoc = require('swagger-jsdoc');
+const packageJson = require('../package.json');
 
 // Listener definition
 const port = 3000;
@@ -41,5 +42,6 @@ module.exports = {
   listener,
   timezone,
   swaggerOptions,
-  swaggerDocs
+  swaggerDocs,
+  packageJson
 }

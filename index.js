@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const { initDBConnection } = require('./config/database');
 const cors = require('cors');
 const morgan = require('morgan');
 const moment = require('moment-timezone');
@@ -8,29 +9,29 @@ const swaggerUi = require('swagger-ui-express');
 const cron = require('node-cron');
 const app = express();
 const routes = require('./routes');
-const { port, listener, timezone, swaggerDocs } = require('./config/settings');
+const { port, listener, timezone, swaggerDocs, packageJson } = require('./config/settings');
 const jobs = require('./utilities/jobs');
 
 // Function to generate a timestamp in timezone from configuration
 const getTimestamp = () => {
-    return moment().tz(timezone).format('YYYY-MM-DD HH:mm:ss');
+  return moment().tz(timezone).format('YYYY-MM-DD HH:mm:ss');
 };
 
 // Override console.log to include a timestamp
 const baseConsoleLog = console.log;
-console.log = function(...args) {
-    baseConsoleLog(`[INFO][${getTimestamp()}]`, ...args);
+console.log = function (...args) {
+  baseConsoleLog(`[INFO][${getTimestamp()}]`, ...args);
 };
 
 // Override console.error to include a timestamp
 const baseConsoleError = console.error;
-console.error = function(...args) {
-    baseConsoleError(`[ERROR][${getTimestamp()}]`, ...args);
+console.error = function (...args) {
+  baseConsoleError(`[ERROR][${getTimestamp()}]`, ...args);
 };
 
 // Define a custom token for the date in timezone from configuration
 morgan.token('date', () => {
-    return getTimestamp();
+  return getTimestamp();
 });
 
 // Use morgan to log requests to the console
@@ -41,8 +42,8 @@ app.use(cookieParser());
 
 // Use CORS to control allow origin access
 app.use(cors({
-    origin: process.env.CORS_ORIGIN,
-    credentials: true
+  origin: process.env.CORS_ORIGIN,
+  credentials: true
 }));
 app.use(express.json());
 
@@ -56,20 +57,40 @@ app.use('/api/exercises', routes.exerciseRoutes);
 app.use('/api/workouts', routes.workoutRoutes);
 app.use('/api/experience', routes.experienceRoutes);
 
-// Start the server
-app.listen(port, () => {
-    console.log(`API listening at http://${listener}:${port}`);
-});
 
-// Daily jobs definition
-cron.schedule('0 0 * * *', () => {
-    jobs.closeSkippedWorkouts();
-    jobs.closeUnfinishedWorkouts();
-});
+// Main execution flow
+(async () => {
+  try {
+    console.log(`Starting ${packageJson.name} version ${packageJson.version}`);
 
-// ENDPOINT: GET /API/USERS/{ID}/NOTIFICATIONS - FETCH ALL NOTIFICATIONS FOR USER 
-// ENDPOINT: GET /API/USERS/{ID}/NOTIFICATIONS/READ - READ ALL NOTIFICATION FOR USER 
-// CONSIDER: GET /API/USERS/{ID}/NOTIFICATIONS/{NOTIFICATION_ID}/READ - READ SINGLE NOTIFICATION FOR USER 
+    await initDBConnection();
+
+    const server = app.listen(port, () => {
+      console.log(`API listening at http://${listener}:${port}`);
+    });
+
+    server.on('listening', () => {
+      console.log('Server initlaization completed.');
+
+      // Schedule daily jobs
+      cron.schedule('0 0 * * *', () => {
+        jobs.closeSkippedWorkouts();
+        jobs.closeUnfinishedWorkouts();
+      });
+
+      // Handle user experience
+      // const experience = require('./utilities/experience');
+      // experience.userExperienceHandler({ id: 1, user_id: 4 });
+    });
+  } catch (error) {
+    console.error('Failed to start the server:', error);
+    process.exit(1);
+  }
+})();
+
+// ENDPOINT: GET /API/USERS/{ID}/NOTIFICATIONS - FETCH ALL NOTIFICATIONS FOR USER
+// ENDPOINT: GET /API/USERS/{ID}/NOTIFICATIONS/READ - READ ALL NOTIFICATION FOR USER
+// CONSIDER: GET /API/USERS/{ID}/NOTIFICATIONS/{NOTIFICATION_ID}/READ - READ SINGLE NOTIFICATION FOR USER
 
 // TODO: EMIT NOTIFICATION FOR AUTOMATICLY CLOSED WORKOUT BY JOB
 // TODO: EMIT NOTIFICATION FOR USER LEVEL UP

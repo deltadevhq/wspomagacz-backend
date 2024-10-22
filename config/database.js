@@ -10,22 +10,34 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }
 });
 
-pool.connect((err, client, release) => {
-  if (err) {
-    return console.error('Error acquiring database client', err.stack);
-  }
-  client.query('SELECT NOW()', (err, result) => {
-    release();
-    if (err) {
-      return console.error('Error executing query', err.stack);
-    }
-    console.log(`Database connection successful!`);
+// Initialize connection and return a Promise
+const initDBConnection = () => {
+  return new Promise((resolve, reject) => {
+    pool.connect((err, client, release) => {
+      if (err) {
+        console.error('Error acquiring database client', err.stack);
+        return reject(err);
+      }
+      client.query('SELECT NOW()', (err, result) => {
+        release();
+        if (err) {
+          console.error('Error executing query', err.stack);
+          return reject(err);
+        }
+        console.log(`Database connection successful!`);
+        resolve(result);
+      });
+    });
   });
-});
+};
 
 pool.on('error', (err, client) => {
   console.error('Unexpected error on database idle client', err);
   process.exit(-1);
 });
 
-module.exports = pool;
+// Export the pool and the init function
+module.exports = {
+  initDBConnection,
+  pool,
+};
