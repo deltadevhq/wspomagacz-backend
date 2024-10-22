@@ -25,7 +25,7 @@ const generateRandomWorkout = async (user_id) => {
     const randomIndex = generateRandomNumber(0, availableExercises.length - 1);
     const randomExercise = availableExercises[randomIndex];
 
-    const setsCount = generateRandomNumber(3, 5);  // Random number of sets (1-4)
+    const setsCount = generateRandomNumber(3, 5);  // Random number of sets (3-5)
     const sets = [];
 
     for (let j = 0; j < setsCount; j++) {
