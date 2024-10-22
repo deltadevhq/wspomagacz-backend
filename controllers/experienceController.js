@@ -120,7 +120,7 @@ const userExperienceHandler = async (workout) => {
     }
     // TODO: EXTRA EXPERIENCE FOR EACH PERSONAL RECORD
     // TODO: EXTRA EXPERIENCE FOR EACH ARCHIEVEMENT
-    // TODO: CHECK IF WORKOUT IS RANKED?
+    // TODO: CHECK IF WORKOUT IS RANKED - ONLY TODAYS WORKOUTS
 
     console.log(`Finished user experience handler with XP granted: ${history_result.exp_granted}`);
     return history_result;

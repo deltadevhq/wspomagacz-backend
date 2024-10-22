@@ -77,9 +77,7 @@ app.use('/api/experience', routes.experienceRoutes);
         jobs.closeSkippedWorkouts();
         jobs.closeUnfinishedWorkouts();
       });
-
-      require('./utilities/workoutGenerator');
-
+      
     });
   } catch (error) {
     console.error('Failed to start the server:', error);
