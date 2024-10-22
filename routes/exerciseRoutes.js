@@ -25,7 +25,7 @@ module.exports = router;
  *         name: user_id
  *         schema:
  *           type: integer
- *         description: ID of user for which exercises will be shown 
+ *         description: ID of user for which exercises will be shown
  *       - in: query
  *         name: type
  *         schema:
@@ -72,7 +72,11 @@ module.exports = router;
  *           application/json:
  *             schema:
  *               type: object
- *               example: { "insert_custom_exercise": 1 }
+ *               properties:
+ *                 insert_custom_exercise:
+ *                   type: object
+ *                   $ref: '#/components/schemas/Exercise'
+ *
  *       400:
  *         description: Bad Request - One or more required parameters is missing
  *       401:
@@ -94,7 +98,7 @@ module.exports = router;
  *         name: user_id
  *         schema:
  *           type: integer
- *         description: ID of user for which exercises will be shown 
+ *         description: ID of user for which exercises will be shown
  *       - in: query
  *         name: type
  *         schema:
