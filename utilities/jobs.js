@@ -3,7 +3,10 @@ const { pool } = require('../config/database');
 // Close all workouts planned for today which were not even started
 const closeSkippedWorkouts = async () => {
   console.log(`Starting closeSkippedWorkoutsJob`);
-  const query = `UPDATE workouts SET status = 'skipped' WHERE "date" <= now() AND status = 'planned'`;
+  const query = `UPDATE workouts
+                 SET status = 'skipped'
+                 WHERE date < now()::date
+                   AND status = 'planned'`;
 
   try {
     const result = await pool.query(query);
