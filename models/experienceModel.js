@@ -1,5 +1,8 @@
 const { pool } = require('../config/database');
 
+const baseLevelXp = 100;
+const XpScalingFactor = 10;
+
 /**
  * Function to calculate the level based on provided XP
  * @param {number} xp - The total XP earned by the user
@@ -26,7 +29,7 @@ const getLevelByXp = async (xp) => {
 const getXpByLevel = async (level) => {
   if (level === 1) return 0;
 
-  return (100 + (10 * --level)) * level;
+  return (baseLevelXp + (XpScalingFactor * --level)) * level;
 };
 
 /**
