@@ -64,16 +64,14 @@ const generateRandomWorkout = async (user_id) => {
   const note = randomNotes[generateRandomNumber(0, randomNotes.length - 1)];
 
   // Random workout object
-  const workout = {
+  return {
     related_workout_id: null,
     user_id: user_id,
     name: workout_name,
     exercises: exercises,
     date: date,
-    notes: note
+    notes: note,
   };
-
-  return workout;
 };
 
 module.exports = { generateRandomWorkout };
