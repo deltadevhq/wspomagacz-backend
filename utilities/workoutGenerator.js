@@ -51,13 +51,19 @@ const generateRandomWorkout = async (user_id) => {
   let datesTaken = [];
 
   do {
-    if (datesTaken.length >= 30) {
+    if (datesTaken.length >= 60) {
       throw new Error('All possible dates have been checked and a workout exists for each date.');
     }
 
     const currentDate = new Date(new Date().setHours(0, 0, 0, 0));
-    date = new Date(currentDate.setDate(currentDate.getDate() - generateRandomNumber(1, 30))).toLocaleDateString('sv-SE'); // Workout date in the past 30 days
-    datesTaken.push(date);
+    // Randomly select a date in the past or future
+    date = Math.random() >= 0.5 ?
+      new Date(currentDate.setDate(currentDate.getDate() - generateRandomNumber(1, 30))).toLocaleDateString('sv-SE') :
+      new Date(currentDate.setDate(currentDate.getDate() + generateRandomNumber(1, 30))).toLocaleDateString('sv-SE');
+
+    if (!datesTaken.find(date => date === date)) {
+      datesTaken.push(date);
+    }
   } while (await getWorkoutByDate(user_id, date));
 
   // Select a random note from the predefined list
