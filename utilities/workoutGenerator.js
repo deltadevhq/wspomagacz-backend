@@ -1,5 +1,5 @@
 const exerciseModel = require('../models/exerciseModel');
-const user_id = 4;
+const { getWorkoutByDate } = require('../models/workoutModel');
 
 // List of random notes
 const randomNotes = [
@@ -32,41 +32,52 @@ const generateRandomWorkout = async (user_id) => {
       sets.push({
         reps: generateRandomNumber(5, 15),  // Random reps (5-15)
         weight: generateRandomNumber(30, 100),  // Random weight (30-100 kg)
-        order: j + 1
+        order: j,
       });
     }
 
     exercises.push({
       exercise: randomExercise,
       sets: sets,
-      order: i + 1
+      order: i,
     });
 
     // Remove the chosen exercise from availableExercises
     availableExercises.splice(randomIndex, 1);
   }
 
-  // Random dates and status
-  const currentDate = new Date();
-  const date = new Date(currentDate.setDate(currentDate.getDate() - generateRandomNumber(1, 30))).toISOString(); // Workout date in the past 30 days
+  // Check if workout with this date already exists
+  let date;
+  let datesTaken = [];
+
+  do {
+    if (datesTaken.length >= 60) {
+      throw new Error('All possible dates have been checked and a workout exists for each date.');
+    }
+
+    const currentDate = new Date(new Date().setHours(0, 0, 0, 0));
+    // Randomly select a date in the past or future
+    date = Math.random() >= 0.5 ?
+      new Date(currentDate.setDate(currentDate.getDate() - generateRandomNumber(1, 30))).toLocaleDateString('sv-SE') :
+      new Date(currentDate.setDate(currentDate.getDate() + generateRandomNumber(1, 30))).toLocaleDateString('sv-SE');
+
+    if (!datesTaken.find(date => date === date)) {
+      datesTaken.push(date);
+    }
+  } while (await getWorkoutByDate(user_id, date));
 
   // Select a random note from the predefined list
   const note = randomNotes[generateRandomNumber(0, randomNotes.length - 1)];
 
   // Random workout object
-  const workout = {
+  return {
     related_workout_id: null,
     user_id: user_id,
     name: workout_name,
     exercises: exercises,
     date: date,
-    notes: note
+    notes: note,
   };
-
-  return workout;
 };
 
-(async () => {
-  const randomWorkout = await generateRandomWorkout(user_id);  // Await the result of the async function
-  console.log(JSON.stringify(randomWorkout, null, 2));  // Log the generated workout object
-})();
+module.exports = { generateRandomWorkout };

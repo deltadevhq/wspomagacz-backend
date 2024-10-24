@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "generate-workout": "node ./utilities/workoutGenerator.js",
+    "generate-workout": "node ./utilities/runWorkoutGenerator.js",
     "dev": "nodemon index.js",
     "test": "jest"
   },
