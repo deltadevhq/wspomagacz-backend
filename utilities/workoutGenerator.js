@@ -1,5 +1,5 @@
 const exerciseModel = require('../models/exerciseModel');
-const user_id = 4;
+const { getWorkoutByDate } = require('../models/workoutModel');
 
 // List of random notes
 const randomNotes = [
@@ -46,9 +46,19 @@ const generateRandomWorkout = async (user_id) => {
     availableExercises.splice(randomIndex, 1);
   }
 
-  // Random dates and status
-  const currentDate = new Date();
-  const date = new Date(currentDate.setDate(currentDate.getDate() - generateRandomNumber(1, 30))).toISOString(); // Workout date in the past 30 days
+  // Check if workout with this date already exists
+  let date;
+  let datesTaken = [];
+
+  do {
+    if (datesTaken.length >= 30) {
+      throw new Error('All possible dates have been checked and a workout exists for each date.');
+    }
+
+    const currentDate = new Date(new Date().setHours(0, 0, 0, 0));
+    date = new Date(currentDate.setDate(currentDate.getDate() - generateRandomNumber(1, 30))).toLocaleDateString('sv-SE'); // Workout date in the past 30 days
+    datesTaken.push(date);
+  } while (await getWorkoutByDate(user_id, date));
 
   // Select a random note from the predefined list
   const note = randomNotes[generateRandomNumber(0, randomNotes.length - 1)];
