@@ -8,12 +8,12 @@ const XpScalingFactor = 10;
  * @param {number} xp - The total XP earned by the user
  * @returns {number} - The level corresponding to the provided XP
  */
-const getLevelByXp = async (xp) => {
+const getLevelByXp = (xp) => {
   let level = 1;
 
   // Loop through levels and calculate cumulative XP until the provided XP matches or exceeds the required XP
   while (true) {
-    const requiredXPForNextLevel = await getXpByLevel(level + 1);
+    const requiredXPForNextLevel = getXpByLevel(level + 1);
     if (requiredXPForNextLevel > xp) break;
     level++;
   }
@@ -26,7 +26,7 @@ const getLevelByXp = async (xp) => {
  * @param {number} level - The target level the user wants to reach
  * @returns {number} - The total required XP to reach the provided level
  */
-const getXpByLevel = async (level) => {
+const getXpByLevel = (level) => {
   if (level === 1) return 0;
 
   return (baseLevelXp + (XpScalingFactor * --level)) * level;
