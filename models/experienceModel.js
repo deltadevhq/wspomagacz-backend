@@ -26,8 +26,7 @@ const getLevelByXp = async (xp) => {
 const getXpByLevel = async (level) => {
   if (level === 1) return 0;
 
-  const requiredXP = (100 + (10 * --level)) * level;
-  return requiredXP;
+  return (100 + (10 * --level)) * level;
 };
 
 /**
