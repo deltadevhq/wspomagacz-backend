@@ -32,14 +32,14 @@ const generateRandomWorkout = async (user_id) => {
       sets.push({
         reps: generateRandomNumber(5, 15),  // Random reps (5-15)
         weight: generateRandomNumber(30, 100),  // Random weight (30-100 kg)
-        order: j + 1
+        order: j,
       });
     }
 
     exercises.push({
       exercise: randomExercise,
       sets: sets,
-      order: i + 1
+      order: i,
     });
 
     // Remove the chosen exercise from availableExercises
