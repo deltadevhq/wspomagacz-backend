@@ -33,6 +33,22 @@ const getWorkoutById = async (workout_id) => {
 };
 
 /**
+ * Select workout with for specified user and date
+ */
+const getWorkoutByDate = async (user_id, date) => {
+  const query = 'SELECT * FROM workouts WHERE user_id = $1 and date = $2';
+  const values = [user_id, date];
+
+  try {
+    const result = await pool.query(query, values);
+    return result.rows.length > 0 ? result.rows[0] : null;
+  } catch (error) {
+    console.error('Error executing query', error.stack);
+    throw error;
+  }
+};
+
+/**
  * Insert workout to database
  */
 const createWorkout = async (related_workout_id, user_id, name, exercises, date, notes) => {
@@ -162,6 +178,7 @@ const finishWorkout = async (workout_id) => {
 module.exports = {
   getWorkouts,
   getWorkoutById,
+  getWorkoutByDate,
   createWorkout,
   updateWorkout,
   deleteWorkout,
