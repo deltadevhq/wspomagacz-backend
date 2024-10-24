@@ -66,7 +66,4 @@ const generateRandomWorkout = async (user_id) => {
   return workout;
 };
 
-(async () => {
-  const randomWorkout = await generateRandomWorkout(user_id);  // Await the result of the async function
-  console.log(JSON.stringify(randomWorkout, null, 2));  // Log the generated workout object
-})();
+module.exports = { generateRandomWorkout };
