@@ -1,5 +1,6 @@
 const experienceModel = require('../models/experienceModel');
 const userModel = require('../models/userModel');
+const notificationModel = require('../models/notificationModel');
 
 /**
  * Function to handle the request for the user's level based on provided experience points (XP).
@@ -108,7 +109,7 @@ const userExperienceHandler = async (workout) => {
 
     // Emit level up notification for user
     if (lvl_before < lvl_after) {
-      // TODO: LVL UP EMIT NOTIFICATION
+      notificationModel.sendNotification(workout.user_id, `Congratulations! You've leveled up to Level ${lvl_after}!`, 'level_up');
       console.log(`Level up from ${lvl_before} to ${lvl_after} for user id: ${workout.user_id} `);
     }
 
@@ -185,8 +186,8 @@ const calculateExperience = async (exercises, user) => {
           console.log(`Added XP using equipment weight: ${set.reps} * ${set.weight}`);
         }
       });
-    } 
-    
+    }
+
     xp = Math.round(xp / 50);
 
     console.log(`Total experience: ${xp}`);

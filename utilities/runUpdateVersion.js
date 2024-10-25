@@ -7,7 +7,6 @@ const repoCreationDate = moment.tz('2024-08-24', applicationTimezone);
 
 function getDaysSinceRepoCreation() {
   const today = moment.tz(applicationTimezone);
-  console.log(today);
   return today.diff(repoCreationDate, 'days');
 }
 
