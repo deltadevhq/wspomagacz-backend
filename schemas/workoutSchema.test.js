@@ -598,12 +598,12 @@ describe('Workout validation schema', () => {
     });
 
     test('Notes with invalid characters should fail', () => {
-      const notes = 'ab!';
+      const notes = 'ab@';
 
       const { error } = baseWorkoutSchema.notes.validate(notes);
 
       expect(error).not.toBeUndefined();
-      expect(error.details[0].message).toBe('Notes must contain only letters, numbers, and spaces. You are required to use at least 3 alphanumeric symbols and can only use one space between words.');
+      expect(error.details[0].message).toBe('Notes must contain only letters, numbers, spaces and selected special characters(!.,). You are required to use at least 3 alphanumeric symbols and can only use one space between words.');
     });
 
     test('Notes with valid characters should pass', () => {
