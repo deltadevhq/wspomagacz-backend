@@ -1,4 +1,3 @@
-require('./utilities/runUpdateVersion');
 const swaggerJsDoc = require('swagger-jsdoc');
 const packageJson = require('./package.json');
 const moment = require('moment-timezone');
