@@ -1,38 +1,17 @@
 require('dotenv').config();
+require('./setup')
 const express = require('express');
-const { initDBConnection } = require('./config/database');
 const cors = require('cors');
 const morgan = require('morgan');
-const moment = require('moment-timezone');
 const cookieParser = require('cookie-parser');
-const swaggerUi = require('swagger-ui-express');
-const cron = require('node-cron');
 const app = express();
-const routes = require('./routes');
-const { port, listener, timezone, swaggerDocs, packageJson } = require('./config/settings');
+const cron = require('node-cron');
+const swaggerUi = require('swagger-ui-express');
+const { initDBConnection } = require('./config/database');
+const { applicationHost, backendPort, closeSkippedWorkoutsJobCronDefinition, closeUnfinishedWorkoutsJobCronDefinition } = require('./config/settings');
+const { swaggerDocs, packageJson } = require('./setup');
 const jobs = require('./utilities/jobs');
-
-// Function to generate a timestamp in timezone from configuration
-const getTimestamp = () => {
-  return moment().tz(timezone).format('YYYY-MM-DD HH:mm:ss');
-};
-
-// Override console.log to include a timestamp
-const baseConsoleLog = console.log;
-console.log = function (...args) {
-  baseConsoleLog(`[INFO][${getTimestamp()}]`, ...args);
-};
-
-// Override console.error to include a timestamp
-const baseConsoleError = console.error;
-console.error = function (...args) {
-  baseConsoleError(`[ERROR][${getTimestamp()}]`, ...args);
-};
-
-// Define a custom token for the date in timezone from configuration
-morgan.token('date', () => {
-  return getTimestamp();
-});
+const routes = require('./routes');
 
 // Use morgan to log requests to the console
 app.use(morgan('[INFO][:date] Request: :method :url HTTP/:http-version, Response: :status, ResponseTime: :response-time ms'));
@@ -65,19 +44,28 @@ app.use('/api/experience', routes.experienceRoutes);
 
     await initDBConnection();
 
-    const server = app.listen(port, () => {
-      console.log(`API listening at http://${listener}:${port}`);
+    const server = app.listen(backendPort, () => {
+      console.log(`API listening at http://${applicationHost}:${backendPort}`);
     });
+
+    require('./config/websocket');
+
+    // Schedule daily jobs
+    cron.schedule(closeSkippedWorkoutsJobCronDefinition, () => {
+      jobs.closeSkippedWorkouts();
+    });
+    console.log(`Scheduled 'closeSkippedWorkoutsJob' with cron expression: '${closeSkippedWorkoutsJobCronDefinition}'`);
+
+    cron.schedule(closeUnfinishedWorkoutsJobCronDefinition, () => {
+      jobs.closeUnfinishedWorkouts();
+    });
+    console.log(`Scheduled 'closeUnfinishedWorkoutsJob' with cron expression: '${closeUnfinishedWorkoutsJobCronDefinition}'`);
 
     server.on('listening', () => {
       console.log('Server initlaization completed.');
 
-      // Schedule daily jobs
-      cron.schedule('0 0 * * *', () => {
-        jobs.closeSkippedWorkouts();
-        jobs.closeUnfinishedWorkouts();
-      });
-      
+
+
     });
   } catch (error) {
     console.error('Failed to start the server:', error);
