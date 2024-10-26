@@ -100,5 +100,3 @@ app.use('/api/experience', routes.experienceRoutes);
 // OPTIONAL: [QUALITY] DEBUG LOGGING LEVEL
 
 // TODO: ŚLAD WĘGLOWY WORKOUTU
-
-// TODO: EQUIPMENT IS REQUIRED SCHEMA FIX

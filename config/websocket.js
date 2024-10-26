@@ -15,19 +15,24 @@ notificationWebsocket.on('connection', (ws) => {
 });
 
 pool.on('notification', async (msg) => {
-  const notificationId = msg.payload;
-  const notificationQuery = 'SELECT * FROM notifications WHERE id = $1';
-  const { rows } = await dbClient.query(notificationQuery, [notificationId]);
-  const notification = rows[0];
+  try {
+    console.log(msg);
+    const notificationId = msg.payload.id;
+    const notificationQuery = 'SELECT * FROM notifications WHERE id = $1';
+    const { rows } = await pool.query(notificationQuery, [notificationId]);
+    const notification = rows[0];
 
-  if (notification) {
-    // Broadcast notification to all connected clients
-    wss.clients.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify(notification));
-      }
-    });
-    console.log(notification);
+    if (notification) {
+      // Broadcast notification to all connected clients
+      notificationWebsocket.clients.forEach((client) => {
+        if (client.readyState === WebSocket.OPEN) {
+          client.send(JSON.stringify(notification));
+        }
+      });
+      console.log('Notification sent to clients:', notification);
+    }
+  } catch (error) {
+    console.error('Error handling notification:', error);
   }
 });
 
