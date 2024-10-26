@@ -1,47 +1,17 @@
-const swaggerJsDoc = require('swagger-jsdoc');
-const packageJson = require('../package.json');
+require('dotenv').config();
 
-// Listener definition
-const port = 3000;
-const listener = 'localhost';
-const timezone = 'Europe/Warsaw';
-
-// Swagger definition
-const swaggerOptions = {
-  swaggerDefinition: {
-    openapi: '3.0.0',
-    info: {
-      title: 'Wspomagacz API',
-      version: '1.0.0',
-      description: 'WspomagaczBackend API for WspomagaczFrontend',
-    },
-    components: {
-      securitySchemes: {
-        cookieAuth: {
-          type: 'apiKey',
-          in: 'cookie',
-          name: 'token',
-        },
-      },
-    },
-    security: [
-      {
-        cookieAuth: [],
-      },
-    ],
-  },
-  // Path to the API docs
-  apis: ['./routes/*.js'],
-};
-
-// Initialize swagger-jsdoc
-const swaggerDocs = swaggerJsDoc(swaggerOptions);
-
+// Configuration keys
+const applicationHost = process.env.APPLICATION_HOST;
+const applicationTimezone = process.env.APPLICATION_TIMEZONE;
+const backendPort = process.env.BACKEND_PORT;
+const websocketPort = process.env.WEBSOCKET_PORT;
+const closeSkippedWorkoutsJobCronDefinition = process.env.CLOSE_SKIPPED_WORKOUTS_JOB_CRON_DEFINITION;
+const closeUnfinishedWorkoutsJobCronDefinition = process.env.CLOSE_UNFINISHED_WORKOUTS_JOB_CRON_DEFINITION;
 module.exports = {
-  port,
-  listener,
-  timezone,
-  swaggerOptions,
-  swaggerDocs,
-  packageJson
+  applicationHost,
+  applicationTimezone,
+  backendPort,
+  websocketPort,
+  closeSkippedWorkoutsJobCronDefinition,
+  closeUnfinishedWorkoutsJobCronDefinition
 }
