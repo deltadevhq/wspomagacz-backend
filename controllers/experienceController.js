@@ -1,6 +1,6 @@
 const experienceModel = require('../models/experienceModel');
 const userModel = require('../models/userModel');
-const notificationModel = require('../models/notificationModel');
+// const notificationModel = require('../models/notificationModel');
 
 /**
  * Function to handle the request for the user's level based on provided experience points (XP).
