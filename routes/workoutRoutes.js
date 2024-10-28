@@ -33,6 +33,10 @@ module.exports = router;
  *         schema:
  *           type: string
  *           enum: [completed, in_progress, planned, skipped]
+ *       - in: query
+ *         name: date
+ *         required: false
+ *         example: 2024-10-28
  *     responses:
  *       200:
  *         description: Successfully retrieved all workouts

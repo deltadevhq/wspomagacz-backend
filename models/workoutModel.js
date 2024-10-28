@@ -3,9 +3,9 @@ const { pool } = require('../config/database');
 /**
  * Select all workouts from database
  */
-const getWorkouts = async (user_id, status) => {
-  const query = 'SELECT * FROM workouts WHERE user_id = COALESCE($1, user_id) AND status = COALESCE($2, status)';
-  const values = [user_id, status];
+const getWorkouts = async (user_id, status, date) => {
+  const query = 'SELECT * FROM workouts WHERE user_id = COALESCE($1, user_id) AND status = COALESCE($2, status) AND date = COALESCE($3, date)';
+  const values = [user_id, status, date];
 
   try {
     const result = await pool.query(query, values);

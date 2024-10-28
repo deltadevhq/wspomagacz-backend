@@ -7,9 +7,6 @@ const experienceController = require('./experienceController');
  * Fetch all workouts
  */
 const getWorkouts = async (req, res) => {
-
-  // TODO: CREATE FILTER ON DATE
-
   try {
     // Check user existence if user_id is provided
     if (req.query.user_id) {
@@ -18,7 +15,7 @@ const getWorkouts = async (req, res) => {
     }
 
     // Fetch workouts from database
-    const workouts = await workoutModel.getWorkouts(req.query.user_id, req.query.status);
+    const workouts = await workoutModel.getWorkouts(req.query.user_id, req.query.status, req.query.date);
 
     // Check if anything was returned
     if (!workouts) return res.status(404).json({ error: 'Workouts not found' });

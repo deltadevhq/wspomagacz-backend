@@ -175,6 +175,7 @@ const baseWorkoutSchema = {
 const getWorkoutSchema = Joi.object({
   status: baseWorkoutSchema.status,
   user_id: baseUserSchema.id,
+  date: baseWorkoutSchema.date,
 });
 
 /**
