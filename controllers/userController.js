@@ -11,8 +11,19 @@ const getUserProfile = async (req, res) => {
     // Check if anything was returned
     if (!user) return res.status(404).json({ error: 'User not found' });
 
-    // Omit sensitive fields using destructuring
-    const { password_hash, email, last_logged_at, created_at, modified_at, ...publicUserData } = user;
+    // Construct an object with public user information
+    const publicUserData = {
+      id: user.id,
+      username: user.username,
+      display_name: user.display_name,
+      gender: user.gender,
+      birthday: user.birthday,
+      status: user.status,
+      level: user.level,
+      exp: user.exp,
+      weights: user.weights,
+      height: user.height
+    };
 
     // Successful response with sanitized user data
     res.status(200).json(publicUserData);
