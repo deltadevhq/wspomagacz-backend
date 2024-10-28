@@ -1,7 +1,12 @@
 const userModel = require('../models/userModel');
 
 /**
- * Get user profile data by its ID
+ * Function to handle requests for retrieving a user's public profile by their ID.
+ * 
+ * @param {Object} req - The request object containing the user ID as a route parameter.
+ * @param {Object} res - The response object used to send back the user profile data.
+ * @returns {void} - Responds with the user's public profile data if found, or an error message if the user is not available.
+ * @throws {Error} - Throws an error if there is an issue fetching the user data from the database.
  */
 const getUserProfile = async (req, res) => {
   try {
@@ -34,7 +39,15 @@ const getUserProfile = async (req, res) => {
 };
 
 /**
- * Patch user data by its ID (You can only patch currently logged user)
+ * Function to handle requests for updating an user by their ID.
+ * 
+ * @param {Object} req - The request object containing the user ID as a route parameter and the new data in the body.
+ * @param {Object} res - The response object used to send back the updated user data.
+ * @returns {void} - Responds with the updated user data if the update is successful, or an error message if the request fails.
+ * @throws {Error} - Throws an error if:
+ *   - The request is not for the currently logged-in user.
+ *   - The user is not found.
+ *   - An internal server error occurs during the update process.
  */
 const patchUser = async (req, res) => {
   // Check if the request is for the currently logged-in user
@@ -65,7 +78,15 @@ const patchUser = async (req, res) => {
 };
 
 /**
- * Delete user by its ID (You can only delete currently logged user)
+ * Function to handle requests for deleting a user by their ID.
+ * 
+ * @param {Object} req - The request object containing the user ID as a route parameter.
+ * @param {Object} res - The response object used to send back the result of the deletion request.
+ * @returns {void} - Responds with a success message upon successful deletion or an error message if the request fails.
+ * @throws {Error} - Throws an error if:
+ *   - The request is not for the currently logged-in user.
+ *   - The user is not found.
+ *   - An internal server error occurs during the deletion process.
  */
 const deleteUser = async (req, res) => {
   // Check if the request is for the currently logged-in user
