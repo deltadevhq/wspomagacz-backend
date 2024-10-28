@@ -223,16 +223,36 @@ const finishWorkoutSchema = Joi.object({
 });
 
 /**
- * Specific validation schema for /start /stop and /finish endpoints to check if workout date is today
+ * Specific validation schema to check if workout date is today
  */
-const dateCheckSchema = Joi.object({
+const isWorkoutDateToday = Joi.object({
   date: Joi.date()
     .custom((value, helpers) => {
-      const todayDate = moment().tz(applicationTimezone).startOf('day'); // Start of today in Warsaw time
-      const inputDate = moment(value).tz(applicationTimezone).startOf('day'); // Input date in Warsaw time
-      
+      const todayDate = moment().tz(applicationTimezone).startOf('day');
+      const inputDate = moment(value).tz(applicationTimezone).startOf('day');
+
       if (!inputDate.isSame(todayDate, 'day')) {
         return helpers.message('Workout date must be today');
+      }
+      return value;
+    })
+    .required()
+    .messages({
+      'any.required': 'Date is required',
+    }),
+});
+
+/**
+ * Specific validation schema to check if workout date is not in the past
+ */
+const isWorkoutDateNotInPast = Joi.object({
+  date: Joi.date()
+    .custom((value, helpers) => {
+      const todayDate = moment().tz(applicationTimezone).startOf('day');
+      const inputDate = moment(value).tz(applicationTimezone).startOf('day');
+
+      if (!inputDate.isBefore(todayDate, 'day')) {
+        return helpers.message('Workout date must not be in the past');
       }
       return value;
     })
@@ -252,5 +272,6 @@ module.exports = {
   startWorkoutSchema,
   stopWorkoutSchema,
   finishWorkoutSchema,
-  dateCheckSchema,
+  isWorkoutDateToday,
+  isWorkoutDateNotInPast,
 };

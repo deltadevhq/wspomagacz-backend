@@ -104,6 +104,12 @@ const deleteWorkout = async (req, res) => {
     // Check if the workout belongs to the currently logged-in user
     if (workout.user_id !== req.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
 
+    // Check if workout is finished
+    if (workout.finished_at) return res.status(409).json({ error: 'Workout is already finished' });
+
+    // Check if workout is started
+    if (workout.started_at) return res.status(409).json({ error: 'Workout is already started' });
+
     // Delete workout from database
     await workoutModel.deleteWorkout(req.params.id);
 
@@ -134,7 +140,7 @@ const startWorkout = async (req, res) => {
     if (workout.started_at) return res.status(409).json({ error: 'Workout is already started' });
 
     // Check if workout date is today
-    const { error } = workoutSchema.dateCheckSchema.validate({ date: workout.date });
+    const { error } = workoutSchema.isWorkoutDateToday.validate({ date: workout.date });
     if (error) return res.status(400).json({ error: error.details[0].message });
 
     // Patch started_at for workout in database
@@ -167,7 +173,7 @@ const stopWorkout = async (req, res) => {
     if (!workout.started_at) return res.status(409).json({ error: 'Workout is not started yet' });
 
     // Check if workout date is today
-    const { error } = workoutSchema.dateCheckSchema.validate({ date: workout.date });
+    const { error } = workoutSchema.isWorkoutDateToday.validate({ date: workout.date });
     if (error) return res.status(400).json({ error: error.details[0].message });
 
     // Patch started_at for workout in database
@@ -200,7 +206,7 @@ const finishWorkout = async (req, res) => {
     if (!workout.started_at) return res.status(409).json({ error: 'Workout is not started yet' });
 
     // Check if workout date is today
-    const { error } = workoutSchema.dateCheckSchema.validate({ date: workout.date });
+    const { error } = workoutSchema.isWorkoutDateToday.validate({ date: workout.date });
     if (error) return res.status(400).json({ error: error.details[0].message });
 
     // Patch finished_at for workout in database
@@ -208,7 +214,7 @@ const finishWorkout = async (req, res) => {
     const experience_grant = await experienceController.userExperienceHandler(finished_workout);
 
     // Successful response with updated workout data
-    res.status(200).json({finished_workout, experience_grant});
+    res.status(200).json({ finished_workout, experience_grant });
   } catch (error) {
     console.error('Error finishing workout:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
