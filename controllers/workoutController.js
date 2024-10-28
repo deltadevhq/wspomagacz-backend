@@ -58,7 +58,8 @@ const putWorkout = async (req, res) => {
   const { error } = workoutSchema.isWorkoutDateNotInPast.validate({ date: req.body.date });
   if (error) return res.status(400).json({ error: error.details[0].message });
 
-  // TODO: CHECK IF WORKOUT DATE IS NOT TAKEN FOR PROVIDED USER
+  const collidedWorkout = await workoutModel.checkWorkoutCollision(req.user_id, req.body.date);
+  if (collidedWorkout) return res.status(409).json({ error: 'Workout with that date exists for currently logged user' });
 
   if (req.body.id) {
     try {
@@ -70,7 +71,7 @@ const putWorkout = async (req, res) => {
       if (workout.user_id !== req.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
 
       // Check if workout status is not finished
-      if (workout.status === 'finished') return res.status(409).json({ error: 'You cant edit workout which status is finished' });
+      if (workout.status === 'finished') return res.status(409).json({ error: 'You can not edit workout which status is finished' });
 
       // Serialize exercises array into JSON string
       const parsed_exercises = req.body.exercises ? JSON.stringify(req.body.exercises) : JSON.stringify(workout.exercises);
@@ -114,7 +115,7 @@ const deleteWorkout = async (req, res) => {
     if (workout.user_id !== req.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
 
     // Check if workout status is planned
-    if (workout.status === 'completed' || workout.status === 'in_progress') return res.status(409).json({ error: 'You cant delete workout which status is completed or in_progress' });
+    if (workout.status === 'completed' || workout.status === 'in_progress') return res.status(409).json({ error: 'You can only delete workout which status is planned or skipped' });
 
     // Delete workout from database
     await workoutModel.deleteWorkout(req.params.id);

@@ -175,6 +175,22 @@ const finishWorkout = async (workout_id) => {
   }
 };
 
+/**
+ * Check if provided workout date collide with user other workouts
+ */
+const checkWorkoutCollision = async (user_id, date) => {
+  const query = 'SELECT * FROM workouts WHERE user_id = $1 AND date = $2';
+  const values = [user_id, date];
+
+  try {
+    const result = await pool.query(query, values);
+    return result.rows.length > 0 ? result.rows : null;
+  } catch (error) {
+    console.error('Error executing query', error.stack);
+    throw error;
+  }
+};
+
 module.exports = {
   getWorkouts,
   getWorkoutById,
@@ -184,5 +200,6 @@ module.exports = {
   deleteWorkout,
   startWorkout,
   stopWorkout,
-  finishWorkout
+  finishWorkout,
+  checkWorkoutCollision,
 };
