@@ -113,15 +113,12 @@ const userExperienceHandler = async (workout) => {
       console.log(`Level up from ${lvl_before} to ${lvl_after} for user id: ${workout.user_id} `);
     }
 
-    // Grant experience and level for user and insert row in history
-    const result = await experienceModel.grantExperience(workout.user_id, exp_after, lvl_after);
-    let history_result;
-    if (result) {
-      history_result = await experienceModel.insertExperienceHistory(workout.user_id, workout.id, exp_granted, exp_before, exp_after, lvl_before, lvl_after);
-    }
     // TODO: EXTRA EXPERIENCE FOR EACH PERSONAL RECORD
     // TODO: EXTRA EXPERIENCE FOR EACH ACHIEVEMENT
-    // TODO: CHECK IF WORKOUT IS RANKED - ONLY TODAYS WORKOUTS
+
+    // Grant experience and level for user and insert row in history
+    await experienceModel.grantExperience(workout.user_id, exp_after, lvl_after);
+    const history_result = await experienceModel.insertExperienceHistory(workout.user_id, workout.id, exp_granted, exp_before, exp_after, lvl_before, lvl_after);
 
     console.log(`Finished user experience handler with XP granted: ${history_result.exp_granted}`);
     return history_result;
