@@ -1,5 +1,5 @@
 const { describe, test, expect } = require('@jest/globals');
-const { baseWorkoutSchema, baseSetsSchema } = require('./workoutSchema');
+const { baseWorkoutSchema } = require('./workoutSchema');
 
 describe('Workout validation schema', () => {
   //#region ID validation

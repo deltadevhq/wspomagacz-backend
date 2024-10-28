@@ -32,7 +32,7 @@ const baseUserSchema = {
     .messages({
       'string.min': 'Display name must be at least 3 characters long',
       'string.max': 'Display name must be at most 30 characters long',
-      'string.pattern.base': 'Display name must contain only letters, numbers, and spaces. You are required to use atleast 3 alphanumeric symbols and can only use one spacebar between words.',
+      'string.pattern.base': 'Display name must contain only letters, numbers, and spaces. You are required to use at least 3 alphanumeric symbols and can only use one spacebar between words.',
     }),
 
   password: JoiPassword.string()
@@ -85,7 +85,7 @@ const baseUserSchema = {
           .positive()
           .max(250)
           .precision(1)
-          .prefs({ convert: false }) // Dont convert number precision, instead validate it
+          .prefs({ convert: false }) // Do not convert number precision, instead validate it
           .required()
           .messages({
             'number.base': 'Weight must be a number',

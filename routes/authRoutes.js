@@ -91,16 +91,16 @@ module.exports = router;
  *     tags: [Authorization]
  *     responses:
  *       204:
- *         description: A successful logout - removes cookie with autorization token
+ *         description: A successful logout - removes cookie with authorization token
  *       401:
- *         description: Bad request - Invalid or missing autorization token
+ *         description: Bad request - Invalid or missing authorization token
  * /api/auth/user:
  *   get:
  *     summary: Returns user data by token provided in cookie
  *     tags: [Authorization]
  *     responses:
  *       200:
- *         description: Successfuly retrieved user data
+ *         description: Successfully retrieved user data
  *         content:
  *           application/json:
  *             schema:

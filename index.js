@@ -16,7 +16,7 @@ const routes = require('./routes');
 // Use morgan to log requests to the console
 app.use(morgan('[INFO][:date] Request: :method :url HTTP/:http-version, Response: :status, ResponseTime: :response-time ms'));
 
-// Use cookieparser to parse cookies
+// Use cookieParser to parse cookies
 app.use(cookieParser());
 
 // Use CORS to control allow origin access
@@ -62,7 +62,7 @@ app.use('/api/experience', routes.experienceRoutes);
     console.log(`Scheduled 'closeUnfinishedWorkoutsJob' with cron expression: '${closeUnfinishedWorkoutsJobCronDefinition}'`);
 
     server.on('listening', () => {
-      console.log('Server initlaization completed.');
+      console.log('Server initialization completed.');
 
 
 
@@ -82,13 +82,13 @@ app.use('/api/experience', routes.experienceRoutes);
 // ENDPOINT: GET /API/USERS/{ID}/NOTIFICATIONS/READ - READ ALL NOTIFICATION FOR USER
 // CONSIDER: GET /API/USERS/{ID}/NOTIFICATIONS/{NOTIFICATION_ID}/READ - READ SINGLE NOTIFICATION FOR USER
 
-// TODO: EMIT NOTIFICATION FOR AUTOMATICLY CLOSED WORKOUT BY JOB
+// TODO: EMIT NOTIFICATION FOR AUTOMATICALLY CLOSED WORKOUT BY JOB
 // TODO: EMIT NOTIFICATION FOR USER LEVEL UP
 // TODO: EMIT NOTIFICATION FOR FRIEND REQUEST
 // TODO: WEBSOCKET FOR NOTIFICATIONS
 
 // CONSIDER: DETERMINE TOKEN EXPIRE TIME / CONSIDER AUTOMATIC TOKEN RENEWAL
-// CONSIDER: OPERATIONS_TO_EXECUTE TABLE IN DATABASE FOR OPERTAIONS LIKE USER DELETION
+// CONSIDER: OPERATIONS_TO_EXECUTE TABLE IN DATABASE FOR OPERATIONS LIKE USER DELETION
 // CONSIDER: LIMIT RATE ENDPOINTS - DDS PROTECTION
 
 // OPTIONAL: USER LOGIN BY EMAIL
@@ -99,5 +99,3 @@ app.use('/api/experience', routes.experienceRoutes);
 // OPTIONAL: [QUALITY] SMTP MAILER IMPLEMENTATION
 // OPTIONAL: [QUALITY] REDIS FOR CACHE DATA
 // OPTIONAL: [QUALITY] DEBUG LOGGING LEVEL
-
-// TODO: ŚLAD WĘGLOWY WORKOUTU
