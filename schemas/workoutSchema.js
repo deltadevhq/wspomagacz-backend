@@ -251,7 +251,7 @@ const isWorkoutDateNotInPast = Joi.object({
       const todayDate = moment().tz(applicationTimezone).startOf('day');
       const inputDate = moment(value).tz(applicationTimezone).startOf('day');
 
-      if (!inputDate.isBefore(todayDate, 'day')) {
+      if (inputDate.isBefore(todayDate, 'day')) {
         return helpers.message('Workout date must not be in the past');
       }
       return value;

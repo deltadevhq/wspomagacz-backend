@@ -54,6 +54,12 @@ const getWorkoutById = async (req, res) => {
  * Create new workout or edit existing
  */
 const putWorkout = async (req, res) => {
+  // Check if workout date is not in the past
+  const { error } = workoutSchema.isWorkoutDateNotInPast.validate({ date: req.body.date });
+  if (error) return res.status(400).json({ error: error.details[0].message });
+
+  // TODO: CHECK IF WORKOUT DATE IS NOT TAKEN FOR PROVIDED USER
+
   if (req.body.id) {
     try {
       // Check if workout exists
@@ -62,6 +68,9 @@ const putWorkout = async (req, res) => {
 
       // Check if the request is for the currently logged-in user
       if (workout.user_id !== req.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
+
+      // Check if workout status is not finished
+      if (workout.status === 'finished') return res.status(409).json({ error: 'You cant edit workout which status is finished' });
 
       // Serialize exercises array into JSON string
       const parsed_exercises = req.body.exercises ? JSON.stringify(req.body.exercises) : JSON.stringify(workout.exercises);
@@ -104,11 +113,8 @@ const deleteWorkout = async (req, res) => {
     // Check if the workout belongs to the currently logged-in user
     if (workout.user_id !== req.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
 
-    // Check if workout is finished
-    if (workout.finished_at) return res.status(409).json({ error: 'Workout is already finished' });
-
-    // Check if workout is started
-    if (workout.started_at) return res.status(409).json({ error: 'Workout is already started' });
+    // Check if workout status is planned
+    if (workout.status === 'completed' || workout.status === 'in_progress') return res.status(409).json({ error: 'You cant delete workout which status is completed or in_progress' });
 
     // Delete workout from database
     await workoutModel.deleteWorkout(req.params.id);
@@ -133,11 +139,8 @@ const startWorkout = async (req, res) => {
     // Check if the request is for the currently logged-in user
     if (workout.user_id !== req.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
 
-    // Check if workout is finished
-    if (workout.finished_at) return res.status(409).json({ error: 'Workout is already finished' });
-
-    // Check if workout is started
-    if (workout.started_at) return res.status(409).json({ error: 'Workout is already started' });
+    // Check if workout status is planned
+    if (!workout.status === 'planned') return res.status(409).json({ error: 'You can only start workout which status is planned' });
 
     // Check if workout date is today
     const { error } = workoutSchema.isWorkoutDateToday.validate({ date: workout.date });
@@ -166,15 +169,8 @@ const stopWorkout = async (req, res) => {
     // Check if the request is for the currently logged-in user
     if (workout.user_id !== req.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
 
-    // Check if workout is finished
-    if (workout.finished_at) return res.status(409).json({ error: 'Workout is already finished' });
-
-    // Check if workout is not started yet
-    if (!workout.started_at) return res.status(409).json({ error: 'Workout is not started yet' });
-
-    // Check if workout date is today
-    const { error } = workoutSchema.isWorkoutDateToday.validate({ date: workout.date });
-    if (error) return res.status(400).json({ error: error.details[0].message });
+    // Check if workout status is in_progress
+    if (!workout.status === 'in_progress') return res.status(409).json({ error: 'You can only stop workout which status is in_progress' });
 
     // Patch started_at for workout in database
     const stopped_workout = await workoutModel.stopWorkout(req.params.id);
@@ -199,15 +195,8 @@ const finishWorkout = async (req, res) => {
     // Check if the request is for the currently logged-in user
     if (workout.user_id !== req.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
 
-    // Check if workout is finished
-    if (workout.finished_at) return res.status(409).json({ error: 'Workout is already finished' });
-
-    // Check if workout is not started yet
-    if (!workout.started_at) return res.status(409).json({ error: 'Workout is not started yet' });
-
-    // Check if workout date is today
-    const { error } = workoutSchema.isWorkoutDateToday.validate({ date: workout.date });
-    if (error) return res.status(400).json({ error: error.details[0].message });
+    // Check if workout status is in_progress
+    if (!workout.status === 'in_progress') return res.status(409).json({ error: 'You can only stop workout which status is in_progress' });
 
     // Patch finished_at for workout in database
     const finished_workout = await workoutModel.finishWorkout(req.params.id);
