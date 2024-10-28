@@ -2,8 +2,7 @@ const Joi = require('joi');
 const moment = require('moment-timezone');
 const { baseUserSchema } = require('./userSchema');
 const { baseExerciseSchema } = require('./exerciseSchema');
-
-const tomorrow = () => moment().tz('Europe/Warsaw').startOf('day').add(1, 'days').format();
+const { applicationTimezone } = require('../config/settings');
 
 /**
  * Base validation schema for sets data
@@ -223,11 +222,24 @@ const finishWorkoutSchema = Joi.object({
   id: baseWorkoutSchema.id.required().messages({ 'any.required': 'ID is required' }),
 });
 
+/**
+ * Specific validation schema for /start /stop and /finish endpoints to check if workout date is today
+ */
 const dateCheckSchema = Joi.object({
-  date: baseWorkoutSchema.date.less(tomorrow()).required().messages({
-    'any.required': 'Date is required',
-    'date.less': 'Workout date must be a date before tomorrow',
-  }),
+  date: Joi.date()
+    .custom((value, helpers) => {
+      const todayDate = moment().tz(applicationTimezone).startOf('day'); // Start of today in Warsaw time
+      const inputDate = moment(value).tz(applicationTimezone).startOf('day'); // Input date in Warsaw time
+      
+      if (!inputDate.isSame(todayDate, 'day')) {
+        return helpers.message('Workout date must be today');
+      }
+      return value;
+    })
+    .required()
+    .messages({
+      'any.required': 'Date is required',
+    }),
 });
 
 module.exports = {

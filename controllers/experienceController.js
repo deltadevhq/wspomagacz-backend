@@ -109,7 +109,7 @@ const userExperienceHandler = async (workout) => {
 
     // Emit level up notification for user
     if (lvl_before < lvl_after) {
-      notificationModel.sendNotification(workout.user_id, `Congratulations! You've leveled up to Level ${lvl_after}!`, 'level_up');
+      // await notificationModel.sendNotification(workout.user_id, `Congratulations! You've leveled up to Level ${lvl_after}!`, 'level_up');
       console.log(`Level up from ${lvl_before} to ${lvl_after} for user id: ${workout.user_id} `);
     }
 

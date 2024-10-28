@@ -133,7 +133,7 @@ const startWorkout = async (req, res) => {
     // Check if workout is started
     if (workout.started_at) return res.status(409).json({ error: 'Workout is already started' });
 
-    // Check if workout date is not in future
+    // Check if workout date is today
     const { error } = workoutSchema.dateCheckSchema.validate({ date: workout.date });
     if (error) return res.status(400).json({ error: error.details[0].message });
 
@@ -166,7 +166,7 @@ const stopWorkout = async (req, res) => {
     // Check if workout is not started yet
     if (!workout.started_at) return res.status(409).json({ error: 'Workout is not started yet' });
 
-    // Check if workout date is not in future
+    // Check if workout date is today
     const { error } = workoutSchema.dateCheckSchema.validate({ date: workout.date });
     if (error) return res.status(400).json({ error: error.details[0].message });
 
@@ -199,7 +199,7 @@ const finishWorkout = async (req, res) => {
     // Check if workout is not started yet
     if (!workout.started_at) return res.status(409).json({ error: 'Workout is not started yet' });
 
-    // Check if workout date is not in future
+    // Check if workout date is today
     const { error } = workoutSchema.dateCheckSchema.validate({ date: workout.date });
     if (error) return res.status(400).json({ error: error.details[0].message });
 
