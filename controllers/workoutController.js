@@ -4,7 +4,11 @@ const workoutSchema = require('../schemas/workoutSchema');
 const experienceController = require('./experienceController');
 
 /**
- * Fetch all workouts
+ * Function to handle the request for retrieving workouts based on provided query parameters.
+ * @param {Object} req - The request object containing query parameters: user_id, status, and date.
+ * @param {Object} res - The response object used to send back the results.
+ * @returns {void} - Responds with an array of workouts matching the query parameters.
+ * @throws {Error} - Throws an error if there's an issue fetching workouts or if the user does not exist.
  */
 const getWorkouts = async (req, res) => {
   try {
@@ -29,7 +33,11 @@ const getWorkouts = async (req, res) => {
 };
 
 /**
- * Fetch single workout by its ID
+ * Function to handle the request for retrieving a specific workout by its ID.
+ * @param {Object} req - The request object containing the workout ID as a route parameter.
+ * @param {Object} res - The response object used to send back the result.
+ * @returns {void} - Responds with the workout data if found.
+ * @throws {Error} - Throws an error if there's an issue fetching the workout or if the workout is not found.
  */
 const getWorkoutById = async (req, res) => {
   try {
@@ -47,8 +55,20 @@ const getWorkoutById = async (req, res) => {
   }
 };
 
-/** 
- * Create new workout or edit existing
+/**
+ * Function to handle requests for creating or updating a workout.
+ * - If an ID is provided in the request body, the function updates the corresponding workout.
+ * - If no ID is provided, a new workout is created.
+ * 
+ * @param {Object} req - The request object containing workout data in the body and the workout ID as an optional parameter.
+ * @param {Object} res - The response object used to send back the result.
+ * @returns {void} - Responds with the created or updated workout data, or an error message.
+ * @throws {Error} - Throws an error if:
+ *   - The workout date is in the past.
+ *   - A workout with the same date already exists for the user.
+ *   - The workout is not found, or if it belongs to a different user.
+ *   - The workout has a 'finished' status and cannot be edited.
+ *   - An internal server error occurs during the update or creation process.
  */
 const putWorkout = async (req, res) => {
   // Check if workout date is not in the past
@@ -100,7 +120,17 @@ const putWorkout = async (req, res) => {
 };
 
 /**
- * Delete workout by its ID
+ * Function to handle requests for deleting a specific workout by its ID.
+ * - Checks if the workout exists, belongs to the currently logged-in user, and has an allowed status for deletion.
+ * 
+ * @param {Object} req - The request object containing the workout ID as a route parameter.
+ * @param {Object} res - The response object used to send back the result.
+ * @returns {void} - Responds with a success message upon deletion or an error message if deletion is not allowed.
+ * @throws {Error} - Throws an error if:
+ *   - The workout is not found.
+ *   - The workout belongs to a different user.
+ *   - The workout status is 'completed' or 'in_progress', restricting deletion.
+ *   - An internal server error occurs during the deletion process.
  */
 const deleteWorkout = async (req, res) => {
   try {
@@ -126,7 +156,18 @@ const deleteWorkout = async (req, res) => {
 };
 
 /**
- * Sets the workout start time to current time
+ * Function to handle requests for starting a specific workout by its ID.
+ * - Checks if the workout exists, belongs to the currently logged-in user, has a status of 'planned', and has a workout date of today.
+ * 
+ * @param {Object} req - The request object containing the workout ID as a route parameter.
+ * @param {Object} res - The response object used to send back the result.
+ * @returns {void} - Responds with the updated workout data if successfully started or an error message if the request fails validation.
+ * @throws {Error} - Throws an error if:
+ *   - The workout is not found.
+ *   - The workout belongs to a different user.
+ *   - The workout status is not 'planned', restricting the start action.
+ *   - The workout date is not today.
+ *   - An internal server error occurs during the update process.
  */
 const startWorkout = async (req, res) => {
   try {
@@ -156,7 +197,17 @@ const startWorkout = async (req, res) => {
 };
 
 /**
- * Removes the workout start time
+ * Function to handle requests for stopping a specific workout by its ID.
+ * - Checks if the workout exists, belongs to the currently logged-in user, and has a status of 'in_progress'.
+ * 
+ * @param {Object} req - The request object containing the workout ID as a route parameter.
+ * @param {Object} res - The response object used to send back the result.
+ * @returns {void} - Responds with the updated workout data if successfully stopped or an error message if the request fails validation.
+ * @throws {Error} - Throws an error if:
+ *   - The workout is not found.
+ *   - The workout belongs to a different user.
+ *   - The workout status is not 'in_progress', restricting the stop action.
+ *   - An internal server error occurs during the update process.
  */
 const stopWorkout = async (req, res) => {
   try {
@@ -182,7 +233,18 @@ const stopWorkout = async (req, res) => {
 };
 
 /**
- * Sets the workout finish time to current time
+ * Function to handle requests for finishing a specific workout by its ID.
+ * - Checks if the workout exists, belongs to the currently logged-in user, and has a status of 'in_progress'.
+ * - Grants experience points upon successful completion.
+ * 
+ * @param {Object} req - The request object containing the workout ID as a route parameter.
+ * @param {Object} res - The response object used to send back the result.
+ * @returns {void} - Responds with the updated workout data and experience points granted if successfully finished, or an error message if the request fails validation.
+ * @throws {Error} - Throws an error if:
+ *   - The workout is not found.
+ *   - The workout belongs to a different user.
+ *   - The workout status is not 'in_progress', restricting the finish action.
+ *   - An internal server error occurs during the update or experience grant process.
  */
 const finishWorkout = async (req, res) => {
   try {
