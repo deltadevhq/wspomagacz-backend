@@ -40,7 +40,7 @@ const getUserProfile = async (req, res) => {
 };
 
 /**
- * Function to handle requests for updating an user by their ID.
+ * Function to handle requests for updating a user by their ID.
  *
  * @param {Request} req - The request object containing the user ID as a route parameter and the new data in the body.
  * @param {Response} res - The response object used to send back the updated user data.
