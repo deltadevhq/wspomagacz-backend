@@ -147,7 +147,10 @@ describe('Workout Model', () => {
       await getWorkoutByDate(1, testWorkout.date).then(async (workout) => await workout && deleteWorkout(workout.id));
 
       // Create a workout to be used for the test
-      const { id, status, related_workout_id, user_id, name, exercises, date, notes } = await createTestWorkout();
+      const createdWorkout = await createTestWorkout();
+      const { id, status, related_workout_id, user_id, name, date, notes } = createdWorkout;
+      let { exercises } = createdWorkout;
+      exercises = JSON.stringify(exercises);
 
       // Check that the workout was created
       expect(id).not.toBeNull();
