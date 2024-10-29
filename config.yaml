@@ -1,0 +1,22 @@
+database:
+  host: "%DATABASE_HOST%"
+  port: "%DATABASE_PORT%"
+  name: "%DATABASE_NAME%"
+  user: "%DATABASE_USER%"
+  password: "%DATABASE_PASSWORD%"
+
+application:
+  host: "localhost"
+  timezone: "Europe/Warsaw"
+  secret: "%APPLICATION_SECRET%"
+  corsOrigin: "http://localhost:4200"
+
+backend:
+  port: 3000
+
+websocket:
+  port: 3030
+
+cronJobs:
+  closeSkippedWorkouts: "0 0 * * *"
+  closeUnfinishedWorkouts: "0 0 * * *"

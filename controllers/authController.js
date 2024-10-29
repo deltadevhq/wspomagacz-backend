@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 const { Response, Request } = require('express');
-
+const { applicationSecret } = require('../config/settings');
 const authModel = require('../models/authModel');
 const userModel = require('../models/userModel');
 const jwt = require('jsonwebtoken');
@@ -104,7 +104,7 @@ const loginUser = async (req, res) => {
     await authModel.updateUserLastLogin(user.username);
 
     // Generate JWT token
-    const token = jwt.sign({ id: user.id, username: user.username }, process.env.API_SECRET, {
+    const token = jwt.sign({ id: user.id, username: user.username }, applicationSecret, {
       expiresIn: '7d',
     });
 
@@ -204,7 +204,7 @@ const verifyToken = async (req, res, next) => {
 
   try {
     // Verify the token using the secret key
-    const decoded = jwt.verify(token, process.env.API_SECRET);
+    const decoded = jwt.verify(token, applicationSecret);
 
     // Attach user ID from token to the request body
     req.body.logged_user_id = decoded.id;

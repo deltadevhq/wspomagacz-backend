@@ -1,4 +1,3 @@
-require('dotenv').config();
 require('./setup')
 const express = require('express');
 const cors = require('cors');
@@ -10,6 +9,7 @@ const swaggerUi = require('swagger-ui-express');
 const { initDBConnection } = require('./config/database');
 const { applicationHost, backendPort, closeSkippedWorkoutsJobCronDefinition, closeUnfinishedWorkoutsJobCronDefinition } = require('./config/settings');
 const { swaggerDocs, packageJson } = require('./setup');
+const { applicationCorsOrigin } = require('./config/settings');
 const jobs = require('./utilities/jobs');
 const routes = require('./routes');
 
@@ -21,7 +21,7 @@ app.use(cookieParser());
 
 // Use CORS to control allow origin access
 app.use(cors({
-  origin: process.env.CORS_ORIGIN,
+  origin: applicationCorsOrigin,
   credentials: true
 }));
 app.use(express.json());
@@ -89,7 +89,6 @@ app.use('/api/experience', routes.experienceRoutes);
 // CONSIDER: OPERATIONS_TO_EXECUTE TABLE IN DATABASE FOR OPERATIONS LIKE USER DELETION
 // CONSIDER: LIMIT RATE ENDPOINTS - DDS PROTECTION
 
-// OPTIONAL: [QUALITY] YAML CONFIGURATION FILE
 // OPTIONAL: [QUALITY] LOG TO FILE
 // OPTIONAL: [QUALITY] JOB MANAGER
 // OPTIONAL: [QUALITY] SMTP MAILER IMPLEMENTATION
