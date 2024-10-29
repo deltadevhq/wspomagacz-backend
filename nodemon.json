@@ -1,8 +1,12 @@
 {
-    "ignore": [
-        "package.json"
-    ],
-    "events": {
+  "watch": [
+    "."
+  ],
+  "ext": "js,json,yaml",
+  "ignore": [
+    "package.json"
+  ],
+  "events": {
     "restart": "npm run update-version"
   }
 }
