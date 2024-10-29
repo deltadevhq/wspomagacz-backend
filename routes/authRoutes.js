@@ -56,6 +56,7 @@ module.exports = router;
  * /api/auth/login:
  *   post:
  *     summary: Logs in user with provided credentials by setting authorization token as cookie
+ *     description: Username provided in request body can be either email or username
  *     tags: [Authorization]
  *     requestBody:
  *       required: true
