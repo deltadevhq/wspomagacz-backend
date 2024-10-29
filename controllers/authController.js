@@ -83,8 +83,13 @@ const registerUser = async (req, res) => {
  */
 const loginUser = async (req, res) => {
   try {
-    // Check if the user exists
-    const user = await authModel.getUserByUsername(req.body.username);
+    // Attempt to get the user by username or email
+    let user;
+    if (!req.body.username.includes('@')) {
+      user = await authModel.getUserByUsername(req.body.username);
+    } else {
+      user = await authModel.getUserByEmail(req.body.username);
+    }
     if (!user) return res.status(401).json({ error: 'Invalid username or password' });
 
     // Check if provided password is correct
@@ -92,7 +97,7 @@ const loginUser = async (req, res) => {
     if (!is_match) return res.status(401).json({ error: 'Invalid username or password' });
 
     // Update last login timestamp in database
-    await authModel.updateUserLastLogin(req.body.username);
+    await authModel.updateUserLastLogin(user.username);
 
     // Generate JWT token
     const token = jwt.sign({ id: user.id, username: user.username }, process.env.API_SECRET, {

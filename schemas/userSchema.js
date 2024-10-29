@@ -149,7 +149,13 @@ const deleteUserSchema = Joi.object({
  * Specific validation schema for user login
  */
 const loginSchema = Joi.object({
-  username: baseUserSchema.username.required().messages({ 'any.required': 'Username is required' }),
+  username: Joi.alternatives()
+    .try(
+      baseUserSchema.username.required().messages({ 'any.required': 'Username is required' }),
+      baseUserSchema.email.required().messages({ 'any.required': 'Email is required' })
+    ).messages({
+      'alternatives.match': 'Either a valid username or a valid email is required.'
+    }),
   password: baseUserSchema.password.required().messages({ 'any.required': 'Password is required' }),
 });
 
