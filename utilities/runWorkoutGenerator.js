@@ -1,5 +1,5 @@
 const { generateRandomWorkout } = require('./workoutGenerator');
-const user_id = 4;
+const user_id = 1;
 
 (async () => {
   const randomWorkout = await generateRandomWorkout(user_id);  // Await the result of the async function
