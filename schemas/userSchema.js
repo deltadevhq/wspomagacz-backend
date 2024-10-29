@@ -162,6 +162,14 @@ const registerSchema = Joi.object({
   email: baseUserSchema.email.required().messages({ 'any.required': 'Email is required' }),
 });
 
+/**
+ * Specific validation schema for user password change
+ */
+const patchPasswordSchema = Joi.object({
+  password: baseUserSchema.password.required().messages({ 'any.required': 'Password is required' }),
+  new_password: baseUserSchema.password.required().messages({ 'any.required': 'New password is required' }),
+});
+
 module.exports = {
   baseUserSchema,
   getUserProfileSchema,
@@ -169,4 +177,5 @@ module.exports = {
   deleteUserSchema,
   loginSchema,
   registerSchema,
+  patchPasswordSchema,
 };

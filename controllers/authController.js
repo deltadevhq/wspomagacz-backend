@@ -141,6 +141,44 @@ const logoutUser = async (req, res) => {
 };
 
 /**
+ * Updates the currently logged-in user's password.
+ * 
+ * @param {Object} req - Request object with user ID and new password.
+ * @param {Object} res - Response object to send a success message or error.
+ * @returns {void} - Responds with a success message or an error if the update fails.
+ * @throws {Error} - Throws an error if user is not found or if there's a server issue.
+ */
+const patchUserPassword = async (req, res) => {
+  try {
+    // Check user existence
+    const user = await userModel.getUserById(req.user_id);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    // Validate provided password against the current user password
+    const is_match = await bcrypt.compare(req.body.password, user.password_hash);
+    if (!is_match) return res.status(400).json({ error: 'Invalid password' });
+
+    // Validate that the new password is not the same as the current password
+    if (req.body.password === req.body.new_password) {
+      return res.status(400).json({ error: 'New password cannot be the same as the current password' });
+    }
+
+    // Hash the new password
+    const salt = await bcrypt.genSalt(10);
+    const password_hash = await bcrypt.hash(req.body.new_password, salt);
+
+    // Update user password in the database
+    await authModel.updateUserPassword(req.user_id, password_hash);
+
+    // Successful response
+    res.status(201).json({ message: 'Password updated successfully' });
+  } catch (error) {
+    console.error('Error patching user:', error.stack);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+/**
  * Middleware to verify the authentication token from cookies.
  * 
  * @param {Object} req - Request object containing the token in cookies.
@@ -176,5 +214,6 @@ module.exports = {
   registerUser,
   loginUser,
   logoutUser,
-  verifyToken
+  patchUserPassword,
+  verifyToken,
 };

@@ -10,10 +10,8 @@ const userModel = require('../models/userModel');
  */
 const getUserProfile = async (req, res) => {
   try {
-    // Fetch user from database
+    // Check user existence
     const user = await userModel.getUserById(req.params.id);
-
-    // Check if anything was returned
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     // Construct an object with public user information
@@ -57,10 +55,8 @@ const patchUser = async (req, res) => {
   const parsed_weights = JSON.stringify(req.body.weights);
 
   try {
-    // Fetch user from database  
+    // Check user existence
     const user = await userModel.getUserById(req.params.id);
-
-    // Check if anything was returned
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     // Update user data in database
@@ -93,10 +89,8 @@ const deleteUser = async (req, res) => {
   if (Number(req.params.id) !== req.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
 
   try {
-    // Fetch user from database
+    // Check user existence
     const user = await userModel.getUserById(req.params.id);
-
-    // Check if anything was returned
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     // Delete user from database

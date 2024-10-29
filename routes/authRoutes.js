@@ -11,6 +11,7 @@ router.post('/register', validateInput(userSchema.registerSchema), authControlle
 // AUTH ROUTES
 router.get('/user', authController.verifyToken, authController.getCurrentLoggedUser);
 router.get('/logout', authController.verifyToken, authController.logoutUser);
+router.patch('/user/password', authController.verifyToken, validateInput(userSchema.patchPasswordSchema), authController.patchUserPassword);
 
 module.exports = router;
 
@@ -105,6 +106,34 @@ module.exports = router;
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/User'
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       404:
+ *         description: Not Found - User not found
+ * /api/auth/user/password:
+ *   patch:
+ *     summary: Update user password
+ *     tags: [Authorization]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               password:
+ *                 type: string
+ *                 description: The current password of the user.
+ *                 example: current_password123
+ *               new_password:
+ *                 type: string
+ *                 description: The new password for the user.
+ *                 example: new_password123 
+ *     responses:
+ *       200:
+ *         description: Successfully updated user password
+ *       400:
+ *         description: Bad Request - Invalid password or using the same password
  *       401:
  *         description: Unauthorized - Invalid or missing token
  *       404:

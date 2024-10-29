@@ -54,6 +54,27 @@ const postUser = async (username, password_hash, email) => {
 }
 
 /**
+ * Updates the user's password in the database.
+ */
+const updateUserPassword = async (user_id, password_hash) => {
+  const query = `UPDATE users SET password_hash = $2 WHERE id = $1 RETURNING *`;
+  const values = [user_id, password_hash];
+
+  try {
+    const result = await pool.query(query, values);
+
+    if (result.rows.length === 0) {
+      throw new Error('User not found');
+    }
+
+    return result.rows[0];
+  } catch (error) {
+    console.error('Error executing query', error.stack);
+    throw error;
+  }
+};
+
+/**
  * Update last_logged_at column in database on user login
  */
 const updateUserLastLogin = async (username) => {
@@ -73,5 +94,6 @@ module.exports = {
   getUserByUsername,
   getUserByEmail,
   postUser,
-  updateUserLastLogin
+  updateUserPassword,
+  updateUserLastLogin,
 };
