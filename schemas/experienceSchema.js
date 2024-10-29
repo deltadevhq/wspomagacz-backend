@@ -17,12 +17,12 @@ const baseExperienceSchema = {
 
   xp: Joi.number()
     .integer()
-    .positive()
+    .min(0)
     .max(10100000)
     .messages({
       'number.base': 'XP must be a number',
       'number.integer': 'XP must be an integer',
-      'number.positive': 'XP must be a positive number',
+      'number.min': 'XP must be a positive number or 0',
       'number.max': 'XP must be at most 10100000',
     }),
 };

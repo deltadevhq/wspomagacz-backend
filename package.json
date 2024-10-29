@@ -1,6 +1,6 @@
 {
   "name": "wspomagacz-backend",
-  "version": "1.66.20",
+  "version": "1.66.21",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
