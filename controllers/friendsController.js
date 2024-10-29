@@ -1,13 +1,16 @@
 // eslint-disable-next-line no-unused-vars
 const { Response, Request } = require('express');
 
-// const friendsModel = require('../models/friendsModel');
-// const userModel = require('../models/userModel');
+const friendsModel = require('../models/friendsModel');
+const userModel = require('../models/userModel');
 
 const fetchFriends = async (req, res) => {
   try {
+    const { logged_user_id } = req.body;
 
-    res.status(501).json({error: 'Not implemented'});
+    // Fetch friends user profile
+    const friends = await friendsModel.fetchFriends(logged_user_id);
+    res.status(200).json(friends);
 
   } catch (error) {
     console.error('Error fetching friends:', error.stack);
@@ -17,8 +20,11 @@ const fetchFriends = async (req, res) => {
 
 const fetchFriendRequests = async (req, res) => {
   try {
+    const { logged_user_id } = req.body;
 
-    res.status(501).json({error: 'Not implemented'});
+    // Fetching pending friend requests
+    const friendRequests = await friendsModel.fetchFriendRequests(logged_user_id);
+    res.status(200).json(friendRequests);
 
   } catch (error) {
     console.error('Error fetching friend requests:', error.stack);
@@ -26,21 +32,37 @@ const fetchFriendRequests = async (req, res) => {
   }
 };
 
-const fetchFriendsActivity = async (req, res) => {
-  try {
-
-    res.status(501).json({error: 'Not implemented'});
-
-  } catch (error) {
-    console.error('Error fetching friends activity:', error.stack);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-};
-
 const sendFriendRequest = async (req, res) => {
   try {
+    const { to_id } = req.params;
+    const { logged_user_id } = req.body;
 
-    res.status(501).json({error: 'Not implemented'});
+    // Check if sender and receiver IDs are different
+    if (logged_user_id === Number(to_id)) return res.status(400).json({ error: 'You cannot send a friend request to yourself.' });
+
+    // Check user existence
+    const user = await userModel.getUserById(to_id);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    // Check if request is not duplicated
+    const duplicatedRequest = await friendsModel.checkFriendRequestExists(logged_user_id, to_id);
+    if (duplicatedRequest) {
+      if (duplicatedRequest.direction === 'sent') {
+        return res.status(400).json({ error: 'You have already sent a friend request to this user.' });
+      } else {
+        return res.status(400).json({ error: 'This user has already sent you a friend request.' });
+      }
+    }
+
+    // Check if request is not rejected
+    const rejectedRequest = await friendsModel.checkFriendRequestExists(logged_user_id, to_id, 'rejected');
+    if (rejectedRequest.direction === 'sent') return res.status(400).json({ error: 'You have already sent a friend request to this user.' });
+
+    // Send the friend request
+    const newRequest = await friendsModel.sendFriendRequest(logged_user_id, to_id);
+
+    // Respond with the newly created request
+    return res.status(201).json(newRequest);
 
   } catch (error) {
     console.error('Error sending friend request:', error.stack);
@@ -50,8 +72,22 @@ const sendFriendRequest = async (req, res) => {
 
 const acceptFriendRequest = async (req, res) => {
   try {
+    const { from_id } = req.params;
+    const { logged_user_id } = req.body;
 
-    res.status(501).json({error: 'Not implemented'});
+    // Check if sender and receiver IDs are different
+    if (logged_user_id === Number(from_id)) return res.status(400).json({ error: 'You cannot accept your own friend request.' });
+
+    // Check if the friend request exists
+    const existingRequest = await friendsModel.checkFriendRequestExists(logged_user_id, from_id);
+    if (!existingRequest) return res.status(404).json({ error: 'No pending friend request found from this user.' });
+
+    // Check if the logged user sent the request
+    if (existingRequest.direction === 'sent') return res.status(400).json({ error: 'You cannot accept your own friend request.' });
+
+    // Accept the friend request
+    const updatedRequest = await friendsModel.acceptFriendRequest(from_id, logged_user_id);
+    return res.status(200).json(updatedRequest);
 
   } catch (error) {
     console.error('Error accepting friend request:', error.stack);
@@ -61,8 +97,22 @@ const acceptFriendRequest = async (req, res) => {
 
 const rejectFriendRequest = async (req, res) => {
   try {
+    const { from_id } = req.params;
+    const { logged_user_id } = req.body;
 
-    res.status(501).json({error: 'Not implemented'});
+    // Check if sender and receiver IDs are different
+    if (logged_user_id === Number(from_id)) return res.status(400).json({ error: 'You cannot reject your own friend request.' });
+
+    // Check if the friend request exists
+    const existingRequest = await friendsModel.checkFriendRequestExists(logged_user_id, from_id);
+    if (!existingRequest) return res.status(404).json({ error: 'No pending friend request found from this user.' });
+
+    // Check if the logged user sent the request
+    if (existingRequest.direction === 'sent') return res.status(400).json({ error: 'You cannot reject your own friend request.' });
+
+    // Reject the friend request
+    const updatedRequest = await friendsModel.rejectFriendRequest(from_id, logged_user_id);
+    return res.status(200).json(updatedRequest);
 
   } catch (error) {
     console.error('Error rejecting friend request:', error.stack);
@@ -72,8 +122,29 @@ const rejectFriendRequest = async (req, res) => {
 
 const removeFriend = async (req, res) => {
   try {
+    const { id } = req.params;
+    const { logged_user_id } = req.body;
 
-    res.status(501).json({error: 'Not implemented'});
+    // Check if sender and receiver IDs are different
+    if (logged_user_id === Number(id)) return res.status(400).json({ error: 'You cannot remove yourself as a friend.' });
+
+    // Check if the friend request exists
+    const existingRequest = await friendsModel.checkFriendRequestExists(logged_user_id, id);
+
+    // Handle pending friend request sent by the logged user
+    if (existingRequest && existingRequest.direction === 'sent') {
+      const canceledRequest = await friendsModel.cancelFriendRequest(logged_user_id, id);
+      if (canceledRequest) return res.status(200).json({ message: 'Friend request canceled successfully.', canceledRequest });
+      return res.status(404).json({ error: 'Friend request not found or already canceled.' });
+    }
+
+    // Handle accepted friendship
+    const removedFriend = await friendsModel.removeFriend(logged_user_id, id);
+    if (removedFriend) {
+      return res.status(200).json({ message: 'Friend removed successfully.', removedFriend });
+    } else {
+      return res.status(404).json({ error: 'No friendship found to remove.' });
+    }
 
   } catch (error) {
     console.error('Error removing friend:', error.stack);
@@ -81,12 +152,24 @@ const removeFriend = async (req, res) => {
   }
 };
 
+const fetchFriendsActivity = async (req, res) => {
+  try {
+
+    // TODO: IMPLEMENT USER ACTIVITIES
+    res.status(501).json({ error: 'Not implemented' });
+
+  } catch (error) {
+    console.error('Error fetching friends activity:', error.stack);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
 module.exports = {
   fetchFriends,
   fetchFriendRequests,
-  fetchFriendsActivity,
   sendFriendRequest,
   acceptFriendRequest,
   rejectFriendRequest,
   removeFriend,
+  fetchFriendsActivity,
 };
