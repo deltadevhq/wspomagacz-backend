@@ -8,7 +8,10 @@ const { validateInput } = require('../utilities/validation');
 // AUTH ROUTES
 router.get('/:id', authController.verifyToken, validateInput(userSchema.getUserProfileSchema, 'params'), userController.getUserProfile);
 router.patch('/:id', authController.verifyToken, validateInput(userSchema.patchUserSchema, '{ id: req.params.id, ...req.body}'), userController.patchUser);
-router.delete('/:id', authController.verifyToken, validateInput(userSchema.deleteUserSchema, 'params'), userController.deleteUser)
+router.delete('/:id', authController.verifyToken, validateInput(userSchema.deleteUserSchema, 'params'), userController.deleteUser);
+
+// TODO: Get activity feed for user
+// router.get('/:id/activity', authController.verifyToken, validateInput(userSchema.getUserActivitySchema, 'params'), userController.getUserActivity);
 
 module.exports = router;
 
@@ -132,6 +135,21 @@ module.exports = router;
  *         description: Forbidden - Token does not have the required permissions
  *       404:
  *         description: Not Found - User not found
+ * /api/users/{id}/activity:
+ *   get:
+ *     summary: Get user activity by its ID
+ *     tags: [User Profile]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved user activity
+ *       404:
+ *         description: Not Found - User activity not found
  * components:
  *   schemas:
  *     User:
