@@ -17,7 +17,7 @@ const bcrypt = require('bcryptjs');
 const getCurrentLoggedUser = async (req, res) => {
   try {
     // Fetch user from database
-    const user = await userModel.getUserById(req.body.user_id);
+    const user = await userModel.getUserById(req.body.logged_user_id);
 
     // User associated to this token can be deleted in the meantime
     if (!user) {
@@ -159,7 +159,7 @@ const logoutUser = async (req, res) => {
 const patchUserPassword = async (req, res) => {
   try {
     // Check user existence
-    const user = await userModel.getUserById(req.body.user_id);
+    const user = await userModel.getUserById(req.body.logged_user_id);
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     // Validate provided password against the current user password
@@ -176,7 +176,7 @@ const patchUserPassword = async (req, res) => {
     const password_hash = await bcrypt.hash(req.body.new_password, salt);
 
     // Update user password in the database
-    await authModel.updateUserPassword(req.body.user_id, password_hash);
+    await authModel.updateUserPassword(req.body.logged_user_id, password_hash);
 
     // Successful response
     res.status(201).json({ message: 'Password updated successfully' });
@@ -206,7 +206,7 @@ const verifyToken = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.API_SECRET);
 
     // Attach user ID from token to the request body
-    req.body.user_id = decoded.id;
+    req.body.logged_user_id = decoded.id;
 
     // Proceed to the next middleware or route handler
     next();

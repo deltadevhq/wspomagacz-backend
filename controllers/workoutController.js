@@ -80,7 +80,7 @@ const putWorkout = async (req, res) => {
   const { error } = workoutSchema.isWorkoutDateNotInPast.validate({ date: req.body.date });
   if (error) return res.status(400).json({ error: error.details[0].message });
 
-  const collidedWorkout = await workoutModel.checkWorkoutCollision(req.body.user_id, req.body.date);
+  const collidedWorkout = await workoutModel.checkWorkoutCollision(req.body.logged_user_id, req.body.date);
   if (collidedWorkout) return res.status(409).json({ error: 'Workout with that date exists for currently logged user' });
 
   if (req.body.id) {
@@ -90,7 +90,7 @@ const putWorkout = async (req, res) => {
       if (!workout) return res.status(404).json({ error: 'Workout not found' });
 
       // Check if the request is for the currently logged-in user
-      if (workout.user_id !== req.body.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
+      if (workout.user_id !== req.body.logged_user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
 
       // Check if workout status is not finished
       if (workout.status === 'finished') return res.status(409).json({ error: 'You can not edit workout which status is finished' });
@@ -113,7 +113,7 @@ const putWorkout = async (req, res) => {
 
     try {
       // Create new workout in the database
-      const created_workout = await workoutModel.createWorkout(req.body.related_workout_id, req.body.user_id, req.body.name, parsed_exercises, req.body.date, req.body.notes);
+      const created_workout = await workoutModel.createWorkout(req.body.related_workout_id, req.body.logged_user_id, req.body.name, parsed_exercises, req.body.date, req.body.notes);
 
       // Successful response with created workout data
       res.status(201).json(created_workout);
@@ -144,7 +144,7 @@ const deleteWorkout = async (req, res) => {
     if (!workout) return res.status(404).json({ error: 'Workout not found' });
 
     // Check if the workout belongs to the currently logged-in user
-    if (workout.user_id !== req.body.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
+    if (workout.user_id !== req.body.logged_user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
 
     // Check if workout status is planned
     if (workout.status === 'completed' || workout.status === 'in_progress') return res.status(409).json({ error: 'You can only delete workout which status is planned or skipped' });
@@ -181,7 +181,7 @@ const startWorkout = async (req, res) => {
     if (!workout) return res.status(404).json({ error: 'Workout not found' });
 
     // Check if the request is for the currently logged-in user
-    if (workout.user_id !== req.body.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
+    if (workout.user_id !== req.body.logged_user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
 
     // Check if workout status is planned
     if (workout.status !== 'planned') return res.status(409).json({ error: 'You can only start workout which status is planned' });
@@ -221,7 +221,7 @@ const stopWorkout = async (req, res) => {
     if (!workout) return res.status(404).json({ error: 'Workout not found' });
 
     // Check if the request is for the currently logged-in user
-    if (workout.user_id !== req.body.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
+    if (workout.user_id !== req.body.logged_user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
 
     // Check if workout status is in_progress
     if (workout.status !== 'in_progress') return res.status(409).json({ error: 'You can only stop workout which status is in_progress' });
@@ -258,7 +258,7 @@ const finishWorkout = async (req, res) => {
     if (!workout) return res.status(404).json({ error: 'Workout not found' });
 
     // Check if the request is for the currently logged-in user
-    if (workout.user_id !== req.body.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
+    if (workout.user_id !== req.body.logged_user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
 
     // Check if workout status is in_progress
     if (workout.status !== 'in_progress') return res.status(409).json({ error: 'You can only stop workout which status is in_progress' });

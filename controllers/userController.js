@@ -52,7 +52,7 @@ const getUserProfile = async (req, res) => {
  */
 const patchUser = async (req, res) => {
   // Check if the request is for the currently logged-in user
-  if (Number(req.params.id) !== req.body.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
+  if (Number(req.params.id) !== req.body.logged_user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
 
   // Serialize weights array into JSON string
   const parsed_weights = JSON.stringify(req.body.weights);
@@ -89,7 +89,7 @@ const patchUser = async (req, res) => {
  */
 const deleteUser = async (req, res) => {
   // Check if the request is for the currently logged-in user
-  if (Number(req.params.id) !== req.body.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
+  if (Number(req.params.id) !== req.body.logged_user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
 
   try {
     // Check user existence
