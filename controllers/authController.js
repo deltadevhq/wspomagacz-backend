@@ -1,3 +1,6 @@
+// eslint-disable-next-line no-unused-vars
+const { Response, Request } = require('express');
+
 const authModel = require('../models/authModel');
 const userModel = require('../models/userModel');
 const jwt = require('jsonwebtoken');
@@ -5,9 +8,9 @@ const bcrypt = require('bcryptjs');
 
 /**
  * Function to handle the request for retrieving the currently logged-in user's data.
- * 
- * @param {Object} req - Request object with user ID from the token.
- * @param {Object} res - Response object to send user data or an error message.
+ *
+ * @param {Request} req - Request object with user ID from the token.
+ * @param {Response} res - Response object to send user data or an error message.
  * @returns {void} - Responds with user data on success, or clears the token and returns an error if the user is not found.
  * @throws {Error} - Throws an error if there is an issue fetching user data.
  */
@@ -39,9 +42,9 @@ const getCurrentLoggedUser = async (req, res) => {
 
 /**
  * Function to handle the request for registering a new user
- * 
- * @param {Object} req - Request object with user registration details in the body.
- * @param {Object} res - Response object to send back the new user data or an error.
+ *
+ * @param {Request} req - Request object with user registration details in the body.
+ * @param {Response} res - Response object to send back the new user data or an error.
  * @returns {void} - Responds with the created user data or an error if registration fails.
  * @throws {Error} - Throws an error if email or username is already taken, or if user creation fails.
  */
@@ -75,9 +78,9 @@ const registerUser = async (req, res) => {
 
 /**
  * Handles user login request by verifying credentials and generating a JWT.
- * 
- * @param {Object} req - Request object with username and password in the body.
- * @param {Object} res - Response object to send login status or error.
+ *
+ * @param {Request} req - Request object with username and password in the body.
+ * @param {Response} res - Response object to send login status or error.
  * @returns {void} - Responds with a JWT token if login is successful, or an error message if login fails.
  * @throws {Error} - Throws an error if user verification fails or if an internal error occurs.
  */
@@ -122,9 +125,9 @@ const loginUser = async (req, res) => {
 
 /**
  * Handles user logout request by clearing the authentication token.
- * 
- * @param {Object} req - Request object containing user session information.
- * @param {Object} res - Response object to send logout status.
+ *
+ * @param {Request} req - Request object containing user session information.
+ * @param {Response} res - Response object to send logout status.
  * @returns {void} - Responds with a success status upon successful logout.
  * @throws {Error} - Throws an error if clearing the token fails.
  */
@@ -147,9 +150,9 @@ const logoutUser = async (req, res) => {
 
 /**
  * Updates the currently logged-in user's password.
- * 
- * @param {Object} req - Request object with user ID and new password.
- * @param {Object} res - Response object to send a success message or error.
+ *
+ * @param {Request} req - Request object with user ID and new password.
+ * @param {Response} res - Response object to send a success message or error.
  * @returns {void} - Responds with a success message or an error if the update fails.
  * @throws {Error} - Throws an error if user is not found or if there's a server issue.
  */
@@ -185,9 +188,9 @@ const patchUserPassword = async (req, res) => {
 
 /**
  * Middleware to verify the authentication token from cookies.
- * 
- * @param {Object} req - Request object containing the token in cookies.
- * @param {Object} res - Response object to send error status if token verification fails.
+ *
+ * @param {Request} req - Request object containing the token in cookies.
+ * @param {Response} res - Response object to send error status if token verification fails.
  * @param {Function} next - Callback to proceed to the next middleware or route handler.
  * @returns {void} - Calls next() if the token is valid; otherwise, responds with an error.
  * @throws {Error} - Throws an error for missing, expired, or invalid tokens.

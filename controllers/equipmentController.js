@@ -1,10 +1,13 @@
+// eslint-disable-next-line no-unused-vars
+const { Response, Request } = require('express');
+
 const equipmentModel = require('../models/equipmentModel');
 
 /**
  * Function to handle requests for retrieving available equipment.
- * 
- * @param {Object} req - The request object.
- * @param {Object} res - The response object used to send back the results.
+ *
+ * @param {Request} req - The request object.
+ * @param {Response} res - The response object used to send back the results.
  * @returns {void} - Responds with an array of equipment if found, or an error message if no equipment is available.
  * @throws {Error} - Throws an error if there is an issue fetching the equipment data from the database.
  */
@@ -26,9 +29,9 @@ const getEquipment = async (req, res) => {
 
 /**
  * Function to handle requests for retrieving a specific equipment item by its ID.
- * 
- * @param {Object} req - The request object containing the equipment ID as a route parameter.
- * @param {Object} res - The response object used to send back the result.
+ *
+ * @param {Request} req - The request object containing the equipment ID as a route parameter.
+ * @param {Response} res - The response object used to send back the result.
  * @returns {void} - Responds with the equipment data if found, or an error message if the equipment is not available.
  * @throws {Error} - Throws an error if there is an issue fetching the equipment data or if an internal server error occurs.
  */

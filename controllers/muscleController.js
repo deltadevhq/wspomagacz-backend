@@ -1,10 +1,13 @@
+// eslint-disable-next-line no-unused-vars
+const { Response, Request } = require('express');
+
 const muscleModel = require('../models/muscleModel');
 
 /**
  * Function to handle requests for retrieving available muscle groups.
- * 
- * @param {Object} req - The request object.
- * @param {Object} res - The response object used to send back the results.
+ *
+ * @param {Request} req - The request object.
+ * @param {Response} res - The response object used to send back the results.
  * @returns {void} - Responds with an array of muscle groups if found, or an error message if no muscles are available.
  * @throws {Error} - Throws an error if there is an issue fetching the muscle data from the database.
  */
@@ -26,9 +29,9 @@ const getMuscles = async (req, res) => {
 
 /**
  * Function to handle requests for retrieving a specific muscle group by its ID.
- * 
- * @param {Object} req - The request object containing the muscle ID as a route parameter.
- * @param {Object} res - The response object used to send back the result.
+ *
+ * @param {Request} req - The request object containing the muscle ID as a route parameter.
+ * @param {Response} res - The response object used to send back the result.
  * @returns {void} - Responds with the muscle group data if found, or an error message if the muscle is not available.
  * @throws {Error} - Throws an error if there is an issue fetching the muscle data from the database.
  */

@@ -1,11 +1,15 @@
+// eslint-disable-next-line no-unused-vars
+const { Response, Request } = require('express');
+
 const experienceModel = require('../models/experienceModel');
 const userModel = require('../models/userModel');
 // const notificationModel = require('../models/notificationModel');
 
 /**
  * Function to handle the request for the user's level based on provided experience points (XP).
- * @param {Object} req - The request object containing the XP query parameter.
- * @param {Object} res - The response object used to send back the results.
+ *
+ * @param {Request} req - The request object containing the XP query parameter.
+ * @param {Response} res - The response object used to send back the results.
  * @returns {void} - Responds with the user's level, provided XP, progress, and missing XP.
  * @throws {Error} - Throws an error if there is an issue fetching the level or if the input is invalid.
  */
@@ -54,8 +58,9 @@ const getLevelByXpHandler = async (xp) => {
 
 /**
  * Function to handle the request for experience points required to reach a specified level.
- * @param {Object} req - The request object containing the level query parameter.
- * @param {Object} res - The response object used to send back the results.
+ *
+ * @param {Request} req - The request object containing the level query parameter.
+ * @param {Response} res - The response object used to send back the results.
  * @returns {void} - Responds with the required XP for the specified level.
  * @throws {Error} - Throws an error if there is an issue fetching the XP or if the input is invalid.
  */

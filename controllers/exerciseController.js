@@ -1,11 +1,14 @@
+// eslint-disable-next-line no-unused-vars
+const { Response, Request } = require('express');
+
 const exerciseModel = require('../models/exerciseModel');
 const userModel = require('../models/userModel');
 
 /**
  * Retrieves exercises based on optional user ID and type.
- * 
- * @param {Object} req - Request object with optional user ID and type query parameters.
- * @param {Object} res - Response object to send back the exercises or an error message.
+ *
+ * @param {Request} req - Request object with optional user ID and type query parameters.
+ * @param {Response} res - Response object to send back the exercises or an error message.
  * @returns {void} - Responds with an array of exercises or an error message if no exercises are found.
  * @throws {Error} - Throws an error if:
  *   - The user ID is provided but not found.
@@ -36,10 +39,9 @@ const getExercises = async (req, res) => {
 
 /**
  * Function to handle requests for retrieving a specific exercise by its ID.
- * 
- * @param {Object} req - The request object containing the exercise ID as a route parameter 
- *                       and optional user ID and type as query parameters.
- * @param {Object} res - Response object to return the exercise data or an error message.
+ *
+ * @param {Request} req - The request object containing the exercise ID as a route parameter and optional user ID and type as query parameters.
+ * @param {Response} res - Response object to return the exercise data or an error message.
  * @returns {void} - Responds with the exercise data if found, or an error if not found.
  * @throws {Error} - Throws an error if the user does not exist (if specified), the exercise is not found, or if there is a server error.
  */
@@ -67,9 +69,9 @@ const getExerciseById = async (req, res) => {
 
 /**
  * Handles requests to create a new exercise.
- * 
- * @param {Object} req - Request object containing exercise details in the body.
- * @param {Object} res - Response object to return the created exercise data.
+ *
+ * @param {Request} req - Request object containing exercise details in the body.
+ * @param {Response} res - Response object to return the created exercise data.
  * @returns {void} - Responds with the created exercise data on success or an error message on failure.
  * @throws {Error} - Throws an error if exercise creation fails.
  */
@@ -92,9 +94,9 @@ const postExercise = async (req, res) => {
 
 /**
  * Handles requests to delete a specific exercise by ID.
- * 
- * @param {Object} req - Request object containing the exercise ID as a route parameter.
- * @param {Object} res - Response object to confirm deletion or return an error message.
+ *
+ * @param {Request} req - Request object containing the exercise ID as a route parameter.
+ * @param {Response} res - Response object to confirm deletion or return an error message.
  * @returns {void} - Responds with a success message or an error if deletion fails.
  * @throws {Error} - Throws an error if the exercise does not exist, belongs to another user, or deletion fails.
  */
