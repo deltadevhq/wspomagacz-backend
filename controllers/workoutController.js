@@ -261,7 +261,7 @@ const finishWorkout = async (req, res) => {
     if (workout.user_id !== req.body.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
 
     // Check if workout status is in_progress
-    if (!workout.status === 'in_progress') return res.status(409).json({ error: 'You can only stop workout which status is in_progress' });
+    if (workout.status !== 'in_progress') return res.status(409).json({ error: 'You can only stop workout which status is in_progress' });
 
     // Patch finished_at for workout in database
     const finished_workout = await workoutModel.finishWorkout(req.params.id);
