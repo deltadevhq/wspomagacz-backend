@@ -184,7 +184,7 @@ const startWorkout = async (req, res) => {
     if (workout.user_id !== req.body.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
 
     // Check if workout status is planned
-    if (!workout.status === 'planned') return res.status(409).json({ error: 'You can only start workout which status is planned' });
+    if (workout.status !== 'planned') return res.status(409).json({ error: 'You can only start workout which status is planned' });
 
     // Check if workout date is today
     const { error } = workoutSchema.isWorkoutDateToday.validate({ date: workout.date });
@@ -224,7 +224,7 @@ const stopWorkout = async (req, res) => {
     if (workout.user_id !== req.body.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
 
     // Check if workout status is in_progress
-    if (!workout.status === 'in_progress') return res.status(409).json({ error: 'You can only stop workout which status is in_progress' });
+    if (workout.status !== 'in_progress') return res.status(409).json({ error: 'You can only stop workout which status is in_progress' });
 
     // Patch started_at for workout in database
     const stopped_workout = await workoutModel.stopWorkout(req.params.id);
