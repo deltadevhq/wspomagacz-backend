@@ -78,9 +78,9 @@ module.exports = router;
  *     responses:
  *       204:
  *         description: A successful login - sets authorization token as cookie
- *         headers: 
+ *         headers:
  *           Set-Cookie:
- *             schema: 
+ *             schema:
  *               type: string
  *               example: token=abcde12345; Max-Age:0; SameSite=Strict; Path=/; Secure; HttpOnly;
  *       400:
@@ -129,7 +129,7 @@ module.exports = router;
  *               new_password:
  *                 type: string
  *                 description: The new password for the user.
- *                 example: new_password123 
+ *                 example: new_password123
  *     responses:
  *       200:
  *         description: Successfully updated user password
