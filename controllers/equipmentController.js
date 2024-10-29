@@ -53,5 +53,5 @@ const getEquipmentById = async (req, res) => {
 
 module.exports = {
   getEquipment,
-  getEquipmentById
+  getEquipmentById,
 };

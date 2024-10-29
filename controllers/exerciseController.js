@@ -124,5 +124,5 @@ module.exports = {
   getExercises,
   getExerciseById,
   postExercise,
-  deleteExercise
+  deleteExercise,
 };

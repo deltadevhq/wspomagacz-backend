@@ -79,8 +79,8 @@ const getXpByLevel = async (req, res) => {
 
 /**
  * Function to handle user experience after a workout.
- * This includes fetching the user's current experience, calculating 
- * the experience earned from the workout, determining if the user levels up, 
+ * This includes fetching the user's current experience, calculating
+ * the experience earned from the workout, determining if the user levels up,
  * and recording the experience history.
  *
  * @param {Object} workout - The workout object containing details about the workout.

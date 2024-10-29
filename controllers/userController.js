@@ -28,7 +28,7 @@ const getUserProfile = async (req, res) => {
       level: user.level,
       exp: user.exp,
       weights: user.weights,
-      height: user.height
+      height: user.height,
     };
 
     // Successful response with sanitized user data
@@ -110,5 +110,5 @@ const deleteUser = async (req, res) => {
 module.exports = {
   getUserProfile,
   patchUser,
-  deleteUser
+  deleteUser,
 };

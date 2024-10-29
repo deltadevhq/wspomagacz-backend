@@ -24,8 +24,9 @@ const getCurrentLoggedUser = async (req, res) => {
       res.clearCookie('token', {
         httpOnly: true,
         secure: true,
-        sameSite: 'strict'
+        sameSite: 'strict',
       });
+
       return res.status(404).json({ error: 'Invalid user' });
     }
 
@@ -112,7 +113,7 @@ const loginUser = async (req, res) => {
       httpOnly: true,
       secure: true,
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
-      sameSite: 'strict'
+      sameSite: 'strict',
     });
 
     // Successful login response
@@ -137,7 +138,7 @@ const logoutUser = async (req, res) => {
     res.clearCookie('token', {
       httpOnly: true,
       secure: true,
-      sameSite: 'strict'
+      sameSite: 'strict',
     });
 
     // Successful logout response

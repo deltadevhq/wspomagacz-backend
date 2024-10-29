@@ -53,5 +53,5 @@ const getMuscleById = async (req, res) => {
 
 module.exports = {
   getMuscles,
-  getMuscleById
+  getMuscleById,
 };
