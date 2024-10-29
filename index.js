@@ -35,6 +35,7 @@ app.use('/api/equipment', routes.equipmentRoutes);
 app.use('/api/exercises', routes.exerciseRoutes);
 app.use('/api/workouts', routes.workoutRoutes);
 app.use('/api/experience', routes.experienceRoutes);
+app.use('/api/friends', routes.friendsRoutes);
 
 
 // Main execution flow

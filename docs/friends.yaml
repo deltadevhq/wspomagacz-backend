@@ -17,28 +17,6 @@
       404:
         description: Not Found - Friend list is empty
 
-/api/friends/{id}:
-  delete:
-    summary: Delete friend or friend request by ID of friend
-    description: This endpoint requires authorization token
-    tags: [Friends]
-    parameters:
-      - in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-          example: 1
-    responses:
-      200:
-        description: Successfully deleted friend
-      400:
-        description: Bad request - Invalid user ID
-      401:
-        description: Unauthorized - Invalid or missing token
-      404:
-        description: Not Found - Friend not found
-
 /api/friends/requests:
   get:
     summary: Get friend requests for currently logged user
@@ -51,6 +29,19 @@
         description: Unauthorized - Invalid or missing token
       404:
         description: Not Found - No friend requests
+
+/api/friends/activity:
+  get:
+    summary: Get friends activity
+    description: This endpoint requires authorization token
+    tags: [Friends]
+    responses:
+      200:
+        description: Successfully retrieved friends activity
+      401:
+        description: Unauthorized - Invalid or missing token
+      404:
+        description: Not Found - No friends activity found
 
 /api/friends/request/{to_id}:
   post:
@@ -102,15 +93,10 @@
     description: This endpoint requires authorization token
     tags: [Friends]
     parameters:
-      - in: body
-        name: user_id
+      - in: path
+        name: from_id
+        description: ID of user to reject friend request from
         required: true
-        schema:
-          type: object
-          properties:
-            user_id:
-              type: integer
-              example: 1
     responses:
       200:
         description: Successfully rejected friend request
@@ -123,15 +109,24 @@
       409:
         description: Conflict - Request already accepted/rejected
 
-/api/friends/activity:
-  get:
-    summary: Get friends activity
+/api/friends/{id}:
+  delete:
+    summary: Delete friend or friend request by ID of friend
     description: This endpoint requires authorization token
     tags: [Friends]
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+          example: 1
     responses:
       200:
-        description: Successfully retrieved friends activity
+        description: Successfully deleted friend
+      400:
+        description: Bad request - Invalid user ID
       401:
         description: Unauthorized - Invalid or missing token
       404:
-        description: Not Found - No friends activity found
+        description: Not Found - Friend not found
