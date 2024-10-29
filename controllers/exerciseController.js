@@ -82,7 +82,7 @@ const postExercise = async (req, res) => {
     const parsed_muscles = JSON.stringify(req.body.muscles);
 
     // Create new exercise in the database
-    const new_exercise = await exerciseModel.postExercise(req.user_id, req.body.name, parsed_equipment, parsed_muscles);
+    const new_exercise = await exerciseModel.postExercise(req.body.user_id, req.body.name, parsed_equipment, parsed_muscles);
 
     // Successful response with created exercise data
     res.status(201).json(new_exercise);
@@ -107,7 +107,7 @@ const deleteExercise = async (req, res) => {
     if (!exercise) return res.status(404).json({ error: 'Exercise not found' });
 
     // Check if the exercise belongs to the currently logged-in user
-    if (exercise.user_id !== req.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
+    if (exercise.user_id !== req.body.user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
 
     // Delete exercise from database
     await exerciseModel.deleteExercise(req.params.id);
