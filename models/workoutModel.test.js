@@ -225,6 +225,15 @@ describe('Workout Model', () => {
       await deleteWorkout(id);
     });
 
+    it('updates workout\'s notes', async () => {
+      const { id, exercises, name, date } = workout;
+      expect(workout.notes).not.toBe('Updated notes');
+
+      // Update the workout notes
+      const updatedWorkout = await updateWorkout(id, name, exercises, date, 'Updated notes');
+      expect(updatedWorkout.notes).toBe('Updated notes');
+    });
+
     describe('Changing workout status', () => {
       it('starts a workout', async () => {
         expect(workout.status).toBe('planned');
