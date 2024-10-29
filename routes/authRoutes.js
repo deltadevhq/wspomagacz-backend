@@ -34,13 +34,13 @@ module.exports = router;
  *             properties:
  *               username:
  *                 type: string
- *                 example: testowicz
+ *                 example: system
  *               password:
  *                 type: string
- *                 example: Test123!
+ *                 example: 5yst3m@K
  *               email:
  *                 type: email
- *                 example: testowicz@test.com
+ *                 example: system@test.com
  *     security: []
  *     responses:
  *       201:
@@ -70,10 +70,10 @@ module.exports = router;
  *             properties:
  *               username:
  *                 type: string
- *                 example: testowicz
+ *                 example: system
  *               password:
  *                 type: string
- *                 example: Test123!
+ *                 example: 5yst3m@K
  *     security: []
  *     responses:
  *       204:
