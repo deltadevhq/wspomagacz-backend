@@ -50,7 +50,7 @@ app.use('/api/friends', dateFormatterMiddleware, routes.friendsRoutes);
       console.log(`API listening at http://${applicationHost}:${backendPort}`);
     });
 
-    require('./config/websocket');
+    // require('./config/websocket');
 
     // Schedule daily jobs
     cron.schedule(closeSkippedWorkoutsJobCronDefinition, () => {
