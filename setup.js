@@ -1,13 +1,7 @@
 const swaggerJsDoc = require('swagger-jsdoc');
 const packageJson = require('./package.json');
-const moment = require('moment-timezone');
 const morgan = require('morgan');
-const { applicationTimezone } = require('./config/settings');
-
-// Function to generate a timestamp in timezone from configuration
-const getTimestamp = () => {
-    return moment().tz(applicationTimezone).format('YYYY-MM-DD HH:mm:ss');
-};
+const { getTimestamp } = require('./utilities/dateUtils');
 
 // Override console.log to include a timestamp
 const baseConsoleLog = console.log;
