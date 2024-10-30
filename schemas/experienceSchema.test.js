@@ -63,16 +63,7 @@ describe('Experience Schema test', () => {
       const { error } = baseExperienceSchema.xp.validate(xp);
 
       expect(error).not.toBeUndefined();
-      expect(error.details[0].message).toBe('XP must be a positive number');
-    });
-
-    test('XP with zero should fail', () => {
-      const xp = 0;
-
-      const { error } = baseExperienceSchema.xp.validate(xp);
-
-      expect(error).not.toBeUndefined();
-      expect(error.details[0].message).toBe('XP must be a positive number');
+      expect(error.details[0].message).toBe('XP must be a positive number or 0');
     });
 
     test('XP with decimal should fail', () => {
