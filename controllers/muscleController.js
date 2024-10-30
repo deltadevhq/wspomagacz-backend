@@ -46,7 +46,7 @@ const getMuscleById = async (req, res) => {
     // Successful response with selected muscle
     res.status(200).json(muscle);
   } catch (error) {
-    console.error('Error fetching equipment by its ID:', error.stack);
+    console.error('Error fetching muscles by their ID:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
 };

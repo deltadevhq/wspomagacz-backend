@@ -1,19 +1,13 @@
 const Joi = require('joi');
 const { joiPasswordExtendCore } = require('joi-password');
 const JoiPassword = Joi.extend(joiPasswordExtendCore);
+const { baseRequestSchema } = require('./requestSchema');
 
 /**
  * Base validation schema for user data
  */
 const baseUserSchema = {
-  id: Joi.number()
-    .integer()
-    .positive()
-    .messages({
-      'number.base': 'ID must be a number',
-      'number.integer': 'ID must be an integer',
-      'number.positive': 'ID must be a positive number',
-    }),
+  id: baseRequestSchema.id,
 
   username: Joi.string()
     .alphanum()
@@ -181,6 +175,15 @@ const patchPasswordSchema = Joi.object({
   new_password: baseUserSchema.password.required().messages({ 'any.required': 'New password is required' }),
 });
 
+/**
+ * Specific validation schema for fetching user activities
+ */
+const fetchUserActivitySchema = Joi.object({
+  id: baseRequestSchema.id.required().messages({ 'any.required': 'ID is required' }),
+  offset: baseRequestSchema.offset,
+  limit: baseRequestSchema.limit,
+});
+
 module.exports = {
   baseUserSchema,
   searchUserProfileSchema,
@@ -189,4 +192,5 @@ module.exports = {
   loginSchema,
   registerSchema,
   patchPasswordSchema,
+  fetchUserActivitySchema,
 };

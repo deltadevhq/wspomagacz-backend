@@ -126,12 +126,25 @@
 
 /api/users/{id}/activity:
   get:
-    summary: Get user activity by its ID
+    summary: Get user activity by user ID
     tags: [User Profile]
     parameters:
       - in: path
         name: id
+        description: The ID of the user whose activity is being requested.
         required: true
+        schema:
+          type: integer
+      - in: query
+        name: offset
+        description: The number of items to skip for pagination. Use this to retrieve the next set of results.
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: limit
+        description: The maximum number of items to return. This helps limit the size of the response for better performance.
+        required: false
         schema:
           type: integer
     responses:

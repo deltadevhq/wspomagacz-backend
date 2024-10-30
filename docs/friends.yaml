@@ -35,6 +35,19 @@
     summary: Get friends activity
     description: This endpoint requires authorization token
     tags: [Friends]
+    parameters:
+      - in: query
+        name: offset
+        description: The number of items to skip for pagination. Use this to retrieve the next set of results.
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: limit
+        description: The maximum number of items to return. This helps limit the size of the response for better performance.
+        required: false
+        schema:
+          type: integer
     responses:
       200:
         description: Successfully retrieved friends activity

@@ -15,7 +15,7 @@ const validateInput = (schema, dataSource = 'body') => (req, res, next) => {
     case '{ id: req.params.id, ...req.query }':
       data = { id: req.params.id, ...req.query };
       break;
-    case '{ id: req.params.id, ...req.body}':
+    case '{ id: req.params.id, ...req.body }':
       data = { id: req.params.id, ...req.body};
       break;
     default:
