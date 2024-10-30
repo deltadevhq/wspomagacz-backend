@@ -6,12 +6,12 @@ const cookieParser = require('cookie-parser');
 const app = express();
 const cron = require('node-cron');
 const swaggerUi = require('swagger-ui-express');
-const { initDBConnection } = require('./config/database');
-const { applicationHost, backendPort, closeSkippedWorkoutsJobCronDefinition, closeUnfinishedWorkoutsJobCronDefinition } = require('./config/settings');
-const { swaggerDocs, packageJson } = require('./setup');
-const { applicationCorsOrigin } = require('./config/settings');
 const jobs = require('./utilities/jobs');
 const routes = require('./routes');
+const { applicationHost, backendPort, closeSkippedWorkoutsJobCronDefinition, closeUnfinishedWorkoutsJobCronDefinition, applicationCorsOrigin, applicationTimezone } = require('./config/settings');
+const { initDBConnection } = require('./config/database');
+const { swaggerDocs, packageJson } = require('./setup');
+const { dateFormatterMiddleware } = require('./utilities/dateFormatter');
 
 // Use morgan to log requests to the console
 app.use(morgan('[INFO][:date] Request: :method :url HTTP/:http-version, Response: :status, ResponseTime: :response-time ms'));
@@ -28,20 +28,21 @@ app.use(express.json());
 
 // Define specific routes
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-app.use('/api/auth', routes.authRoutes);
-app.use('/api/users', routes.userRoutes);
-app.use('/api/muscles', routes.muscleRoutes);
-app.use('/api/equipment', routes.equipmentRoutes);
-app.use('/api/exercises', routes.exerciseRoutes);
-app.use('/api/workouts', routes.workoutRoutes);
-app.use('/api/experience', routes.experienceRoutes);
-app.use('/api/friends', routes.friendsRoutes);
+app.use('/api/auth', dateFormatterMiddleware, routes.authRoutes);
+app.use('/api/users', dateFormatterMiddleware, routes.userRoutes);
+app.use('/api/muscles', dateFormatterMiddleware, routes.muscleRoutes);
+app.use('/api/equipment', dateFormatterMiddleware, routes.equipmentRoutes);
+app.use('/api/exercises', dateFormatterMiddleware, routes.exerciseRoutes);
+app.use('/api/workouts', dateFormatterMiddleware, routes.workoutRoutes);
+app.use('/api/experience', dateFormatterMiddleware, routes.experienceRoutes);
+app.use('/api/friends', dateFormatterMiddleware, routes.friendsRoutes);
 
 
 // Main execution flow
 (async () => {
   try {
     console.log(`Starting ${packageJson.name} version ${packageJson.version}`);
+    console.log(`Application timezone: ${applicationTimezone}`);
 
     await initDBConnection();
 
@@ -54,12 +55,12 @@ app.use('/api/friends', routes.friendsRoutes);
     // Schedule daily jobs
     cron.schedule(closeSkippedWorkoutsJobCronDefinition, () => {
       jobs.closeSkippedWorkouts();
-    });
+    }, { timezone: applicationTimezone });
     console.log(`Scheduled 'closeSkippedWorkoutsJob' with cron expression: '${closeSkippedWorkoutsJobCronDefinition}'`);
 
     cron.schedule(closeUnfinishedWorkoutsJobCronDefinition, () => {
       jobs.closeUnfinishedWorkouts();
-    });
+    }, { timezone: applicationTimezone });
     console.log(`Scheduled 'closeUnfinishedWorkoutsJob' with cron expression: '${closeUnfinishedWorkoutsJobCronDefinition}'`);
 
     server.on('listening', () => {
@@ -74,7 +75,6 @@ app.use('/api/friends', routes.friendsRoutes);
   }
 })();
 
-// TODO: HANDLE ALL DATE TIMEZONES 
 // TODO: WORKOUT STREAK
 // CONSIDER: EVENTS FOR SPECIFIC EXERCISES / MUSCLES GROUPS
 

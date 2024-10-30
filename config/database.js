@@ -1,4 +1,4 @@
-const { databaseHost, databasePort, databaseName, databaseUser, databasePassword } = require('./settings');
+const { databaseHost, databasePort, databaseName, databaseUser, databasePassword, applicationTimezone } = require('./settings');
 const { Pool } = require('pg');
 
 const pool = new Pool({
@@ -11,24 +11,23 @@ const pool = new Pool({
 });
 
 // Initialize connection and return a Promise
-const initDBConnection = () => {
-  return new Promise((resolve, reject) => {
-    pool.connect((err, client, release) => {
-      if (err) {
-        console.error('Error acquiring database client', err.stack);
-        return reject(err);
-      }
-      client.query('SELECT NOW()', (err, result) => {
-        release();
-        if (err) {
-          console.error('Error executing query', err.stack);
-          return reject(err);
-        }
-        console.log(`Database connection successful!`);
-        resolve(result);
-      });
-    });
-  });
+const initDBConnection = async () => {
+  const client = await pool.connect();
+  try {
+    await client.query('SELECT NOW()');
+    console.log(`Database connection successful!`);
+
+    const timezoneResult = await client.query('SHOW TIMEZONE');
+    if (timezoneResult.rows[0].TimeZone !== applicationTimezone) {
+      console.error(`Database timezone (${timezoneResult.rows[0].TimeZone}) is not equal to timezone from configuration (${applicationTimezone}).`)
+      process.exit(-1);
+    }
+  } catch (error) {
+    console.error('Error executing query', error.stack);
+    throw error;
+  } finally {
+    client.release();
+  }
 };
 
 pool.on('error', (err) => {
