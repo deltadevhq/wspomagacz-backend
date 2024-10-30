@@ -2,20 +2,26 @@
 const { Response, Request } = require('express');
 
 const userModel = require('../models/userModel');
+const authModel = require('../models/authModel');
 
 /**
- * Function to handle requests for retrieving a user's public profile by their ID.
+ * Function to handle requests for retrieving a user's public profile by their ID or username.
  *
- * @param {Request} req - The request object containing the user ID as a route parameter.
+ * @param {Request} req - The request object containing either the user ID or username as a query parameter.
  * @param {Response} res - The response object used to send back the user profile data.
  * @returns {void} - Responds with the user's public profile data if found, or an error message if the user is not available.
  * @throws {Error} - Throws an error if there is an issue fetching the user data from the database.
  */
-const getUserProfile = async (req, res) => {
+const searchUserProfile = async (req, res) => {
   try {
-    // Check user existence
-    const user = await userModel.getUserById(req.params.id);
-    if (!user) return res.status(404).json({ error: 'User not found' });
+    const { id, username } = req.query;
+
+    let user;
+    if (username) user = await authModel.getUserByUsername(username);
+    else user = await userModel.getUserById(id);
+
+    // If no user is found, return a 404 response
+    if (!user) return res.status(404).json({ error: 'User not found.' });
 
     // Construct an object with public user information
     const publicUserData = {
@@ -108,7 +114,7 @@ const deleteUser = async (req, res) => {
 };
 
 module.exports = {
-  getUserProfile,
+  searchUserProfile,
   patchUser,
   deleteUser,
 };

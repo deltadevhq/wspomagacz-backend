@@ -6,7 +6,7 @@ const userSchema = require('../schemas/userSchema');
 const { validateInput } = require('../utilities/validation');
 
 // AUTH ROUTES
-router.get('/:id', authController.verifyToken, validateInput(userSchema.getUserProfileSchema, 'params'), userController.getUserProfile);
+router.get('/search', authController.verifyToken, validateInput(userSchema.searchUserProfileSchema, 'query'), userController.searchUserProfile);
 router.patch('/:id', authController.verifyToken, validateInput(userSchema.patchUserSchema, '{ id: req.params.id, ...req.body}'), userController.patchUser);
 router.delete('/:id', authController.verifyToken, validateInput(userSchema.deleteUserSchema, 'params'), userController.deleteUser);
 

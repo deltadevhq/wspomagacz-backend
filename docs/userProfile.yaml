@@ -1,14 +1,19 @@
-/api/users/{id}:
+/api/users/search:
   get:
-    summary: Get user profile data by its ID
+    summary: Get user profile data
     description: This endpoint requires authorization token
     tags: [User Profile]
     parameters:
-      - in: path
+      - in: query
         name: id
-        required: true
+        required: false
         schema:
           type: integer
+      - in: query
+        name: username
+        required: false
+        schema:
+          type: string
     responses:
       200:
         description: Successfully retrieved user profile
@@ -24,6 +29,8 @@
         description: Forbidden - Token does not have the required permissions
       404:
         description: Not Found - User not found
+
+/api/users/:id:
   delete:
     summary: Delete user by its ID (You can only delete currently logged user)
     description: This endpoint requires authorization token
