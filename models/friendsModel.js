@@ -195,7 +195,7 @@ const checkFriendRequestExists = async (sender_id, receiver_id, status = 'pendin
 const selectFriendsActivity = async (user_id, offset = 0, limit = 10) => {
   const query = `
     SELECT ua.*, COUNT(ual.activity_id) AS likes
-    FROM user_activity ua
+    FROM user_activities ua
     LEFT JOIN user_activity_likes ual ON ual.activity_id = ua.id
     WHERE ua.user_id IN (
       SELECT CASE 
