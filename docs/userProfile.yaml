@@ -2,7 +2,7 @@
   get:
     summary: Get user profile data
     description: This endpoint requires authorization token
-    tags: [User Profile]
+    tags: [ User Profile ]
     parameters:
       - in: query
         name: id
@@ -34,7 +34,7 @@
   delete:
     summary: Delete user by its ID (You can only delete currently logged user)
     description: This endpoint requires authorization token
-    tags: [User Profile]
+    tags: [ User Profile ]
     parameters:
       - in: path
         name: id
@@ -60,7 +60,7 @@
   patch:
     summary: Patch user data by its ID (You can only patch currently logged user)
     description: Only display_name, gender, birthday, weights and height can be updated through this endpoint
-    tags: [User Profile]
+    tags: [ User Profile ]
     requestBody:
       required: true
       content:
@@ -75,7 +75,7 @@
               gender:
                 type: string
                 example: Male
-                enum: [Male, Female, Not specified]
+                enum: [ Male, Female, Not specified ]
                 nullable: true
               birthday:
                 type: date
@@ -83,7 +83,7 @@
                 nullable: true
               weights:
                 type: array
-                example: [{ "weight": 75, "date": "2024-09-08" }]
+                example: [ { "weight": 75, "date": "2024-09-08" } ]
                 items:
                   type: object
                   properties:
@@ -124,10 +124,10 @@
       404:
         description: Not Found - User not found
 
-/api/users/{id}/activity:
+/api/users/{id}/activities:
   get:
-    summary: Get user activity by user ID
-    tags: [User Profile]
+    summary: Get user activities by user ID
+    tags: [ User Profile ]
     parameters:
       - in: path
         name: id
@@ -153,6 +153,84 @@
       404:
         description: Not Found - User activity not found
 
+/api/users/activities/{id}:
+  get:
+    summary: Get user activity by its ID
+    tags: [ User Profile ]
+    parameters:
+      - in: path
+        name: id
+        description: The ID of the activity to retrieve.
+        required: true
+        schema:
+          type: integer
+    responses:
+    200:
+      description: Successfully retrieved user activity
+    404:
+      description: Not Found - Activity not found
+  delete:
+    summary: Delete user activity by its ID
+    tags: [ User Profile ]
+    parameters:
+      - in: path
+        name: id
+        description: The ID of the activity to delete.
+        required: true
+        schema:
+          type: integer
+    responses:
+    200:
+      description: Successfully deleted user activity
+    404:
+      description: Not Found - Activity not found
+
+/api/users/activities/{id}/like:
+  post:
+    summary: Like user activity
+    description: This endpoint requires authorization token
+    tags: [ User Profile ]
+    parameters:
+      - in: path
+        name: id
+        description: The ID of the activity to like.
+        required: true
+        schema:
+          type: integer
+    responses:
+    200:
+      description: Successfully liked user activity
+    400:
+      description: Bad request - Invalid activity ID
+    401:
+      description: Unauthorized - Invalid or missing token
+    403:
+      description: Forbidden - Token does not have the required permissions
+    404:
+      description: Not Found - Activity not found
+  delete:
+    summary: Unlike user activity
+    description: This endpoint requires authorization token
+    tags: [ User Profile ]
+    parameters:
+      - in: path
+        name: id
+        description: The ID of the activity to unlike.
+        required: true
+        schema:
+          type: integer
+    responses:
+    200:
+      description: Successfully unliked user activity
+    400:
+      description: Bad request - Invalid activity ID
+    401:
+      description: Unauthorized - Invalid or missing token
+    403:
+      description: Forbidden - Token does not have the required permissions
+    404:
+      description: Not Found - Activity not found
+
 components:
   schemas:
     User:
@@ -173,7 +251,7 @@ components:
         gender:
           type: string
           example: Male
-          enum: [Male, Female, Not specified]
+          enum: [ Male, Female, Not specified ]
         birthday:
           type: date
           example: 2001-03-05
@@ -181,7 +259,7 @@ components:
         status:
           type: string
           example: Aktywny
-          enum: [Aktywny, Nieaktywny, Zawieszony]
+          enum: [ Aktywny, Nieaktywny, Zawieszony ]
         level:
           type: integer
           example: 1
@@ -192,7 +270,7 @@ components:
           minimum: 0
         weights:
           type: array
-          example: [{ "weight": 75, "date": "2024-09-08" }]
+          example: [ { "weight": 75, "date": "2024-09-08" } ]
           items:
             type: object
             properties:
@@ -238,7 +316,7 @@ components:
         gender:
           type: string
           example: Male
-          enum: [Male, Female, Not specified]
+          enum: [ Male, Female, Not specified ]
         birthday:
           type: date
           example: 2001-03-05
@@ -246,7 +324,7 @@ components:
         status:
           type: string
           example: Aktywny
-          enum: [Aktywny, Nieaktywny, Zawieszony]
+          enum: [ Aktywny, Nieaktywny, Zawieszony ]
         level:
           type: integer
           example: 1
@@ -257,7 +335,7 @@ components:
           minimum: 0
         weights:
           type: array
-          example: [{ "weight": 75, "date": "2024-09-08" }]
+          example: [ { "weight": 75, "date": "2024-09-08" } ]
           items:
             type: object
             properties:
