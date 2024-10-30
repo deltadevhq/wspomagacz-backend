@@ -12,7 +12,7 @@ const fetchFriends = async (req, res) => {
     const friends = await friendsModel.fetchFriends(logged_user_id);
     if (!friends) return res.status(404).json({ error: 'No friends found.' });
 
-    return res.status(200).json(friends);
+    res.status(200).json(friends);
   } catch (error) {
     console.error('Error fetching friends:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
@@ -27,7 +27,7 @@ const fetchFriendRequests = async (req, res) => {
     const friendRequests = await friendsModel.fetchFriendRequests(logged_user_id);
     if (!friendRequests) return res.status(404).json({ error: 'No friend requests found.' });
 
-    return res.status(200).json(friendRequests);
+    res.status(200).json(friendRequests);
   } catch (error) {
     console.error('Error fetching friend requests:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
@@ -64,8 +64,7 @@ const sendFriendRequest = async (req, res) => {
     const newRequest = await friendsModel.sendFriendRequest(logged_user_id, to_id);
 
     // Respond with the newly created request
-    return res.status(201).json(newRequest);
-
+    res.status(201).json(newRequest);
   } catch (error) {
     console.error('Error sending friend request:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
@@ -89,8 +88,7 @@ const acceptFriendRequest = async (req, res) => {
 
     // Accept the friend request
     const updatedRequest = await friendsModel.acceptFriendRequest(from_id, logged_user_id);
-    return res.status(200).json(updatedRequest);
-
+    res.status(200).json(updatedRequest);
   } catch (error) {
     console.error('Error accepting friend request:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
@@ -114,8 +112,7 @@ const rejectFriendRequest = async (req, res) => {
 
     // Reject the friend request
     const updatedRequest = await friendsModel.rejectFriendRequest(from_id, logged_user_id);
-    return res.status(200).json(updatedRequest);
-
+    res.status(200).json(updatedRequest);
   } catch (error) {
     console.error('Error rejecting friend request:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
@@ -168,9 +165,9 @@ const fetchFriendsActivity = async (req, res) => {
 
     // Fetch activities from friends
     const activities = await friendsModel.selectFriendsActivity(logged_user_id, offset, limit);
-    if (!activities)  return res.status(404).json({ error: 'No activities found.' });
-    
-    return res.status(200).json(activities);
+    if (!activities) return res.status(404).json({ error: 'No activities found.' });
+
+    res.status(200).json(activities);
   } catch (error) {
     console.error('Error fetching friends activity:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
