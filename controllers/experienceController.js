@@ -3,7 +3,6 @@ const { Response, Request } = require('express');
 
 const experienceModel = require('../models/experienceModel');
 const userModel = require('../models/userModel');
-// const notificationModel = require('../models/notificationModel');
 
 /**
  * Function to handle the request for the user's level based on provided experience points (XP).
@@ -112,18 +111,20 @@ const userExperienceHandler = async (workout) => {
     const progression = await getLevelByXpHandler(exp_after);
     const lvl_after = progression.level;
 
-    // Emit level up notification for user
-    if (lvl_before < lvl_after) {
-      // await notificationModel.sendNotification(workout.user_id, `Congratulations! You've leveled up to Level ${lvl_after}!`, 'level_up');
-      console.log(`Level up from ${lvl_before} to ${lvl_after} for user id: ${workout.user_id} `);
-    }
-
     // TODO: EXTRA EXPERIENCE FOR EACH PERSONAL RECORD
     // TODO: EXTRA EXPERIENCE FOR EACH ACHIEVEMENT
 
     // Grant experience and level for user and insert row in history
     await experienceModel.grantExperience(workout.user_id, exp_after, lvl_after);
     const history_result = await experienceModel.insertExperienceHistory(workout.user_id, workout.id, exp_granted, exp_before, exp_after, lvl_before, lvl_after);
+
+    // Publish level up activity 
+    if (lvl_before < lvl_after) {
+      history_result.multiplier = multiplier;
+      const activityMessage = `osiągnął ${lvl_after} poziom doświadczenia!`;
+      await userModel.insertUserActivity(workout.user_id, activityMessage, history_result, workout.user_id, 'public');
+      console.log(`Level up from ${lvl_before} to ${lvl_after} for user id: ${workout.user_id} `);
+    }
 
     console.log(`Finished user experience handler with XP granted: ${history_result.exp_granted}`);
     return history_result;

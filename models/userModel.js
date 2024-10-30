@@ -71,7 +71,7 @@ const selectUserActivities = async (user_id, visibility, offset = 0, limit = 10)
     SELECT ua.*, COUNT(ual.activity_id) AS likes
     FROM user_activity ua
       LEFT JOIN user_activity_likes ual ON ual.activity_id = ua.id
-    WHERE ua.user_id = $1 AND ua.hidden = COALESCE($2, ua.hidden)
+    WHERE ua.user_id = $1 AND (CASE WHEN $2 = FALSE THEN ua.hidden = $2 ELSE TRUE END)
     GROUP BY ua.id, ua.created_at 
     ORDER BY ua.created_at DESC
     LIMIT $3 OFFSET $4;
@@ -88,19 +88,20 @@ const selectUserActivities = async (user_id, visibility, offset = 0, limit = 10)
   }
 }
 
-const insertUserActivity = async (user_id, message, data, created_by = 1) => {
-  // TODO: INSERT ACTIVITIES
+const insertUserActivity = async (user_id, message, data, created_by = 1,  visibility) => {
   const query = `
     INSERT INTO user_activity (
       user_id,
       message,
       data,
-      created_by
+      created_by,
+      hidden
     )
-    VALUES ($1, $2, $3, $4)
+    VALUES ($1, $2, $3, $4, $5)
     RETURNING *;
   `;
-  const values = [user_id, message, data, created_by];
+  const hidden = visibility === 'private';
+  const values = [user_id, message, data, created_by, hidden];
 
   try {
     const result = await pool.query(query, values);

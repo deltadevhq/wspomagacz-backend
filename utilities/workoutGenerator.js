@@ -64,7 +64,7 @@ const generateRandomWorkout = async (user_id) => {
     if (!datesTaken.find(date => date === date)) {
       datesTaken.push(date);
     }
-  } while (await getWorkoutByDate(user_id, date));
+  } while (await getWorkoutByDate(date));
 
   // Select a random note from the predefined list
   const note = randomNotes[generateRandomNumber(0, randomNotes.length - 1)];
@@ -72,7 +72,6 @@ const generateRandomWorkout = async (user_id) => {
   // Random workout object
   return {
     related_workout_id: null,
-    user_id: user_id,
     name: workout_name,
     exercises: exercises,
     date: date,
