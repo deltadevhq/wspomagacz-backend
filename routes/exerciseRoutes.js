@@ -6,9 +6,9 @@ const exerciseSchema = require('../schemas/exerciseSchema.js');
 const { validateInput } = require('../utilities/validation');
 
 // AUTH ROUTES
-router.get('/', authController.verifyToken, validateInput(exerciseSchema.getExerciseSchema, 'query'), exerciseController.getExercises);
-router.get('/:id', authController.verifyToken, validateInput(exerciseSchema.getExerciseByIdSchema, '{ id: req.params.id, ...req.query }'), exerciseController.getExerciseById);
-router.post('/', authController.verifyToken, validateInput(exerciseSchema.postExerciseSchema), exerciseController.postExercise);
-router.delete('/:id', authController.verifyToken, validateInput(exerciseSchema.deleteExerciseSchema, 'params'), exerciseController.deleteExercise);
+router.get('/', validateInput(exerciseSchema.getExerciseSchema, 'query'), authController.verifyToken, exerciseController.getExercises);
+router.get('/:id', validateInput(exerciseSchema.getExerciseByIdSchema, '{ id: req.params.id, ...req.query }'), authController.verifyToken, exerciseController.getExerciseById);
+router.post('/', validateInput(exerciseSchema.postExerciseSchema), authController.verifyToken, exerciseController.postExercise);
+router.delete('/:id', validateInput(exerciseSchema.deleteExerciseSchema, 'params'), authController.verifyToken, exerciseController.deleteExercise);
 
 module.exports = router;

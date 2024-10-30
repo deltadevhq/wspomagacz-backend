@@ -6,7 +6,7 @@ const experienceSchema = require('../schemas/experienceSchema');
 const { validateInput } = require('../utilities/validation');
 
 // AUTH ROUTES
-router.get('/level-by-xp', authController.verifyToken, validateInput(experienceSchema.getLevelByXpSchema, 'query'), experienceController.getLevelByXp);
-router.get('/xp-by-level', authController.verifyToken, validateInput(experienceSchema.getXpByLevelSchema, 'query'), experienceController.getXpByLevel);
+router.get('/level-by-xp', validateInput(experienceSchema.getLevelByXpSchema, 'query'), authController.verifyToken, experienceController.getLevelByXp);
+router.get('/xp-by-level', validateInput(experienceSchema.getXpByLevelSchema, 'query'), authController.verifyToken, experienceController.getXpByLevel);
 
 module.exports = router;

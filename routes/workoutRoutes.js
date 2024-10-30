@@ -6,12 +6,12 @@ const workoutSchema = require('../schemas/workoutSchema');
 const { validateInput } = require('../utilities/validation');
 
 // AUTH ROUTES
-router.get('/', authController.verifyToken, validateInput(workoutSchema.getWorkoutSchema, 'query'), workoutController.getWorkouts);
-router.get('/:id', authController.verifyToken, validateInput(workoutSchema.getWorkoutByIdSchema, 'params'), workoutController.getWorkoutById);
-router.put('/', authController.verifyToken, validateInput(workoutSchema.putWorkoutSchema), workoutController.putWorkout);
-router.delete('/:id', authController.verifyToken, validateInput(workoutSchema.deleteWorkoutSchema, 'params'), workoutController.deleteWorkout);
-router.post('/:id/start', authController.verifyToken, validateInput(workoutSchema.startWorkoutSchema, 'params'), workoutController.startWorkout);
-router.post('/:id/stop', authController.verifyToken, validateInput(workoutSchema.stopWorkoutSchema, 'params'), workoutController.stopWorkout);
-router.post('/:id/finish', authController.verifyToken, validateInput(workoutSchema.finishWorkoutSchema, 'params'), workoutController.finishWorkout);
+router.get('/', validateInput(workoutSchema.getWorkoutSchema, 'query'), authController.verifyToken, workoutController.getWorkouts);
+router.get('/:id', validateInput(workoutSchema.getWorkoutByIdSchema, 'params'), authController.verifyToken, workoutController.getWorkoutById);
+router.put('/', validateInput(workoutSchema.putWorkoutSchema), authController.verifyToken, workoutController.putWorkout);
+router.delete('/:id', validateInput(workoutSchema.deleteWorkoutSchema, 'params'), authController.verifyToken, workoutController.deleteWorkout);
+router.post('/:id/start', validateInput(workoutSchema.startWorkoutSchema, 'params'), authController.verifyToken, workoutController.startWorkout);
+router.post('/:id/stop', validateInput(workoutSchema.stopWorkoutSchema, 'params'), authController.verifyToken, workoutController.stopWorkout);
+router.post('/:id/finish', validateInput(workoutSchema.finishWorkoutSchema, 'params'), authController.verifyToken, workoutController.finishWorkout);
 
 module.exports = router;

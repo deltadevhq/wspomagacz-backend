@@ -7,6 +7,6 @@ const { validateInput } = require('../utilities/validation');
 
 // AUTH ROUTES
 router.get('/', authController.verifyToken, equipmentController.getEquipment);
-router.get('/:id', authController.verifyToken, validateInput(equipmentSchema.getEquipmentSchema, 'params'), equipmentController.getEquipmentById);
+router.get('/:id', validateInput(equipmentSchema.getEquipmentSchema, 'params'), authController.verifyToken, equipmentController.getEquipmentById);
 
 module.exports = router;

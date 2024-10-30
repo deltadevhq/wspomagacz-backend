@@ -11,6 +11,6 @@ router.post('/register', validateInput(userSchema.registerSchema), authControlle
 // AUTH ROUTES
 router.get('/user', authController.verifyToken, authController.getCurrentLoggedUser);
 router.get('/logout', authController.verifyToken, authController.logoutUser);
-router.patch('/user/password', authController.verifyToken, validateInput(userSchema.patchPasswordSchema), authController.patchUserPassword);
+router.patch('/user/password', validateInput(userSchema.patchPasswordSchema), authController.verifyToken, authController.patchUserPassword);
 
 module.exports = router;

@@ -5,7 +5,7 @@ const { applicationTimezone } = require('../config/settings');
 const getTimestamp = () => moment().tz(applicationTimezone).format('YYYY-MM-DD HH:mm:ss');
 
 // Function to convert date to a timestamp in timezone from configuration
-const formatDate = (date) => moment(date).tz(applicationTimezone);
+const formatDate = (date) => moment(date).tz(applicationTimezone).format();
 
 module.exports = {
   getTimestamp,

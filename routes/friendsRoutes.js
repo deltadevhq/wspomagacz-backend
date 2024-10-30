@@ -9,9 +9,9 @@ const { validateInput } = require('../utilities/validation');
 router.get('/', authController.verifyToken, friendsController.fetchFriends);
 router.get('/requests', authController.verifyToken, friendsController.fetchFriendRequests);
 router.get('/activity', authController.verifyToken, friendsController.fetchFriendsActivity);
-router.post('/request/:to_id', authController.verifyToken, validateInput(friendsSchema.sendFriendRequestSchema, 'params'), friendsController.sendFriendRequest);
-router.post('/accept/:from_id', authController.verifyToken, validateInput(friendsSchema.acceptFriendRequestSchema, 'params'), friendsController.acceptFriendRequest);
-router.post('/reject/:from_id', authController.verifyToken, validateInput(friendsSchema.rejectFriendRequestSchema, 'params'), friendsController.rejectFriendRequest);
-router.delete('/:id', authController.verifyToken, validateInput(friendsSchema.removeFriendSchema, 'params'), friendsController.removeFriend);
+router.post('/request/:to_id', validateInput(friendsSchema.sendFriendRequestSchema, 'params'), authController.verifyToken, friendsController.sendFriendRequest);
+router.post('/accept/:from_id', validateInput(friendsSchema.acceptFriendRequestSchema, 'params'), authController.verifyToken, friendsController.acceptFriendRequest);
+router.post('/reject/:from_id', validateInput(friendsSchema.rejectFriendRequestSchema, 'params'), authController.verifyToken, friendsController.rejectFriendRequest);
+router.delete('/:id', validateInput(friendsSchema.removeFriendSchema, 'params'), authController.verifyToken, friendsController.removeFriend);
 
 module.exports = router;

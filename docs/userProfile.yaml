@@ -30,7 +30,7 @@
       404:
         description: Not Found - User not found
 
-/api/users/:id:
+/api/users/{id}:
   delete:
     summary: Delete user by its ID (You can only delete currently logged user)
     description: This endpoint requires authorization token
