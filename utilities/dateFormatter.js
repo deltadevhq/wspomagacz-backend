@@ -5,6 +5,9 @@ const formatResponseDates = (data) => {
     data.forEach(item => formatResponseDates(item));
   } else if (data && typeof data === 'object') {
     for (const key in data) {
+      if (typeof data[key] === 'object'){
+        data[key] = formatResponseDates(data[key]);
+      } 
       if (data[key] instanceof Date || key.endsWith('_at')) {
         data[key] = formatDate(data[key]);
       }
