@@ -49,6 +49,10 @@ client.on('notification', async (data) => {
   }
 });
 
+client.on('error', (error) => {
+  console.error('Error in PostgreSQL client:', error);
+});
+
 console.log(`WebSocket server is running on ws://${applicationHost}:${websocketPort}`);
 
 module.exports = {
