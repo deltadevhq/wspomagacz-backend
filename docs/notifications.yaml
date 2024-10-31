@@ -1,0 +1,87 @@
+/api/notifications:
+  get:
+    summary: Returns all notifications for currently logged user
+    tags: [ Notifications ]
+    responses:
+      200:
+        description: Successfully retrieved notifications
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/Notification"
+      401:
+        description: Unauthorized - Invalid or missing token
+      404:
+        description: Not Found - User not found
+/api/notifications/{id}:
+  get:
+    summary: Returns a single notification by ID
+    tags: [ Notifications ]
+    parameters:
+      - in: path
+        name: id
+        required: true
+        description: ID of the notification to return
+        schema:
+          type: integer
+    responses:
+      200:
+        description: Successfully retrieved notification
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Notification"
+      401:
+        description: Unauthorized - Invalid or missing token
+      404:
+        description: Not Found - Notification not found
+      500:
+        description: Internal Server Error - Database error
+/api/notifications/events:
+  get:
+    summary: Opens a keep-alive connection to receive real-time notifications
+    tags: [ Notifications ]
+    responses:
+      200:
+        description: Successfully connected to the server
+      401:
+        description: Unauthorized - Invalid or missing token
+      404:
+        description: Not Found - User not found
+      500:
+        description: Internal Server Error - Database error
+/api/notifications/mark-as-read:
+  post:
+    summary: Marks all notifications as read for currently logged user
+    tags: [ Notifications ]
+    responses:
+    200:
+      description: Successfully marked all notifications as read
+    401:
+      description: Unauthorized - Invalid or missing token
+    404:
+      description: Not Found - User not found
+    500:
+      description: Internal Server Error - Database error
+/api/notifications/{id}/mark-as-read/:
+  post:
+    summary: Marks a single notification as read by ID
+    tags: [ Notifications ]
+    parameters:
+      - in: path
+        name: id
+        required: true
+        description: ID of the notification to mark as read
+        schema:
+          type: integer
+    responses:
+      200:
+        description: Successfully marked notification as read
+      401:
+        description: Unauthorized - Invalid or missing token
+      404:
+        description: Not Found - Notification not found
+      500:
+        description: Internal Server Error - Database error

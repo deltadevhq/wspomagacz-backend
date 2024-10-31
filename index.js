@@ -1,4 +1,5 @@
 require('./setup');
+const compression = require('compression');
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
@@ -26,6 +27,9 @@ app.use(morgan('[INFO][:date] Request: :method :url HTTP/:http-version, Response
 // Use cookieParser to parse cookies
 app.use(cookieParser());
 
+// Use compression to compress responses
+app.use(compression());
+
 // Use CORS to control allow origin access
 app.use(cors({
   origin: applicationCorsOrigin,
@@ -43,6 +47,7 @@ app.use('/api/exercises', dateFormatterMiddleware, routes.exerciseRoutes);
 app.use('/api/workouts', dateFormatterMiddleware, routes.workoutRoutes);
 app.use('/api/experience', dateFormatterMiddleware, routes.experienceRoutes);
 app.use('/api/friends', dateFormatterMiddleware, routes.friendsRoutes);
+app.use('/api/notifications', dateFormatterMiddleware, routes.notificationRoutes);
 
 
 // Main execution flow
@@ -57,7 +62,7 @@ app.use('/api/friends', dateFormatterMiddleware, routes.friendsRoutes);
       console.log(`API listening at http://${applicationHost}:${backendPort}`);
     });
 
-    require('./config/websocket');
+    //require('./config/websocket');
 
     // Schedule daily jobs
     cron.schedule(closeSkippedWorkoutsJobCronDefinition, () => {

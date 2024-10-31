@@ -10,7 +10,7 @@ const { pool } = require('../config/database');
  */
 const sendNotification = async (user_id, message, type) => {
   const query = `
-    INSERT INTO notifications (user_id, message, type) 
+    INSERT INTO notifications (user_id, message, type)
     VALUES ($1, $2, $3)
     RETURNING *;
   `;
@@ -31,6 +31,76 @@ const sendNotification = async (user_id, message, type) => {
   }
 };
 
+const selectNotifications = async (user_id) => {
+  const query = `
+    SELECT *
+    FROM notifications
+    WHERE user_id = $1;
+  `;
+
+  try {
+    const result = await pool.query(query, [user_id]);
+    return result.rows.length > 0 ? result.rows : null;
+  } catch (error) {
+    console.error('Error executing query', error.stack);
+    throw error;
+  }
+};
+
+const selectNotificationById = async (id) => {
+  const query = `
+    SELECT *
+    FROM notifications
+    WHERE id = $1;
+  `;
+
+  try {
+    const result = await pool.query(query, [id]);
+    return result.rows.length > 0 ? result.rows[0] : null;
+  } catch (error) {
+    console.error('Error executing query', error.stack);
+    throw error;
+  }
+};
+
+const updateMarkAllAsRead = async (user_id) => {
+  const query = `
+    UPDATE notifications
+    SET read = true
+    WHERE user_id = $1
+    RETURNING *;
+  `;
+
+  try {
+    const result = await pool.query(query, [user_id]);
+    return result.rows.length > 0 ? result.rows[0] : null;
+  } catch (error) {
+    console.error('Error executing query', error.stack);
+    throw error;
+  }
+};
+
+const updateMarkAsReadById = async (id) => {
+  const query = `
+    UPDATE notifications
+    SET read = true
+    WHERE id = $1
+    RETURNING *;
+  `;
+
+  try {
+    const result = await pool.query(query, [id]);
+    return result.rows.length > 0 ? result.rows[0] : null;
+  } catch (error) {
+    console.error('Error executing query', error.stack);
+    throw error;
+  }
+};
+
 module.exports = {
   sendNotification,
+  selectNotifications,
+  selectNotificationById,
+  updateMarkAllAsRead,
+  updateMarkAsReadById,
 };
