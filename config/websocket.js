@@ -1,4 +1,4 @@
-const { Server } = require('ws');
+const { Server, WebSocket } = require('ws');
 const {
   applicationHost,
   websocketPort,
