@@ -1,10 +1,28 @@
-const WebSocket = require('ws');
-const { pool } = require('./database');
-const { applicationHost, websocketPort } = require('./settings');
+const { Server } = require('ws');
+const {
+  applicationHost,
+  websocketPort,
+  databaseHost,
+  databasePort,
+  databaseName,
+  databaseUser,
+  databasePassword,
+} = require('./settings');
+const { Client } = require('pg');
 
-pool.query('LISTEN new_notification');
+const client = new Client({
+  host: databaseHost,
+  port: databasePort,
+  database: databaseName,
+  user: databaseUser,
+  password: databasePassword,
+  ssl: { rejectUnauthorized: false },
+});
 
-const notificationWebsocket = new WebSocket.Server({ port: websocketPort });
+client.connect();
+client.query('LISTEN notifications');
+
+const notificationWebsocket = new Server({ port: websocketPort });
 
 notificationWebsocket.on('connection', (ws) => {
   console.log('Client connected');
@@ -14,22 +32,17 @@ notificationWebsocket.on('connection', (ws) => {
   });
 });
 
-pool.on('notification', async (msg) => {
-  try {
-    console.log(msg);
-    const notificationId = msg.payload.id;
-    const notificationQuery = 'SELECT * FROM notifications WHERE id = $1';
-    const { rows } = await pool.query(notificationQuery, [notificationId]);
-    const notification = rows[0];
+client.on('notification', async (data) => {
+  console.log('Received notification:', data);
 
-    if (notification) {
+  try {
+    if (data.payload) {
       // Broadcast notification to all connected clients
       notificationWebsocket.clients.forEach((client) => {
         if (client.readyState === WebSocket.OPEN) {
-          client.send(JSON.stringify(notification));
+          client.send(JSON.stringify(data.payload));
         }
       });
-      console.log('Notification sent to clients:', notification);
     }
   } catch (error) {
     console.error('Error handling notification:', error);
