@@ -1,4 +1,4 @@
-require('./setup')
+require('./setup');
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
@@ -8,7 +8,14 @@ const cron = require('node-cron');
 const swaggerUi = require('swagger-ui-express');
 const jobs = require('./utilities/jobs');
 const routes = require('./routes');
-const { applicationHost, backendPort, closeSkippedWorkoutsJobCronDefinition, closeUnfinishedWorkoutsJobCronDefinition, applicationCorsOrigin, applicationTimezone } = require('./config/settings');
+const {
+  applicationHost,
+  backendPort,
+  closeSkippedWorkoutsJobCronDefinition,
+  closeUnfinishedWorkoutsJobCronDefinition,
+  applicationCorsOrigin,
+  applicationTimezone,
+} = require('./config/settings');
 const { initDBConnection } = require('./config/database');
 const { swaggerDocs, packageJson } = require('./setup');
 const { dateFormatterMiddleware } = require('./utilities/dateFormatter');
@@ -22,7 +29,7 @@ app.use(cookieParser());
 // Use CORS to control allow origin access
 app.use(cors({
   origin: applicationCorsOrigin,
-  credentials: true
+  credentials: true,
 }));
 app.use(express.json());
 
@@ -50,7 +57,7 @@ app.use('/api/friends', dateFormatterMiddleware, routes.friendsRoutes);
       console.log(`API listening at http://${applicationHost}:${backendPort}`);
     });
 
-    // require('./config/websocket');
+    require('./config/websocket');
 
     // Schedule daily jobs
     cron.schedule(closeSkippedWorkoutsJobCronDefinition, () => {
@@ -65,9 +72,6 @@ app.use('/api/friends', dateFormatterMiddleware, routes.friendsRoutes);
 
     server.on('listening', () => {
       console.log('Server initialization completed.');
-
-
-
     });
   } catch (error) {
     console.error('Failed to start the server:', error);
@@ -80,7 +84,7 @@ app.use('/api/friends', dateFormatterMiddleware, routes.friendsRoutes);
 
 // TODO: STANDARDIZE ALL VARIABLE AND FUNCTION NAMES
 // TODO: STANDARDIZE ID IN EVERY SCHEMA TO USE REQUEST SCHEMA
-// TODO: CHECK USER/FRIENDS ACTIVITIES NAMING 
+// TODO: CHECK USER/FRIENDS ACTIVITIES NAMING
 // TODO: ADD JSDOCS COMMENT FOR EVERY FUNCTION
 
 // ENDPOINT: GET /API/USERS/{ID}/NOTIFICATIONS - FETCH ALL NOTIFICATIONS FOR USER
