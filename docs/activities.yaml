@@ -1,0 +1,136 @@
+/api/activities:
+  get:
+    summary: Get user activities
+    tags: [ User Activities ]
+    parameters:
+      - in: query
+        name: user_id
+        description: The ID of the user whose activity is being requested.
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: offset
+        description: The number of items to skip for pagination. Use this to retrieve the next set of results.
+        required: false
+        schema:
+          type: integer
+          default: 0
+      - in: query
+        name: limit
+        description: The maximum number of items to return. This helps limit the size of the response for better performance.
+        required: false
+        schema:
+          type: integer
+          default: 10
+    responses:
+      200:
+        description: Successfully retrieved user activity
+      404:
+        description: Not Found - User activity not found
+
+/api/activities/friends:
+  get:
+    summary: Get friends activity
+    description: This endpoint requires authorization token
+    tags: [ User Activities ]
+    parameters:
+      - in: query
+        name: offset
+        description: The number of items to skip for pagination. Use this to retrieve the next set of results.
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: limit
+        description: The maximum number of items to return. This helps limit the size of the response for better performance.
+        required: false
+        schema:
+          type: integer
+    responses:
+      200:
+        description: Successfully retrieved friends activity
+      401:
+        description: Unauthorized - Invalid or missing token
+      404:
+        description: Not Found - No friends activity found
+
+/api/activities/{id}:
+  get:
+    summary: Get user activity by its ID
+    tags: [ User Activities ]
+    parameters:
+      - in: path
+        name: id
+        description: The ID of the activity to retrieve.
+        required: true
+        schema:
+          type: integer
+    responses:
+      200:
+        description: Successfully retrieved user activity
+      404:
+        description: Not Found - Activity not found
+  delete:
+    summary: Delete user activity by its ID
+    tags: [ User Activities ]
+    parameters:
+      - in: path
+        name: id
+        description: The ID of the activity to delete.
+        required: true
+        schema:
+          type: integer
+    responses:
+      200:
+        description: Successfully deleted user activity
+      404:
+        description: Not Found - Activity not found
+
+/api/activities/{id}/like:
+  post:
+    summary: Like user activity
+    description: This endpoint requires authorization token
+    tags: [ User Activities ]
+    parameters:
+      - in: path
+        name: id
+        description: The ID of the activity to like.
+        required: true
+        schema:
+          type: integer
+    responses:
+      200:
+        description: Successfully liked user activity
+      400:
+        description: Bad request - Invalid activity ID
+      401:
+        description: Unauthorized - Invalid or missing token
+      403:
+        description: Forbidden - Token does not have the required permissions
+      404:
+        description: Not Found - Activity not found
+
+/api/activities/{id}/unlike:
+  delete:
+    summary: Unlike user activity
+    description: This endpoint requires authorization token
+    tags: [ User Activities ]
+    parameters:
+      - in: path
+        name: id
+        description: The ID of the activity to unlike.
+        required: true
+        schema:
+          type: integer
+    responses:
+      200:
+        description: Successfully unliked user activity
+      400:
+        description: Bad request - Invalid activity ID
+      401:
+        description: Unauthorized - Invalid or missing token
+      403:
+        description: Forbidden - Token does not have the required permissions
+      404:
+        description: Not Found - Activity not found

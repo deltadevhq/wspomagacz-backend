@@ -124,112 +124,45 @@
       404:
         description: Not Found - User not found
 
-/api/users/{id}/activities:
+/api/users/{id}/achievements:
   get:
-    summary: Get user activities by user ID
-    tags: [ User Profile ]
+    summary: Get user achievements by user ID
+    tags: [ User Achievements ]
     parameters:
       - in: path
         name: id
-        description: The ID of the user whose activity is being requested.
+        description: The ID of the user whose achievements are being requested.
         required: true
-        schema:
-          type: integer
-      - in: query
-        name: offset
-        description: The number of items to skip for pagination. Use this to retrieve the next set of results.
-        required: false
-        schema:
-          type: integer
-      - in: query
-        name: limit
-        description: The maximum number of items to return. This helps limit the size of the response for better performance.
-        required: false
         schema:
           type: integer
     responses:
       200:
-        description: Successfully retrieved user activity
+        description: Successfully retrieved user achievements
       404:
-        description: Not Found - User activity not found
+        description: Not Found - User achievements not found
 
-/api/users/activities/{id}:
+/api/users/{id}/achievements/{achievement_id}:
   get:
-    summary: Get user activity by its ID
-    tags: [ User Profile ]
+    summary: Get user achievement by its ID
+    tags: [ User Achievements ]
     parameters:
       - in: path
         name: id
-        description: The ID of the activity to retrieve.
+        description: The ID of the user whose achievement is being requested.
+        required: true
+        schema:
+          type: integer
+      - in: path
+        name: achievement_id
+        description: The ID of the achievement to retrieve.
         required: true
         schema:
           type: integer
     responses:
-    200:
-      description: Successfully retrieved user activity
-    404:
-      description: Not Found - Activity not found
-  delete:
-    summary: Delete user activity by its ID
-    tags: [ User Profile ]
-    parameters:
-      - in: path
-        name: id
-        description: The ID of the activity to delete.
-        required: true
-        schema:
-          type: integer
-    responses:
-    200:
-      description: Successfully deleted user activity
-    404:
-      description: Not Found - Activity not found
-
-/api/users/activities/{id}/like:
-  post:
-    summary: Like user activity
-    description: This endpoint requires authorization token
-    tags: [ User Profile ]
-    parameters:
-      - in: path
-        name: id
-        description: The ID of the activity to like.
-        required: true
-        schema:
-          type: integer
-    responses:
-    200:
-      description: Successfully liked user activity
-    400:
-      description: Bad request - Invalid activity ID
-    401:
-      description: Unauthorized - Invalid or missing token
-    403:
-      description: Forbidden - Token does not have the required permissions
-    404:
-      description: Not Found - Activity not found
-  delete:
-    summary: Unlike user activity
-    description: This endpoint requires authorization token
-    tags: [ User Profile ]
-    parameters:
-      - in: path
-        name: id
-        description: The ID of the activity to unlike.
-        required: true
-        schema:
-          type: integer
-    responses:
-    200:
-      description: Successfully unliked user activity
-    400:
-      description: Bad request - Invalid activity ID
-    401:
-      description: Unauthorized - Invalid or missing token
-    403:
-      description: Forbidden - Token does not have the required permissions
-    404:
-      description: Not Found - Activity not found
+      200:
+        description: Successfully retrieved user achievement
+      404:
+        description: Not Found - Achievement not found
 
 components:
   schemas:

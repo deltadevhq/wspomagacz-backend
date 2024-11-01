@@ -2,7 +2,7 @@
   get:
     summary: Get friends list of currently logged user
     description: This endpoint requires authorization token
-    tags: [Friends]
+    tags: [ Friends ]
     responses:
       200:
         description: Successfully retrieved friends list
@@ -21,7 +21,7 @@
   get:
     summary: Get friend requests for currently logged user
     description: This endpoint requires authorization token
-    tags: [Friends]
+    tags: [ Friends ]
     responses:
       200:
         description: Successfully retrieved friend requests
@@ -30,37 +30,11 @@
       404:
         description: Not Found - No friend requests
 
-/api/friends/activity:
-  get:
-    summary: Get friends activity
-    description: This endpoint requires authorization token
-    tags: [Friends]
-    parameters:
-      - in: query
-        name: offset
-        description: The number of items to skip for pagination. Use this to retrieve the next set of results.
-        required: false
-        schema:
-          type: integer
-      - in: query
-        name: limit
-        description: The maximum number of items to return. This helps limit the size of the response for better performance.
-        required: false
-        schema:
-          type: integer
-    responses:
-      200:
-        description: Successfully retrieved friends activity
-      401:
-        description: Unauthorized - Invalid or missing token
-      404:
-        description: Not Found - No friends activity found
-
 /api/friends/request/{to_id}:
   post:
     summary: Sends friend request from currently logged user to user with provided ID
     description: This endpoint requires authorization token
-    tags: [Friends]
+    tags: [ Friends ]
     parameters:
       - in: path
         name: to_id
@@ -82,7 +56,7 @@
   post:
     summary: Accepts friend request from user with provided ID
     description: This endpoint requires authorization token
-    tags: [Friends]
+    tags: [ Friends ]
     parameters:
       - in: path
         name: from_id
@@ -104,7 +78,7 @@
   post:
     summary: Rejects friend request from user with provided ID
     description: This endpoint requires authorization token
-    tags: [Friends]
+    tags: [ Friends ]
     parameters:
       - in: path
         name: from_id
@@ -126,7 +100,7 @@
   delete:
     summary: Delete friend or friend request by ID of friend
     description: This endpoint requires authorization token
-    tags: [Friends]
+    tags: [ Friends ]
     parameters:
       - in: path
         name: id
