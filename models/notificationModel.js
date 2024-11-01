@@ -35,7 +35,8 @@ const selectNotifications = async (user_id) => {
   const query = `
     SELECT *
     FROM notifications
-    WHERE user_id = $1;
+    WHERE user_id = $1
+    ORDER BY created_at DESC;
   `;
 
   try {
