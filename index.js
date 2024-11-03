@@ -39,15 +39,17 @@ app.use(express.json());
 
 // Define specific routes
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+app.use('/api/achievements', dateFormatterMiddleware, routes.achievementRoutes);
+app.use('/api/activities', dateFormatterMiddleware, routes.activitiesRoutes);
 app.use('/api/auth', dateFormatterMiddleware, routes.authRoutes);
-app.use('/api/users', dateFormatterMiddleware, routes.userRoutes);
-app.use('/api/muscles', dateFormatterMiddleware, routes.muscleRoutes);
 app.use('/api/equipment', dateFormatterMiddleware, routes.equipmentRoutes);
 app.use('/api/exercises', dateFormatterMiddleware, routes.exerciseRoutes);
-app.use('/api/workouts', dateFormatterMiddleware, routes.workoutRoutes);
 app.use('/api/experience', dateFormatterMiddleware, routes.experienceRoutes);
 app.use('/api/friends', dateFormatterMiddleware, routes.friendsRoutes);
+app.use('/api/muscles', dateFormatterMiddleware, routes.muscleRoutes);
 app.use('/api/notifications', dateFormatterMiddleware, routes.notificationRoutes);
+app.use('/api/users', dateFormatterMiddleware, routes.userRoutes);
+app.use('/api/workouts', dateFormatterMiddleware, routes.workoutRoutes);
 
 
 // Main execution flow

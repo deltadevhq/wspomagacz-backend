@@ -112,7 +112,7 @@
         description: Not Found - Activity not found
 
 /api/activities/{id}/unlike:
-  delete:
+  post:
     summary: Unlike user activity
     description: This endpoint requires authorization token
     tags: [ User Activities ]

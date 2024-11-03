@@ -8,7 +8,7 @@ const { validateInput } = require('../utilities/validation');
 // AUTH ROUTES
 router.get('/', verifyToken, friendsController.fetchFriends);
 router.get('/requests', verifyToken, friendsController.fetchFriendRequests);
-router.get('/activity', validateInput(friendsSchema.fetchFriendsActivitiesSchema, 'query'), verifyToken, friendsController.fetchFriendsActivity);
+router.get('/activity', validateInput(friendsSchema.fetchFriendsActivitiesSchema, 'query'), verifyToken, friendsController.fetchFriendsActivity); // TODO: MOVE ENDPOINT TO ACTIVITIES
 router.post('/request/:to_id', validateInput(friendsSchema.sendFriendRequestSchema, 'params'), verifyToken, friendsController.sendFriendRequest);
 router.post('/accept/:from_id', validateInput(friendsSchema.acceptFriendRequestSchema, 'params'), verifyToken, friendsController.acceptFriendRequest);
 router.post('/reject/:from_id', validateInput(friendsSchema.rejectFriendRequestSchema, 'params'), verifyToken, friendsController.rejectFriendRequest);
