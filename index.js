@@ -62,8 +62,6 @@ app.use('/api/notifications', dateFormatterMiddleware, routes.notificationRoutes
       console.log(`API listening at http://${applicationHost}:${backendPort}`);
     });
 
-    //require('./config/websocket');
-
     // Schedule daily jobs
     cron.schedule(closeSkippedWorkoutsJobCronDefinition, () => {
       jobs.closeSkippedWorkouts();
@@ -77,6 +75,10 @@ app.use('/api/notifications', dateFormatterMiddleware, routes.notificationRoutes
 
     server.on('listening', () => {
       console.log('Server initialization completed.');
+
+
+
+
     });
   } catch (error) {
     console.error('Failed to start the server:', error);

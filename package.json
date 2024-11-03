@@ -1,6 +1,6 @@
 {
   "name": "wspomagacz-backend",
-  "version": "1.71.2",
+  "version": "1.71.3",
   "main": "index.js",
   "scripts": {
     "start": "node index.js --config=./config.yaml",
@@ -31,7 +31,6 @@
     "pg": "^8.12.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
-    "ws": "^8.18.0",
     "yargs": "^17.7.2"
   },
   "devDependencies": {
