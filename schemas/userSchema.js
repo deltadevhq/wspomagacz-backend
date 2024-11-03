@@ -184,6 +184,21 @@ const fetchUserActivitySchema = Joi.object({
   limit: baseRequestSchema.limit,
 });
 
+/**
+ * Specific validation schema for fetching user achievements
+ */
+const getUserAchievements = Joi.object({
+  id: baseUserSchema.id.required().messages({ 'any.required': 'ID is required' }),
+});
+
+/**
+ * Specific validation schema for fetching user achievement
+ */
+const getUserAchievement = Joi.object({
+  id: baseUserSchema.id.required().messages({ 'any.required': 'ID is required' }),
+  achievement_id: baseUserSchema.id.required().messages({ 'any.required': 'Achievement ID is required' }),
+});
+
 module.exports = {
   baseUserSchema,
   searchUserProfileSchema,
@@ -193,4 +208,6 @@ module.exports = {
   registerSchema,
   patchPasswordSchema,
   fetchUserActivitySchema,
+  getUserAchievements,
+  getUserAchievement,
 };
