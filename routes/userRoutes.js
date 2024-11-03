@@ -10,5 +10,7 @@ router.get('/search', validateInput(userSchema.searchUserProfileSchema, 'query')
 router.patch('/:id', validateInput(userSchema.patchUserSchema, '{ id: req.params.id, ...req.body }'), verifyToken, userController.patchUser);
 router.delete('/:id', validateInput(userSchema.deleteUserSchema, 'params'), verifyToken,  userController.deleteUser);
 router.get('/:id/activity', validateInput(userSchema.fetchUserActivitySchema, '{ id: req.params.id, ...req.query }'), verifyToken, userController.fetchUserActivity);  // TODO: MOVE ENDPOINT TO ACTIVITIES
+router.get('/:id/achievements', verifyToken, userController.getUserAchievements); // TODO: ENDPOINT DATA VALIDATION
+router.get('/:id/achievements/:achievement_id', verifyToken, userController.getUserAchievement); // TODO: ENDPOINT DATA VALIDATION
 
 module.exports = router;

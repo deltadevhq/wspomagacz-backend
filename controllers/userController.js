@@ -140,9 +140,35 @@ const fetchUserActivity = async (req, res) => {
   }
 };
 
+const getUserAchievements = async (req, res) => {
+  try {
+
+    // TODO: IMPLEMENT getUserAchievements ENDPOINT
+    res.status(501).json({error: 'Not implemented'});
+
+  } catch (error) {
+    console.error('Error fetching user achievements:', error.stack);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+const getUserAchievement = async (req, res) => {
+  try {
+
+    // TODO: IMPLEMENT getUserAchievement ENDPOINT
+    res.status(501).json({error: 'Not implemented'});
+
+  } catch (error) {
+    console.error('Error fetching user achievement:', error.stack);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
 module.exports = {
   searchUserProfile,
   patchUser,
   deleteUser,
   fetchUserActivity,
+  getUserAchievements,
+  getUserAchievement,
 };
