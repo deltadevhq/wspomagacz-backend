@@ -64,6 +64,18 @@ const getWorkoutById = async (req, res) => {
   }
 };
 
+const getWorkoutSummary = async (req, res) => {
+  try {
+
+    // TODO: IMPLEMENT getWorkoutSummary ENDPOINT
+    res.status(501).json({error: 'Not implemented'});
+
+  } catch (error) {
+    console.error('Error fetching workout summary:', error.stack);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
 /**
  * Function to handle requests for creating or updating a workout.
  * - If an ID is provided in the request body, the function updates the corresponding workout.
@@ -299,4 +311,5 @@ module.exports = {
   startWorkout,
   stopWorkout,
   finishWorkout,
+  getWorkoutSummary,
 };
