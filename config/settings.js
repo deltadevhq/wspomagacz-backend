@@ -34,7 +34,7 @@ try {
 // Validate configuration
 const requiredKeys = [
   'database.host', 'database.port', 'database.name', 'database.user', 'database.password',
-  'application.host', 'application.timezone', 'application.secret', 'application.corsOrigin',
+  'application.host', 'application.timezone', 'application.secret', 'application.corsOrigin','application.tokenExpirationTime',
   'backend.port', 'websocket.port',
   'cronJobs.closeSkippedWorkouts', 'cronJobs.closeUnfinishedWorkouts'
 ];
@@ -56,7 +56,7 @@ requiredKeys.forEach((key) => {
 // Destructure configuration keys
 const {
   database: { host: databaseHost, port: databasePort, name: databaseName, user: databaseUser, password: databasePassword },
-  application: { host: applicationHost, timezone: applicationTimezone, secret: applicationSecret, corsOrigin: applicationCorsOrigin },
+  application: { host: applicationHost, timezone: applicationTimezone, secret: applicationSecret, corsOrigin: applicationCorsOrigin, tokenExpirationTime: applicationTokenExpirationTime  },
   backend: { port: backendPort },
   websocket: { port: websocketPort },
   cronJobs: { closeSkippedWorkouts: closeSkippedWorkoutsJobCronDefinition, closeUnfinishedWorkouts: closeUnfinishedWorkoutsJobCronDefinition },
@@ -72,6 +72,7 @@ module.exports = {
   applicationTimezone,
   applicationSecret,
   applicationCorsOrigin,
+  applicationTokenExpirationTime,
   backendPort,
   websocketPort,
   closeSkippedWorkoutsJobCronDefinition,

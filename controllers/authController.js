@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 const { Response, Request } = require('express');
-const { applicationSecret } = require('../config/settings');
+const { applicationSecret, applicationTokenExpirationTime } = require('../config/settings');
 const authModel = require('../models/authModel');
 const userModel = require('../models/userModel');
 const jwt = require('jsonwebtoken');
@@ -105,7 +105,7 @@ const loginUser = async (req, res) => {
 
     // Generate JWT token
     const token = jwt.sign({ id: user.id, username: user.username }, applicationSecret, {
-      expiresIn: '7d',
+      expiresIn: applicationTokenExpirationTime,
     });
 
     // Set the cookie with the token
