@@ -10,6 +10,7 @@ application:
   timezone: "Europe/Warsaw"
   secret: "%APPLICATION_SECRET%"
   corsOrigin: "http://localhost:4200"
+  tokenExpirationTime: "7d"
 
 backend:
   port: 3000
