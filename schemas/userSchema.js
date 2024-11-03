@@ -4,7 +4,7 @@ const JoiPassword = Joi.extend(joiPasswordExtendCore);
 const { baseRequestSchema } = require('./requestSchema');
 
 /**
- * Base validation schema for user data
+ * Base validation schema for user request data
  */
 const baseUserSchema = {
   id: baseRequestSchema.id,
@@ -179,7 +179,7 @@ const patchPasswordSchema = Joi.object({
  * Specific validation schema for fetching user activities
  */
 const fetchUserActivitySchema = Joi.object({
-  id: baseRequestSchema.id.required().messages({ 'any.required': 'ID is required' }),
+  id: baseUserSchema.id.required().messages({ 'any.required': 'ID is required' }),
   offset: baseRequestSchema.offset,
   limit: baseRequestSchema.limit,
 });

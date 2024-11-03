@@ -1,19 +1,11 @@
 const Joi = require('joi');
+const { baseRequestSchema } = require('./requestSchema');
 
 /**
- * Base validation schema for muscle data
+ * Base validation schema for muscle request data
  */
 const baseMuscleSchema = {
-  id: Joi.number()
-    .integer()
-    .positive()
-    .required()
-    .messages({
-      'number.base': 'ID must be a number',
-      'number.integer': 'ID must be an integer',
-      'number.positive': 'ID must be a positive number',
-      'any.required': 'ID is required',
-    }),
+  id: baseRequestSchema.id.required().messages({ 'any.required': 'ID is required' }),
 
   name: Joi.string()
     .min(3)

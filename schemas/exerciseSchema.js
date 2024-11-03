@@ -1,19 +1,13 @@
 const Joi = require('joi');
 const { baseEquipmentSchema } = require('./equipmentSchema');
 const { baseMuscleSchema } = require('./muscleSchema');
+const { baseRequestSchema } = require('./requestSchema');
 
 /**
- * Base validation schema for exercise data
+ * Base validation schema for exercise request data
  */
 const baseExerciseSchema = {
-  exercise_id: Joi.number()
-    .integer()
-    .positive()
-    .messages({
-      'number.base': 'ID must be a number',
-      'number.integer': 'ID must be an integer',
-      'number.positive': 'ID must be a positive number',
-    }),
+  exercise_id: baseRequestSchema.id,
 
   exercise_name: Joi.string()
     .min(3)
@@ -41,22 +35,13 @@ const baseExerciseSchema = {
       'array.base': 'Muscles must be an array of muscle objects',
     }),
 
-  user_id: Joi.number()
-    .integer()
-    .positive()
-    .allow(null)
-    .messages({
-      'number.base': 'ID must be a number',
-      'number.integer': 'ID must be an integer',
-      'number.positive': 'ID must be a positive number',
-    }),
+  user_id: baseRequestSchema.id.allow(null),
 
   exercise_type: Joi.string()
     .valid('all', 'custom', 'standard')
     .messages({
       'any.only': 'Exercise type must be one of all, custom or standard',
     }),
-
 };
 
 /**

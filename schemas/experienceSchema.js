@@ -1,7 +1,7 @@
 const Joi = require('joi');
 
 /**
- * Base validation schema for experience data
+ * Base validation schema for experience request data
  */
 const baseExperienceSchema = {
   level: Joi.number()

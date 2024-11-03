@@ -1,11 +1,11 @@
 const Joi = require('joi');
 const moment = require('moment-timezone');
-const { baseUserSchema } = require('./userSchema');
 const { baseExerciseSchema } = require('./exerciseSchema');
+const { baseRequestSchema } = require('./requestSchema');
 const { applicationTimezone } = require('../config/settings');
 
 /**
- * Base validation schema for sets data
+ * Base validation schema for sets request data
  */
 const baseSetsSchema = {
   reps: Joi.number()
@@ -49,17 +49,10 @@ const baseSetsSchema = {
 };
 
 /**
- * Base validation schema for exercise data
+ * Base validation schema for exercise request data
  */
 const baseWorkoutSchema = {
-  id: Joi.number()
-    .integer()
-    .positive()
-    .messages({
-      'number.base': 'ID must be a number',
-      'number.integer': 'ID must be an integer',
-      'number.positive': 'ID must be a positive number',
-    }),
+  id: baseRequestSchema.id,
 
   related_workout_id: Joi.number()
     .integer()
@@ -71,7 +64,7 @@ const baseWorkoutSchema = {
       'number.positive': 'Related workout ID must be a positive number',
     }),
 
-  user_id: baseUserSchema.id,
+  user_id: baseRequestSchema.id,
 
   name: Joi.string()
     .min(3)
@@ -174,7 +167,7 @@ const baseWorkoutSchema = {
  */
 const getWorkoutSchema = Joi.object({
   status: baseWorkoutSchema.status,
-  user_id: baseUserSchema.id,
+  user_id: baseWorkoutSchema.user_id,
   date: baseWorkoutSchema.date,
 });
 
