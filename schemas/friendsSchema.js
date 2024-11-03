@@ -36,19 +36,10 @@ const removeFriendSchema = Joi.object({
   id: baseFriendsSchema.id.required().messages({ 'any.required': 'ID is required' }),
 });
 
-/**
- * Specific validation schema for fetching friends activities
- */
-const fetchFriendsActivitiesSchema = Joi.object({
-  offset: baseRequestSchema.offset,
-  limit: baseRequestSchema.limit,
-});
-
 module.exports = {
   baseFriendsSchema,
   sendFriendRequestSchema,
   acceptFriendRequestSchema,
   rejectFriendRequestSchema,
   removeFriendSchema,
-  fetchFriendsActivitiesSchema,
 }
