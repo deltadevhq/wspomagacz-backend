@@ -25,7 +25,9 @@
       401:
         description: Unauthorized - Invalid or missing token
       404:
-        description: Not Found - User not found
+        description: Not Found - Notifications not found
+      500:
+        description: Internal Server Error - Database error
 
 /api/notifications/events:
   get:
@@ -36,10 +38,6 @@
         description: Successfully connected to the server
       401:
         description: Unauthorized - Invalid or missing token
-      404:
-        description: Not Found - User not found
-      500:
-        description: Internal Server Error - Database error
 
 /api/notifications/mark-as-read:
   post:
@@ -127,7 +125,7 @@ components:
         message:
           type: string
           description: The message of the notification.
-          example: "You have a new friend request."
+          example: "New system notification."
         read:
           type: boolean
           description: Indicates whether the notification has been read.
@@ -135,18 +133,18 @@ components:
         type:
           type: string
           description: The type of the notification.
-          example: "friend_request"
+          example: "system"
         created_by:
           type: integer
           description: The ID of the user who created the notification.
-          example: 2
+          example: 1
         created_at:
           type: string
           format: date-time
           description: The date and time when the notification was created.
-          example: "2021-06-01T12:00:00Z"
+          example: "2024-01-01T12:00:00+01:00"
         updated_at:
           type: string
           format: date-time
           description: The date and time when the notification was last updated.
-          example: "2021-06-01T12:00:00Z"
+          example: "2024-01-01T12:00:00+01:00"
