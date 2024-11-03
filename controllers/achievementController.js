@@ -1,11 +1,15 @@
-// const achievementModel = require('../models/achievementModel');
+const achievementModel = require('../models/achievementModel');
 
-const getAchievements = async (req, res) => {
+const fetchAchievements = async (req, res) => {
   try {
+    // Fetch achievements from database
+    const achievements = await achievementModel.selectAchievements();
 
-    // TODO: IMPLEMENT getAchievements ENDPOINT
-    res.status(501).json({error: 'Not implemented'});
+    // Check if anything was returned
+    if (!achievements) return res.status(404).json({ error: 'Achievements not found' });
 
+    // Successful response with all achievements
+    res.status(200).json(achievements);
   } catch (error) {
     console.error('Error fetching achievements:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
@@ -13,5 +17,5 @@ const getAchievements = async (req, res) => {
 };
 
 module.exports = {
-  getAchievements,
+  fetchAchievements,
 };
