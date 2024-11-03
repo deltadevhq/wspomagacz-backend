@@ -2,6 +2,17 @@
   get:
     summary: Returns all notifications for currently logged user
     tags: [ Notifications ]
+    parameters:
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          description: The number of notifications to return
+      - in: query
+        name: offset
+        schema:
+          type: integer
+          description: The number of notifications to skip
     responses:
       200:
         description: Successfully retrieved notifications
@@ -39,8 +50,12 @@
       description: Successfully marked all notifications as read
     401:
       description: Unauthorized - Invalid or missing token
+    403:
+      description: Forbidden - User does not have permission to mark notifications as read
     404:
-      description: Not Found - User not found
+      description: Not Found - Notifications not found
+    409:
+      description: Conflict - Notifications are already marked as read
     500:
       description: Internal Server Error - Database error
 
@@ -64,6 +79,8 @@
               $ref: "#/components/schemas/Notification"
       401:
         description: Unauthorized - Invalid or missing token
+      403:
+        description: Forbidden - User does not have permission to access the notification
       404:
         description: Not Found - Notification not found
       500:
@@ -85,7 +102,51 @@
         description: Successfully marked notification as read
       401:
         description: Unauthorized - Invalid or missing token
+      403:
+        description: Forbidden - User does not have permission to mark notification as read
       404:
         description: Not Found - Notification not found
+      409:
+        description: Conflict - Notification is already marked as read
       500:
         description: Internal Server Error - Database error
+
+components:
+  schemas:
+    Notification:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The unique identifier of the notification.
+          example: 1
+        user_id:
+          type: integer
+          description: The ID of the user who received the notification.
+          example: 1
+        message:
+          type: string
+          description: The message of the notification.
+          example: "You have a new friend request."
+        read:
+          type: boolean
+          description: Indicates whether the notification has been read.
+          example: false
+        type:
+          type: string
+          description: The type of the notification.
+          example: "friend_request"
+        created_by:
+          type: integer
+          description: The ID of the user who created the notification.
+          example: 2
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time when the notification was created.
+          example: "2021-06-01T12:00:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time when the notification was last updated.
+          example: "2021-06-01T12:00:00Z"
