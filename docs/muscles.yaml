@@ -1,22 +1,16 @@
 /api/muscles:
   get:
-    summary: Fetch all muscle groups
-    description: This endpoint requires authorization token
-    tags: [Muscles]
+    summary: Retrieve muscles
+    tags: [ Muscles ]
     responses:
       200:
-        description: Successfully retrieved muscles
+        description: OK - Successfully retrieved muscles
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/AllMuscles"
-            examples:
-              AllMuscles:
-                value:
-                  - id: 1
-                    name: "Biceps"
-                  - id: 2
-                    name: "Triceps"
+              type: array
+              items:
+                $ref: "#/components/schemas/Muscle"
       401:
         description: Unauthorized - Invalid or missing token
       403:
@@ -26,9 +20,9 @@
 
 /api/muscles/{id}:
   get:
-    summary: Fetch single muscle group by its ID
+    summary: Retrieve muscle by ID
     description: This endpoint requires authorization token
-    tags: [Muscles]
+    tags: [ Muscles ]
     parameters:
       - in: path
         name: id
@@ -37,7 +31,7 @@
           type: integer
     responses:
       200:
-        description: Successfully retrieved muscle
+        description: OK - Successfully retrieved muscle
         content:
           application/json:
             schema:
@@ -57,8 +51,8 @@ components:
       type: object
       properties:
         id:
-          type: int
+          type: integer
           example: 1
         name:
           type: string
-          example: "Biceps"
+          example: "Muscle name"

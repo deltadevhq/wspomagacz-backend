@@ -1,6 +1,7 @@
 /api/activities:
   get:
-    summary: Get user activities
+    summary: Retrieve user activities
+    description: Retrieve activities for a specific user if an ID is provided, otherwise retrieve activities for the currently logged-in user.
     tags: [ User Activities ]
     parameters:
       - in: query
@@ -25,14 +26,115 @@
           default: 10
     responses:
       200:
-        description: Successfully retrieved user activity
+        description: OK - Successfully retrieved user activities
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/UserActivity"
+      400:
+        description: Bad request - Invalid user ID
+      401:
+        description: Unauthorized - Invalid or missing token
+
+/api/activities/{id}:
+  get:
+    summary: Retrieve user activity by ID
+    tags: [ User Activities ]
+    parameters:
+      - in: path
+        name: id
+        description: The ID of the activity to retrieve
+        required: true
+        schema:
+          type: integer
+    responses:
+      200:
+        description: OK - Successfully retrieved user activity
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserActivity"
+      401:
+        description: Unauthorized - Invalid or missing token
+      403:
+        description: Forbidden - Token does not have the required permissions
       404:
-        description: Not Found - User activity not found
+        description: Not Found - Activity not found
+  delete:
+    summary: Delete user activity by ID
+    tags: [ User Activities ]
+    parameters:
+      - in: path
+        name: id
+        description: The ID of the activity to delete.
+        required: true
+        schema:
+          type: integer
+    responses:
+      200:
+        description: OK - Successfully deleted user activity
+      401:
+        description: Unauthorized - Invalid or missing token
+      403:
+        description: Forbidden - Token does not have the required permissions
+      404:
+        description: Not Found - Activity not found
+
+/api/activities/{id}/like:
+  post:
+    summary: Like user activity with the given ID by the currently logged-in user
+    tags: [ User Activities ]
+    parameters:
+      - in: path
+        name: id
+        description: The ID of the activity to like.
+        required: true
+        schema:
+          type: integer
+    responses:
+      200:
+        description: OK - Successfully liked user activity
+      400:
+        description: Bad request - Invalid activity ID
+      401:
+        description: Unauthorized - Invalid or missing token
+      403:
+        description: Forbidden - Token does not have the required permissions
+      404:
+        description: Not Found - Activity not found
+      409:
+        description: Conflict - Activity already liked by the user
+
+/api/activities/{id}/unlike:
+  post:
+    summary: Unlike user activity with the given ID by the currently logged-in user
+    tags: [ User Activities ]
+    parameters:
+      - in: path
+        name: id
+        description: The ID of the activity to unlike.
+        required: true
+        schema:
+          type: integer
+    responses:
+      200:
+        description: OK - Successfully unliked user activity
+      400:
+        description: Bad request - Invalid activity ID
+      401:
+        description: Unauthorized - Invalid or missing token
+      403:
+        description: Forbidden - Token does not have the required permissions
+      404:
+        description: Not Found - Activity not found
+      409:
+        description: Conflict - Activity is not liked by the user
 
 /api/activities/friends:
   get:
-    summary: Get friends activity
-    description: This endpoint requires authorization token
+    summary: Get user activities of currently logged-in user's friends
     tags: [ User Activities ]
     parameters:
       - in: query
@@ -49,88 +151,54 @@
           type: integer
     responses:
       200:
-        description: Successfully retrieved friends activity
-      401:
-        description: Unauthorized - Invalid or missing token
-      404:
-        description: Not Found - No friends activity found
-
-/api/activities/{id}:
-  get:
-    summary: Get user activity by its ID
-    tags: [ User Activities ]
-    parameters:
-      - in: path
-        name: id
-        description: The ID of the activity to retrieve.
-        required: true
-        schema:
-          type: integer
-    responses:
-      200:
-        description: Successfully retrieved user activity
-      404:
-        description: Not Found - Activity not found
-  delete:
-    summary: Delete user activity by its ID
-    tags: [ User Activities ]
-    parameters:
-      - in: path
-        name: id
-        description: The ID of the activity to delete.
-        required: true
-        schema:
-          type: integer
-    responses:
-      200:
-        description: Successfully deleted user activity
-      404:
-        description: Not Found - Activity not found
-
-/api/activities/{id}/like:
-  post:
-    summary: Like user activity
-    description: This endpoint requires authorization token
-    tags: [ User Activities ]
-    parameters:
-      - in: path
-        name: id
-        description: The ID of the activity to like.
-        required: true
-        schema:
-          type: integer
-    responses:
-      200:
-        description: Successfully liked user activity
-      400:
-        description: Bad request - Invalid activity ID
+        description: OK - Successfully retrieved user activities
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/UserActivity"
       401:
         description: Unauthorized - Invalid or missing token
       403:
         description: Forbidden - Token does not have the required permissions
-      404:
-        description: Not Found - Activity not found
 
-/api/activities/{id}/unlike:
-  post:
-    summary: Unlike user activity
-    description: This endpoint requires authorization token
-    tags: [ User Activities ]
-    parameters:
-      - in: path
-        name: id
-        description: The ID of the activity to unlike.
-        required: true
-        schema:
+components:
+  schemas:
+    UserActivity:
+      type: object
+      properties:
+        id:
           type: integer
-    responses:
-      200:
-        description: Successfully unliked user activity
-      400:
-        description: Bad request - Invalid activity ID
-      401:
-        description: Unauthorized - Invalid or missing token
-      403:
-        description: Forbidden - Token does not have the required permissions
-      404:
-        description: Not Found - Activity not found
+          example: 1
+        user_id:
+          type: integer
+          example: 1
+        message:
+          type: string
+          example: System user activity.
+        data:
+          type: object
+        hidden:
+          type: boolean
+          example: false
+        created_by:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            username:
+              type: string
+              example: system
+            display_name:
+              type: string
+              example: System
+        created_at:
+          type: string
+          format: date-time
+          example: 2024-01-01T12:00:00+01:00
+        updated_at:
+          type: string
+          format: date-time
+          example: 2024-01-01T12:00:00+01:00

@@ -1,7 +1,7 @@
 /api/auth/register:
   post:
-    summary: Creates new user account
-    tags: [Authorization]
+    summary: Create new user
+    tags: [ Authorization ]
     requestBody:
       required: true
       content:
@@ -22,10 +22,10 @@
               email:
                 type: email
                 example: system@test.com
-    security: []
+    security: [ ]
     responses:
       201:
-        description: A successful register
+        description: Created - Successfully created new user
         content:
           application/json:
             schema:
@@ -34,11 +34,12 @@
         description: Bad request - Invalid or missing user data
       409:
         description: Conflict - Email or username already taken
+
 /api/auth/login:
   post:
-    summary: Logs in user with provided credentials by setting authorization token as cookie
-    description: Username provided in request body can be either email or username
-    tags: [Authorization]
+    summary: Log in user
+    description: Sets authorization token as cookie.
+    tags: [ Authorization ]
     requestBody:
       required: true
       content:
@@ -51,14 +52,15 @@
             properties:
               username:
                 type: string
+                description: Username or email of the user
                 example: system
               password:
                 type: string
                 example: 5yst3m@K
-    security: []
+    security: [ ]
     responses:
       204:
-        description: A successful login - sets authorization token as cookie
+        description: OK - Successfully logged in user
         headers:
           Set-Cookie:
             schema:
@@ -68,22 +70,26 @@
         description: Bad request - Invalid or missing login data
       401:
         description: Unauthorized - Invalid credentials
+
 /api/auth/logout:
   get:
-    summary: Logs out currently logged user by removing cookie with token
-    tags: [Authorization]
+    summary: Log out currently logged-in user
+    description: Removes cookie with authorization token.
+    tags: [ Authorization ]
     responses:
       204:
-        description: A successful logout - removes cookie with authorization token
+        description: No Content - Removes cookie with authorization token
       401:
         description: Bad request - Invalid or missing authorization token
+
 /api/auth/user:
   get:
-    summary: Returns user data by token provided in cookie
-    tags: [Authorization]
+    summary: Retrieve currently logged-in user
+    description: Uses authorization token set in cookie to retrieve user data.
+    tags: [ Authorization ]
     responses:
       200:
-        description: Successfully retrieved user data
+        description: OK - Successfully retrieved user data
         content:
           application/json:
             schema:
@@ -92,10 +98,27 @@
         description: Unauthorized - Invalid or missing token
       404:
         description: Not Found - User not found
+  delete:
+    deprecated: true
+    summary: Delete currently logged-in user
+    description: Deletes user and all associated data. Removes cookie with authorization token. Currently DELETE /api/users/{id}.
+    tags: [ Authorization ]
+    responses:
+      404:
+        description: Cannot DELETE /api/auth/user
+  patch:
+    deprecated: true
+    summary: Patch currently logged-in user
+    description: Only display_name, gender, birthday, weights and height can be updated through this endpoint. Currently PATCH /api/users/{id}.
+    tags: [ Authorization ]
+    responses:
+      404:
+        description: Cannot PATCH /api/auth/user
+
 /api/auth/user/password:
   patch:
-    summary: Update user password
-    tags: [Authorization]
+    summary: Change currently logged-in user's password
+    tags: [ Authorization ]
     requestBody:
       required: true
       content:
@@ -105,18 +128,28 @@
             properties:
               password:
                 type: string
-                description: The current password of the user.
+                description: The current password of the user
                 example: current_password123
               new_password:
                 type: string
-                description: The new password for the user.
+                description: The new password for the user
                 example: new_password123
     responses:
       200:
-        description: Successfully updated user password
+        description: OK - Successfully updated user password
       400:
         description: Bad Request - Invalid password or using the same password
       401:
         description: Unauthorized - Invalid or missing token
       404:
         description: Not Found - User not found
+
+/api/auth/user/password/reset:
+  post:
+    deprecated: true
+    summary: Reset currently logged-in user's password
+    description: Sends email with reset link to user's email address.
+    tags: [ Authorization ]
+    responses:
+      404:
+        description: Cannot POST /api/auth/user/password/reset

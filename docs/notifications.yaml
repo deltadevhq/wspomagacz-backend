@@ -1,6 +1,6 @@
 /api/notifications:
   get:
-    summary: Returns all notifications for currently logged user
+    summary: Retrieves notifications for currently logged-in user
     tags: [ Notifications ]
     parameters:
       - in: query
@@ -15,7 +15,7 @@
           description: The number of notifications to skip
     responses:
       200:
-        description: Successfully retrieved notifications
+        description: OK - Successfully retrieved notifications
         content:
           application/json:
             schema:
@@ -24,8 +24,6 @@
                 $ref: "#/components/schemas/Notification"
       401:
         description: Unauthorized - Invalid or missing token
-      404:
-        description: Not Found - Notifications not found
       500:
         description: Internal Server Error - Database error
 
@@ -41,36 +39,34 @@
 
 /api/notifications/mark-as-read:
   post:
-    summary: Marks all notifications as read for currently logged user
+    summary: Mark all notifications as read for currently logged-in user
     tags: [ Notifications ]
     responses:
     200:
-      description: Successfully marked all notifications as read
+      description: OK - Successfully marked all notifications as read
     401:
       description: Unauthorized - Invalid or missing token
-    403:
-      description: Forbidden - User does not have permission to mark notifications as read
     404:
       description: Not Found - Notifications not found
     409:
-      description: Conflict - Notifications are already marked as read
+      description: Conflict - All notifications are already marked as read
     500:
       description: Internal Server Error - Database error
 
 /api/notifications/{id}:
   get:
-    summary: Returns a single notification by ID
+    summary: Retrieve notification by ID
     tags: [ Notifications ]
     parameters:
       - in: path
         name: id
         required: true
-        description: ID of the notification to return
+        description: ID of the notification to retrieve
         schema:
           type: integer
     responses:
       200:
-        description: Successfully retrieved notification
+        description: OK - Successfully retrieved notification
         content:
           application/json:
             schema:
@@ -86,7 +82,7 @@
 
 /api/notifications/{id}/mark-as-read/:
   post:
-    summary: Marks a single notification as read by ID
+    summary: Marks as notification as read by ID
     tags: [ Notifications ]
     parameters:
       - in: path

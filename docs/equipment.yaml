@@ -1,29 +1,16 @@
 /api/equipment:
   get:
-    summary: Fetch all equipment
-    description: This endpoint requires authorization token
-    tags: [Equipment]
+    summary: Retrieve equipment
+    tags: [ Equipment ]
     responses:
       200:
-        description: Successfully retrieved equipment
+        description: OK - Successfully retrieved equipment
         content:
           application/json:
             schema:
               type: array
               items:
-                type: object
-                properties:
-                  id:
-                    type: int
-                  name:
-                    type: string
-            examples:
-              AllEquipment:
-                value:
-                  - id: 1
-                    name: "Sztanga"
-                  - id: 2
-                    name: "Hantle"
+                $ref: "#/components/schemas/Equipment"
       401:
         description: Unauthorized - Invalid or missing token
       403:
@@ -33,9 +20,8 @@
 
 /api/equipment/{id}:
   get:
-    summary: Fetch single equipment by its ID
-    description: This endpoint requires authorization token
-    tags: [Equipment]
+    summary: Retrieve equipment by ID
+    tags: [ Equipment ]
     parameters:
       - in: path
         name: id
@@ -44,7 +30,7 @@
           type: integer
     responses:
       200:
-        description: Successfully retrieved equipment
+        description: OK - Successfully retrieved equipment
         content:
           application/json:
             schema:
@@ -68,4 +54,4 @@ components:
           example: 1
         name:
           type: string
-          example: "Sztanga"
+          example: "Equipment name"
