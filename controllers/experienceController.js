@@ -2,6 +2,7 @@
 const { Response, Request } = require('express');
 
 const experienceModel = require('../models/experienceModel');
+const activitiesModel = require('../models/activitiesModel');
 const userModel = require('../models/userModel');
 
 /**
@@ -93,7 +94,7 @@ const userExperienceHandler = async (workout) => {
   console.log(`Start user experience handler for workout id: ${workout.id}, user id: ${workout.user_id}`);
   try {
     // Fetch user actual experience
-    const user = await userModel.getUserById(workout.user_id);
+    const user = await userModel.selectUserById(workout.user_id);
     if (!user) {
       throw new Error(`User with ID ${workout.user_id} not found.`);
     }
@@ -115,14 +116,14 @@ const userExperienceHandler = async (workout) => {
     // TODO: EXTRA EXPERIENCE FOR EACH ACHIEVEMENT
 
     // Grant experience and level for user and insert row in history
-    await experienceModel.grantExperience(workout.user_id, exp_after, lvl_after);
+    await experienceModel.insertExperience(workout.user_id, exp_after, lvl_after);
     const history_result = await experienceModel.insertExperienceHistory(workout.user_id, workout.id, exp_granted, exp_before, exp_after, lvl_before, lvl_after);
 
     // Publish level up activity 
     if (lvl_before < lvl_after) {
       history_result.multiplier = multiplier;
       const activityMessage = `osiągnął ${lvl_after} poziom doświadczenia!`;
-      await userModel.insertUserActivity(workout.user_id, activityMessage, history_result, workout.user_id, 'public');
+      await activitiesModel.insertActivity(workout.user_id, activityMessage, history_result, workout.user_id, 'public');
       console.log(`Level up from ${lvl_before} to ${lvl_after} for user id: ${workout.user_id} `);
     }
 
@@ -144,7 +145,7 @@ const calculateMultiplier = async (user_id) => {
   let total_multiplier = 1.00;
 
   try {
-    const events = await experienceModel.fetchEvents(user_id);
+    const events = await experienceModel.selectEvents(user_id);
 
     // Sum multipliers from events
     events.forEach(event => {

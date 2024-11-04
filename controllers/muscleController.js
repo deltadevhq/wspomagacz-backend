@@ -14,7 +14,7 @@ const muscleModel = require('../models/muscleModel');
 const getMuscles = async (req, res) => {
   try {
     // Fetch muscles from database
-    const muscles = await muscleModel.getMuscles();
+    const muscles = await muscleModel.selectMuscles();
 
     // Check if anything was returned
     if (!muscles) return res.status(404).json({ error: 'Muscles not found' });
@@ -38,7 +38,7 @@ const getMuscles = async (req, res) => {
 const getMuscleById = async (req, res) => {
   try {
     // Fetch muscle from database
-    const muscle = await muscleModel.getMuscleById(req.params.id);
+    const muscle = await muscleModel.selectMuscleById(req.params.id);
 
     // Check if anything was returned
     if (!muscle) return res.status(404).json({ error: 'Muscle not found' });

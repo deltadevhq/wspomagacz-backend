@@ -1,5 +1,5 @@
 const exerciseModel = require('../models/exerciseModel');
-const { getWorkoutByDate } = require('../models/workoutModel');
+const { selectWorkoutByDate } = require('../models/workoutModel');
 
 // List of random notes
 const randomNotes = [
@@ -15,7 +15,7 @@ const generateRandomNumber = (min, max) => Math.floor(Math.random() * (max - min
 
 // Function to generate random workout
 const generateRandomWorkout = async (user_id) => {
-  let availableExercises = await exerciseModel.getExercises(user_id, 'all');
+  let availableExercises = await exerciseModel.selectExercises(user_id, 'all');
   const workout_name = ['Legs day', 'Arms day', 'Back day', 'Chest day', 'Push day', 'Pull day'][generateRandomNumber(0, 5)];
 
   const exerciseCount = generateRandomNumber(3, 6);  // Random number of exercises (3-6)
@@ -64,7 +64,7 @@ const generateRandomWorkout = async (user_id) => {
     if (!datesTaken.find(date => date === date)) {
       datesTaken.push(date);
     }
-  } while (await getWorkoutByDate(date));
+  } while (await selectWorkoutByDate(date));
 
   // Select a random note from the predefined list
   const note = randomNotes[generateRandomNumber(0, randomNotes.length - 1)];
@@ -79,4 +79,6 @@ const generateRandomWorkout = async (user_id) => {
   };
 };
 
-module.exports = { generateRandomWorkout };
+module.exports = { 
+  generateRandomWorkout,
+}

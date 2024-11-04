@@ -1,9 +1,11 @@
 const { pool } = require('../config/database');
 
 /**
- * Select all equipment from database
+ * Retrieves all equipment from the database.
+ *
+ * @returns {Array|null} - An array of equipment objects if found, or null if no equipment exists.
  */
-const getEquipment = async () => {
+const selectEquipment = async () => {
   const query = 'SELECT * FROM equipment';
 
   try {
@@ -13,12 +15,15 @@ const getEquipment = async () => {
     console.error('Error executing query', error.stack);
     throw error;
   }
-};
+}
 
 /**
- * Select single equipment from database by its ID
+ * Retrieves a single piece of equipment from the database by its ID.
+ *
+ * @param {number} equipment_id - The ID of the equipment to retrieve.
+ * @returns {Object|null} - The equipment object if found, or null if no equipment exists with the given ID.
  */
-const getEquipmentById = async (equipment_id) => {
+const selectEquipmentById = async (equipment_id) => {
   const query = 'SELECT * FROM equipment WHERE id = $1';
   const values = [equipment_id];
 
@@ -29,9 +34,9 @@ const getEquipmentById = async (equipment_id) => {
     console.error('Error executing query', error.stack);
     throw error;
   }
-};
+}
 
 module.exports = {
-  getEquipment,
-  getEquipmentById
-};
+  selectEquipment,
+  selectEquipmentById,
+}

@@ -14,7 +14,7 @@ const equipmentModel = require('../models/equipmentModel');
 const getEquipment = async (req, res) => {
   try {
     // Fetch equipment from database
-    const equipment = await equipmentModel.getEquipment();
+    const equipment = await equipmentModel.selectEquipment();
 
     // Check if anything was returned
     if (!equipment) return res.status(404).json({ error: 'Equipment not found' });
@@ -38,7 +38,7 @@ const getEquipment = async (req, res) => {
 const getEquipmentById = async (req, res) => {
   try {
     // Fetch equipment from database
-    const equipment = await equipmentModel.getEquipmentById(req.params.id);
+    const equipment = await equipmentModel.selectEquipmentById(req.params.id);
 
     // Check if anything was returned
     if (!equipment) return res.status(404).json({ error: 'Equipment not found' });

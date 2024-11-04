@@ -15,7 +15,7 @@ const selectAchievements = async () => {
     console.error('Error executing query', error.stack);
     throw error;
   }
-};
+}
 
 /**
  * Fetches a single achievement from the database by its ID.
@@ -23,7 +23,7 @@ const selectAchievements = async () => {
  * @param {number} achievement_id - ID of the achievement to fetch.
  * @returns {Object|null} - Achievement object if found, or null if not found.
  */
-const selectAchievement = async (achievement_id) => {
+const selectAchievementById = async (achievement_id) => {
   const query = 'SELECT * FROM achievements WHERE id = $1';
   const values = [achievement_id];
 
@@ -34,9 +34,9 @@ const selectAchievement = async (achievement_id) => {
     console.error('Error executing query', error.stack);
     throw error;
   }
-};
+}
 
 module.exports = {
   selectAchievements,
-  selectAchievement,
-};
+  selectAchievementById,
+}

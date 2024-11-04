@@ -35,7 +35,7 @@ const fetchAchievement = async (req, res) => {
     const { id: achievement_id } = req.params;
 
     // Fetch achievement from database
-    const achievement = await achievementModel.selectAchievement(achievement_id);
+    const achievement = await achievementModel.selectAchievementById(achievement_id);
 
     // Check if the achievement was found
     if (!achievement) return res.status(404).json({ error: 'Achievement not found' });

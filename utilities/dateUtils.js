@@ -10,4 +10,4 @@ const formatDate = (date) => moment(date).tz(applicationTimezone).format();
 module.exports = {
   getTimestamp,
   formatDate,
-};
+}

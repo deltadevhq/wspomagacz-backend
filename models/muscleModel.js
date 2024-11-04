@@ -1,9 +1,11 @@
 const { pool } = require('../config/database');
 
 /**
- * Select all muscles from database
+ * Retrieves all muscles from the database.
+ *
+ * @returns {Array|null} - An array of muscle objects if found, or null if no muscles exist.
  */
-const getMuscles = async () => {
+const selectMuscles = async () => {
   const query = 'SELECT * FROM muscles';
 
   try {
@@ -13,12 +15,15 @@ const getMuscles = async () => {
     console.error('Error executing query', error.stack);
     throw error;
   }
-};
+}
 
 /**
- * Select single muscle from database by its ID
+ * Retrieves a single muscle from the database by its ID.
+ *
+ * @param {number} muscle_id - The ID of the muscle to retrieve.
+ * @returns {Object|null} - The muscle object if found, or null if no muscle exists with the given ID.
  */
-const getMuscleById = async (muscle_id) => {
+const selectMuscleById = async (muscle_id) => {
   const query = 'SELECT * FROM muscles WHERE id = $1';
   const values = [muscle_id];
 
@@ -29,9 +34,9 @@ const getMuscleById = async (muscle_id) => {
     console.error('Error executing query', error.stack);
     throw error;
   }
-};
+}
 
 module.exports = {
-  getMuscles,
-  getMuscleById
-};
+  selectMuscles,
+  selectMuscleById,
+}

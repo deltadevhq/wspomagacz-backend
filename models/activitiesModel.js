@@ -1,6 +1,31 @@
 const { pool } = require('../config/database');
 
 /**
+ * Fetches a single activity with like count by its ID.
+ * 
+ * @param {number} activity_id - ID of the activity to fetch.
+ * @returns {Object|null} - Activity with like count, or null if not found.
+ */
+const selectActivity = async (activity_id) => {
+  const query = `
+    SELECT ua.*, COUNT(ual.activity_id) AS likes
+    FROM user_activities ua
+    LEFT JOIN user_activity_likes ual ON ual.activity_id = ua.id
+    WHERE ua.id = $1
+    GROUP BY ua.id
+  `;
+  const values = [activity_id];
+
+  try {
+    const result = await pool.query(query, values);
+    return result.rows.length > 0 ? result.rows[0] : null;
+  } catch (error) {
+    console.error('Error executing query', error.stack);
+    throw error;
+  }
+}
+
+/**
  * Fetches user activities with like counts, ordered by creation date.
  * 
  * @param {number} user_id - ID of the user whose activities to fetch.
@@ -67,54 +92,6 @@ const selectFriendsActivity = async (user_id, offset = 0, limit = 10) => {
     console.error('Error executing query', error.stack);
     throw error;
   }
-};
-
-/**
- * Fetches a single activity with like count by its ID.
- * 
- * @param {number} activity_id - ID of the activity to fetch.
- * @returns {Object|null} - Activity with like count, or null if not found.
- */
-const selectActivity = async (activity_id) => {
-  const query = `
-    SELECT ua.*, COUNT(ual.activity_id) AS likes
-    FROM user_activities ua
-    LEFT JOIN user_activity_likes ual ON ual.activity_id = ua.id
-    WHERE ua.id = $1
-    GROUP BY ua.id
-  `;
-  const values = [activity_id];
-
-  try {
-    const result = await pool.query(query, values);
-    return result.rows.length > 0 ? result.rows[0] : null;
-  } catch (error) {
-    console.error('Error executing query', error.stack);
-    throw error;
-  }
-}
-
-/**
- * Deletes a single activity by its ID.
- * 
- * @param {number} activity_id - ID of the activity to delete.
- * @returns {Object|null} - Deleted activity object if successful, or null if not found.
- */
-const deleteActivity = async (activity_id) => {
-  const query = `
-    DELETE FROM user_activities
-    WHERE id = $1
-    RETURNING *
-  `;
-  const values = [activity_id];
-
-  try {
-    const result = await pool.query(query, values);
-    return result.rows.length > 0 ? result.rows[0] : null;
-  } catch (error) {
-    console.error('Error executing query', error.stack);
-    throw error;
-  }
 }
 
 /**
@@ -131,6 +108,40 @@ const selectActivityLike = async (activity_id, user_id) => {
     WHERE activity_id = $1 AND user_id = $2
   `;
   const values = [activity_id, user_id];
+
+  try {
+    const result = await pool.query(query, values);
+    return result.rows.length > 0 ? result.rows[0] : null;
+  } catch (error) {
+    console.error('Error executing query', error.stack);
+    throw error;
+  }
+}
+
+/**
+ * Inserts a new user activity into the database.
+ *
+ * @param {number} user_id - The ID of the user for whom the activity is being recorded.
+ * @param {string} message - The message associated with the activity.
+ * @param {Object} data - Additional data related to the activity.
+ * @param {number} [created_by=1] - The ID of the creator of the activity, defaults to 1.
+ * @param {string} visibility - The visibility of the activity ('private' or 'public').
+ * @returns {Object|null} - The inserted user activity object if successful, or null if not.
+ */
+const insertActivity = async (user_id, message, data, created_by = 1,  visibility) => {
+  const query = `
+    INSERT INTO user_activities (
+      user_id,
+      message,
+      data,
+      created_by,
+      hidden
+    )
+    VALUES ($1, $2, $3, $4, $5)
+    RETURNING *;
+  `;
+  const hidden = visibility === 'private';
+  const values = [user_id, message, data, created_by, hidden];
 
   try {
     const result = await pool.query(query, values);
@@ -166,6 +177,29 @@ const insertLike = async (activity_id, user_id) => {
 }
 
 /**
+ * Deletes a single activity by its ID.
+ * 
+ * @param {number} activity_id - ID of the activity to delete.
+ * @returns {Object|null} - Deleted activity object if successful, or null if not found.
+ */
+const deleteActivity = async (activity_id) => {
+  const query = `
+    DELETE FROM user_activities
+    WHERE id = $1
+    RETURNING *
+  `;
+  const values = [activity_id];
+
+  try {
+    const result = await pool.query(query, values);
+    return result.rows.length > 0 ? result.rows[0] : null;
+  } catch (error) {
+    console.error('Error executing query', error.stack);
+    throw error;
+  }
+}
+
+/**
  * Deletes a like for a specific activity by a user.
  *
  * @param {number} activity_id - ID of the activity to unlike.
@@ -190,11 +224,12 @@ const deleteLike = async (activity_id, user_id) => {
 }
 
 module.exports = {
+  selectActivity,
   selectActivities,
   selectFriendsActivity,
-  selectActivity,
-  deleteActivity,
   selectActivityLike,
+  insertActivity,
   insertLike,
+  deleteActivity,
   deleteLike,
-};
+}

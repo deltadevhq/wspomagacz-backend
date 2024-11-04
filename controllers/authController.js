@@ -1,7 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 const { Response, Request } = require('express');
 const { applicationSecret, applicationTokenExpirationTime } = require('../config/settings');
-const authModel = require('../models/authModel');
 const userModel = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
@@ -17,7 +16,7 @@ const bcrypt = require('bcryptjs');
 const getCurrentLoggedUser = async (req, res) => {
   try {
     // Fetch user from database
-    const user = await userModel.getUserById(req.body.logged_user_id);
+    const user = await userModel.selectUserById(req.body.logged_user_id);
 
     // User associated to this token can be deleted in the meantime
     if (!user) {
@@ -52,11 +51,11 @@ const getCurrentLoggedUser = async (req, res) => {
 const registerUser = async (req, res) => {
   try {
     // Check if the email is already taken
-    let existing_user = await authModel.getUserByEmail(req.body.email);
+    let existing_user = await userModel.selectUserByEmail(req.body.email);
     if (existing_user) return res.status(409).json({ error: 'This email is already taken' });
 
     // Check if the username is already taken
-    existing_user = await authModel.getUserByUsername(req.body.username);
+    existing_user = await userModel.selectUserByUsername(req.body.username);
     if (existing_user) return res.status(409).json({ error: 'This username is already taken' });
 
     // Hash the password
@@ -64,7 +63,7 @@ const registerUser = async (req, res) => {
     const password_hash = await bcrypt.hash(req.body.password, salt);
 
     // Create new user in the database
-    const new_user = await authModel.postUser(req.body.username, password_hash, req.body.email);
+    const new_user = await userModel.insertUser(req.body.username, password_hash, req.body.email);
 
     // Remove sensitive data before sending the response
     delete new_user.password_hash;
@@ -90,9 +89,9 @@ const loginUser = async (req, res) => {
     // Attempt to get the user by username or email
     let user;
     if (!req.body.username.includes('@')) {
-      user = await authModel.getUserByUsername(req.body.username);
+      user = await userModel.selectUserByUsername(req.body.username);
     } else {
-      user = await authModel.getUserByEmail(req.body.username);
+      user = await userModel.selectUserByEmail(req.body.username);
     }
     if (!user) return res.status(401).json({ error: 'Invalid username or password' });
 
@@ -101,7 +100,7 @@ const loginUser = async (req, res) => {
     if (!is_match) return res.status(401).json({ error: 'Invalid username or password' });
 
     // Update last login timestamp in database
-    await authModel.updateUserLastLogin(user.username);
+    await userModel.updateUserLastLogin(user.username);
 
     // Generate JWT token
     const token = jwt.sign({ id: user.id, username: user.username }, applicationSecret, {
@@ -160,7 +159,7 @@ const logoutUser = async (req, res) => {
 const patchUserPassword = async (req, res) => {
   try {
     // Check user existence
-    const user = await userModel.getUserById(req.body.logged_user_id);
+    const user = await userModel.selectUserById(req.body.logged_user_id);
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     // Validate provided password against the current user password
@@ -177,7 +176,7 @@ const patchUserPassword = async (req, res) => {
     const password_hash = await bcrypt.hash(req.body.new_password, salt);
 
     // Update user password in the database
-    await authModel.updateUserPassword(req.body.logged_user_id, password_hash);
+    await userModel.updateUserPassword(req.body.logged_user_id, password_hash);
 
     // Successful response
     res.status(201).json({ message: 'Password updated successfully' });

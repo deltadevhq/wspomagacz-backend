@@ -5,6 +5,7 @@ const XpScalingFactor = 10;
 
 /**
  * Function to calculate the level based on provided XP
+ * 
  * @param {number} xp - The total XP earned by the user
  * @returns {number} - The level corresponding to the provided XP
  */
@@ -19,10 +20,11 @@ const getLevelByXp = (xp) => {
   }
 
   return level;
-};
+}
 
 /**
  * Function to calculate total required XP to reach a specific level
+ * 
  * @param {number} level - The target level the user wants to reach
  * @returns {number} - The total required XP to reach the provided level
  */
@@ -30,14 +32,15 @@ const getXpByLevel = (level) => {
   if (level === 1) return 0;
 
   return (baseLevelXp + (XpScalingFactor * --level)) * level;
-};
+}
 
 /**
- * Function to fetch events for a user within the current date range
+ * Function to select events from database for a user within the current date range
+ * 
  * @param {number} user_id - The ID of the user for whom events are being fetched
  * @returns {Array} - An array of event objects or a default event with a multiplier if no events are found
  */
-const fetchEvents = async (user_id) => {
+const selectEvents = async (user_id) => {
   const query = `
     SELECT * FROM events 
     WHERE (user_id = $1 OR user_id IS NULL)
@@ -60,16 +63,17 @@ const fetchEvents = async (user_id) => {
     console.error(`Error fetching events for user_id: ${user_id}. Query: ${query}`, error.stack);
     throw new Error('Database query failed while fetching events.');
   }
-};
+}
 
 /**
  * Function to grant experience and level up a user
+ * 
  * @param {number} user_id - The ID of the user
  * @param {number} exp - The experience points to be updated
  * @param {number} level - The level to be updated
  * @returns {Object} - An object with the updated user id, experience, and level
  */
-const grantExperience = async (user_id, exp, level) => {
+const insertExperience = async (user_id, exp, level) => {
   const query = `
     UPDATE users 
     SET 
@@ -93,10 +97,11 @@ const grantExperience = async (user_id, exp, level) => {
     console.error(`Error updating experience for user_id: ${user_id}`, error.stack);
     throw new Error('Database update failed while granting experience.');
   }
-};
+}
 
 /**
  * Function to insert an experience history record for a user
+ * 
  * @param {number} user_id - The ID of the user
  * @param {number} workout_id - The ID of the workout associated with the experience
  * @param {number} exp_granted - The amount of experience points granted
@@ -135,12 +140,12 @@ const insertExperienceHistory = async (user_id, workout_id, exp_granted, exp_bef
     console.error(`Error inserting experience history for user_id: ${user_id}`, error.stack);
     throw new Error('Database insert failed while recording experience history.');
   }
-};
+}
 
 module.exports = {
   getLevelByXp,
   getXpByLevel,
-  fetchEvents,
-  grantExperience,
+  selectEvents,
+  insertExperience,
   insertExperienceHistory,
 }

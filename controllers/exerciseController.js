@@ -19,12 +19,12 @@ const getExercises = async (req, res) => {
   try {
     // Check user existence if user_id is provided
     if (req.query.user_id) {
-      const user = await userModel.getUserById(req.query.user_id);
+      const user = await userModel.selectUserById(req.query.user_id);
       if (!user) return res.status(404).json({ error: 'User not found' });
     }
 
     // Fetch exercises from database
-    const exercises = await exerciseModel.getExercises(req.query.user_id, req.query.type);
+    const exercises = await exerciseModel.selectExercises(req.query.user_id, req.query.type);
 
     // Check if anything was returned
     if (!exercises) return res.status(404).json({ error: 'Exercises not found' });
@@ -49,12 +49,12 @@ const getExerciseById = async (req, res) => {
   try {
     // Check user existence if user_id is provided
     if (req.query.user_id) {
-      const user = await userModel.getUserById(req.query.user_id);
+      const user = await userModel.selectUserById(req.query.user_id);
       if (!user) return res.status(404).json({ error: 'User not found' });
     }
 
     // Fetch exercise from database
-    const exercise = await exerciseModel.getExerciseById(req.params.id, req.query.user_id, req.query.type);
+    const exercise = await exerciseModel.selectExerciseById(req.params.id, req.query.user_id, req.query.type);
 
     // Check if anything was returned
     if (!exercise) return res.status(404).json({ error: 'Exercise not found' });
@@ -82,7 +82,7 @@ const postExercise = async (req, res) => {
     const parsed_muscles = JSON.stringify(req.body.muscles);
 
     // Create new exercise in the database
-    const new_exercise = await exerciseModel.postExercise(req.body.logged_user_id, req.body.name, parsed_equipment, parsed_muscles);
+    const new_exercise = await exerciseModel.insertExercise(req.body.logged_user_id, req.body.name, parsed_equipment, parsed_muscles);
 
     // Successful response with created exercise data
     res.status(201).json(new_exercise);
@@ -103,7 +103,7 @@ const postExercise = async (req, res) => {
 const deleteExercise = async (req, res) => {
   try {
     // Fetch exercise details to check existence and ownership
-    const exercise = await exerciseModel.getExerciseById(req.params.id, null, 'custom');
+    const exercise = await exerciseModel.selectExerciseById(req.params.id, null, 'custom');
     if (!exercise) return res.status(404).json({ error: 'Exercise not found' });
 
     // Check if the exercise belongs to the currently logged-in user

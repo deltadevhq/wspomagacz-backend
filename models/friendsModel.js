@@ -2,10 +2,11 @@ const { pool } = require('../config/database');
 
 /**
  * Function to get all friends of a specified user
+ * 
  * @param {number} user_id - The ID of the user whose friends are being fetched
  * @returns {Array} - An array of friend records if found, or an empty array if no friends are found
  */
-const fetchFriends = async (user_id) => {
+const selectFriends = async (user_id) => {
   const query = `
     SELECT u.id, u.username, u.display_name, u.gender, u.birthday, u.status, u.level, u.exp, u.weights, u.height, f.modified_at AS friends_since
     FROM friends AS f
@@ -22,14 +23,15 @@ const fetchFriends = async (user_id) => {
     console.error('Error executing query', error.stack);
     throw error;
   }
-};
+}
 
 /**
  * Function to fetch pending friend requests for a specified user
+ * 
  * @param {number} user_id - The ID of the user receiving friend requests
  * @returns {Array|null} - An array of pending friend requests if found, or null if no requests are found
  */
-const fetchFriendRequests = async (user_id) => {
+const selectFriendRequests = async (user_id) => {
   const query = `
     SELECT f.sender_id, u.username AS sender_username, f.receiver_id, f.status, f.requested_at
     FROM friends f
@@ -46,15 +48,16 @@ const fetchFriendRequests = async (user_id) => {
     console.error('Error executing query', error.stack);
     throw error;
   }
-};
+}
 
 /**
  * Function to send a friend request to a specified user
+ * 
  * @param {number} sender_id - The ID of the user sending the friend request
  * @param {number} receiver_id - The ID of the user receiving the friend request
  * @returns {Object|null} - The newly created friend request object if successful, or null if no request was created
  */
-const sendFriendRequest = async (sender_id, receiver_id) => {
+const insertFriendRequest = async (sender_id, receiver_id) => {
   const query = `
     INSERT INTO friends (sender_id, receiver_id)
     VALUES ($1, $2)
@@ -69,15 +72,16 @@ const sendFriendRequest = async (sender_id, receiver_id) => {
     console.error('Error executing query', error.stack);
     throw error;
   }
-};
+}
 
 /**
  * Function to accept a friend request from a specified user
+ * 
  * @param {number} sender_id - The ID of the user who sent the friend request
  * @param {number} receiver_id - The ID of the user receiving the friend request
  * @returns {Object|null} - The updated friend request object if successful, or null if no matching request was found
  */
-const acceptFriendRequest = async (sender_id, receiver_id) => {
+const updateFriendRequestWithAcceptance = async (sender_id, receiver_id) => {
   const query = `UPDATE friends SET status = 'accepted', modified_at = NOW() WHERE status = 'pending' AND sender_id = $1 AND receiver_id = $2 RETURNING *`;
   const values = [sender_id, receiver_id];
 
@@ -88,15 +92,16 @@ const acceptFriendRequest = async (sender_id, receiver_id) => {
     console.error('Error executing query', error.stack);
     throw error;
   }
-};
+}
 
 /**
  * Function to reject a friend request from a specified user
+ * 
  * @param {number} sender_id - The ID of the user who sent the friend request
  * @param {number} receiver_id - The ID of the user receiving the friend request
  * @returns {Object|null} - The updated friend request object if successful, or null if no matching request was found
  */
-const rejectFriendRequest = async (sender_id, receiver_id) => {
+const updateFriendRequestWithRejection = async (sender_id, receiver_id) => {
   const query = `UPDATE friends SET status = 'rejected', modified_at = NOW() WHERE status = 'pending' AND sender_id = $1 AND receiver_id = $2 RETURNING *`;
   const values = [sender_id, receiver_id];
 
@@ -107,15 +112,16 @@ const rejectFriendRequest = async (sender_id, receiver_id) => {
     console.error('Error executing query', error.stack);
     throw error;
   }
-};
+}
 
 /**
  * Function to cancel a sent friend request between two users
+ * 
  * @param {number} sender_id - The ID of the user who sent the friend request
  * @param {number} receiver_id - The ID of the user receiving the friend request
  * @returns {Object|null} - The canceled request object if successful, or null if no matching request was found
  */
-const cancelFriendRequest = async (sender_id, receiver_id) => {
+const deleteFriendRequest = async (sender_id, receiver_id) => {
   const query = `
     DELETE FROM friends 
     WHERE sender_id = $1 AND receiver_id = $2 AND status = 'pending'
@@ -130,15 +136,16 @@ const cancelFriendRequest = async (sender_id, receiver_id) => {
     console.error('Error executing query', error.stack);
     throw error;
   }
-};
+}
 
 /**
  * Function to remove a friend relationship between two users
+ * 
  * @param {number} user_id - The ID of the user initiating the removal
  * @param {number} removed_friend_id - The ID of the friend to be removed
  * @returns {Object|null} - The removed friend object if successful, or null if no matching relationship was found
  */
-const removeFriend = async (user_id, removed_friend_id) => {
+const deleteFriend = async (user_id, removed_friend_id) => {
   const query = `
     DELETE FROM friends 
     WHERE (sender_id = $1 AND receiver_id = $2 AND status = 'accepted') 
@@ -154,10 +161,11 @@ const removeFriend = async (user_id, removed_friend_id) => {
     console.error('Error executing query', error.stack);
     throw error;
   }
-};
+}
 
 /**
  * Function to check for existence of pending friend requests
+ * 
  * @param {number} sender_id - The ID of the user sending the friend request
  * @param {number} receiver_id - The ID of the user receiving the friend request
  * @returns {Array|null} - An array of existing pending friend requests if found, or null if no duplicates are found
@@ -182,15 +190,15 @@ const checkFriendRequestExists = async (sender_id, receiver_id, status = 'pendin
     console.error('Error executing query', error.stack);
     throw error;
   }
-};
+}
 
 module.exports = {
-  fetchFriends,
-  fetchFriendRequests,
-  sendFriendRequest,
-  acceptFriendRequest,
-  rejectFriendRequest,
-  cancelFriendRequest,
-  removeFriend,
+  selectFriends,
+  selectFriendRequests,
+  insertFriendRequest,
+  updateFriendRequestWithAcceptance,
+  updateFriendRequestWithRejection,
+  deleteFriendRequest,
+  deleteFriend,
   checkFriendRequestExists,
-};
+}

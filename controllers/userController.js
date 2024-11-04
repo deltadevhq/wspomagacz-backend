@@ -2,7 +2,6 @@
 const { Response, Request } = require('express');
 
 const userModel = require('../models/userModel');
-const authModel = require('../models/authModel');
 
 /**
  * Function to handle requests for retrieving a user's public profile by their ID or username.
@@ -17,8 +16,8 @@ const searchUserProfile = async (req, res) => {
     const { id, username } = req.query;
 
     let user;
-    if (username) user = await authModel.getUserByUsername(username);
-    else user = await userModel.getUserById(id);
+    if (username) user = await userModel.selectUserByUsername(username);
+    else user = await userModel.selectUserById(id);
 
     // If no user is found, return a 404 response
     if (!user) return res.status(404).json({ error: 'User not found.' });
@@ -65,11 +64,11 @@ const patchUser = async (req, res) => {
 
   try {
     // Check user existence
-    const user = await userModel.getUserById(req.params.id);
+    const user = await userModel.selectUserById(req.params.id);
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     // Update user data in database
-    const patched_user = await userModel.patchUser(req.params.id, req.body.display_name, req.body.gender, req.body.birthday, parsed_weights, req.body.height);
+    const patched_user = await userModel.updateUser(req.params.id, req.body.display_name, req.body.gender, req.body.birthday, parsed_weights, req.body.height);
 
     // Remove sensitive data before sending the response
     delete patched_user.password_hash;
@@ -99,7 +98,7 @@ const deleteUser = async (req, res) => {
 
   try {
     // Check user existence
-    const user = await userModel.getUserById(req.params.id);
+    const user = await userModel.selectUserById(req.params.id);
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     // Delete user from database

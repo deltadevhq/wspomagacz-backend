@@ -14,7 +14,7 @@ const formatResponseDates = (data) => {
     }
   }
   return data;
-};
+}
 
 const dateFormatterMiddleware = (req, res, next) => {
   const originalJson = res.json;
@@ -22,8 +22,8 @@ const dateFormatterMiddleware = (req, res, next) => {
     originalJson.call(res, formatResponseDates(data));
   };
   next();
-};
+}
 
 module.exports = {
   dateFormatterMiddleware,
-};
+}
