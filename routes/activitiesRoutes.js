@@ -9,10 +9,8 @@ const { validateInput } = require('../utilities/validation');
 router.get('/', validateInput(activitiesSchema.fetchActivitiesSchema, 'query'), verifyToken, activitiesController.fetchActivities);
 router.get('/friends', validateInput(activitiesSchema.fetchFriendsActivitiesSchema, 'query'), verifyToken, activitiesController.fetchFriendsActivities);
 router.get('/:id', validateInput(activitiesSchema.fetchActivitySchema, 'params'), verifyToken, activitiesController.fetchActivity);
-router.delete('/:id', verifyToken, activitiesController.deleteActivity);
-router.post('/:id/like', verifyToken, activitiesController.likeActivity);
-router.post('/:id/unlike', verifyToken, activitiesController.unlikeActivity);
-
-// TODO: ACTIVITIES ENDPOINTS DATA VALIDATION
+router.delete('/:id', validateInput(activitiesSchema.deleteActivitySchema, 'params'), verifyToken, activitiesController.deleteActivity);
+router.post('/:id/like', validateInput(activitiesSchema.likeActivitySchema, 'params'), verifyToken, activitiesController.likeActivity);
+router.post('/:id/unlike', validateInput(activitiesSchema.unlikeActivitySchema, 'params'), verifyToken, activitiesController.unlikeActivity);
 
 module.exports = router;

@@ -32,9 +32,33 @@ const fetchActivitySchema = Joi.object({
   id: baseActivitySchema.id.required().messages({ 'any.required': 'ID is required' }),
 });
 
+/**
+ * Specific validation schema for deleting activity
+ */
+const deleteActivitySchema = Joi.object({
+  id: baseActivitySchema.id.required().messages({ 'any.required': 'ID is required' }),
+});
+
+/**
+ * Specific validation schema for liking activity
+ */
+const likeActivitySchema = Joi.object({
+  id: baseActivitySchema.id.required().messages({ 'any.required': 'ID is required' }),
+});
+
+/**
+ * Specific validation schema for unliking activity
+ */
+const unlikeActivitySchema = Joi.object({
+  id: baseActivitySchema.id.required().messages({ 'any.required': 'ID is required' }),
+});
+
 module.exports = {
   baseActivitySchema,
   fetchActivitiesSchema,
   fetchFriendsActivitiesSchema,
   fetchActivitySchema,
+  deleteActivitySchema,
+  likeActivitySchema,
+  unlikeActivitySchema,
 };
