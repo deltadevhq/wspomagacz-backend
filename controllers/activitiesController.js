@@ -98,8 +98,8 @@ const deleteActivity = async (req, res) => {
     if (activity.user_id !== logged_user_id) return res.status(403).json({ error: 'Insufficient permissions to delete this activity.' });
 
     // Delete the activity
-    const deletedActivity = await activitiesModel.deleteActivity(activity_id);
-    if (!deletedActivity) return res.status(500).json({ error: 'Failed to delete the activity.' });
+    const deleted_activity = await activitiesModel.deleteActivity(activity_id);
+    if (!deleted_activity) return res.status(500).json({ error: 'Failed to delete the activity.' });
 
     res.status(200).json({ message: 'Activity deleted successfully.' });
   } catch (error) {
@@ -125,16 +125,16 @@ const likeActivity = async (req, res) => {
     if (!activity) return res.status(404).json({ error: 'Activity not found.' });
 
     // Check if the user has already liked the activity
-    const existingLike = await activitiesModel.selectActivityLike(activity_id, logged_user_id);
-    if (existingLike) return res.status(409).json({ error: 'You have already liked this activity.' });
+    const existing_like = await activitiesModel.selectActivityLike(activity_id, logged_user_id);
+    if (existing_like) return res.status(409).json({ error: 'You have already liked this activity.' });
 
     // Add a like to the activity
     await activitiesModel.insertLike(activity_id, logged_user_id);
 
-    const updatedActivity = await activitiesModel.selectActivity(activity_id);
-    const likeCount = updatedActivity.likes;
+    const updated_activity = await activitiesModel.selectActivity(activity_id);
+    const updated_like_count = updated_activity.likes;
 
-    res.status(200).json({ likes: likeCount });
+    res.status(200).json({ likes: updated_like_count });
   } catch (error) {
     console.error('Error posting like for activity:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
@@ -158,16 +158,16 @@ const unlikeActivity = async (req, res) => {
     if (!activity) return res.status(404).json({ error: 'Activity not found.' });
 
     // Check if the user has liked the activity
-    const existingLike = await activitiesModel.selectActivityLike(activity_id, logged_user_id);
-    if (!existingLike) return res.status(404).json({ error: 'You have not liked this activity.' });
+    const existing_like = await activitiesModel.selectActivityLike(activity_id, logged_user_id);
+    if (!existing_like) return res.status(404).json({ error: 'You have not liked this activity.' });
 
     // Remove the like from the activity
     await activitiesModel.deleteLike(activity_id, logged_user_id);
 
-    const updatedActivity = await activitiesModel.selectActivity(activity_id);
-    const likeCount = updatedActivity.likes;
+    const updated_activity = await activitiesModel.selectActivity(activity_id);
+    const updated_like_count = updated_activity.likes;
 
-    res.status(200).json({ likes: likeCount });
+    res.status(200).json({ likes: updated_like_count });
   } catch (error) {
     console.error('Error posting unlike for activity:', error.stack);
     res.status(500).json({ error: 'Internal server error' });

@@ -14,8 +14,10 @@ const bcrypt = require('bcryptjs');
  */
 const fetchCurrentLoggedUser = async (req, res) => {
   try {
+    const { logged_user_id } = req.body;
+
     // Fetch user from database
-    const user = await userModel.selectUserById(req.body.logged_user_id);
+    const user = await userModel.selectUserById(logged_user_id);
 
     // User associated to this token can be deleted in the meantime
     if (!user) {
@@ -48,20 +50,22 @@ const fetchCurrentLoggedUser = async (req, res) => {
  */
 const registerUser = async (req, res) => {
   try {
+    const { email, username, password } = req.body;
+
     // Check if the email is already taken
-    let existing_user = await userModel.selectUserByEmail(req.body.email);
+    let existing_user = await userModel.selectUserByEmail(email);
     if (existing_user) return res.status(409).json({ error: 'This email is already taken' });
 
     // Check if the username is already taken
-    existing_user = await userModel.selectUserByUsername(req.body.username);
+    existing_user = await userModel.selectUserByUsername(username);
     if (existing_user) return res.status(409).json({ error: 'This username is already taken' });
 
     // Hash the password
     const salt = await bcrypt.genSalt(10);
-    const password_hash = await bcrypt.hash(req.body.password, salt);
+    const password_hash = await bcrypt.hash(password, salt);
 
     // Create new user in the database
-    const new_user = await userModel.insertUser(req.body.username, password_hash, req.body.email);
+    const new_user = await userModel.insertUser(username, password_hash, email);
 
     // Remove sensitive data before sending the response
     delete new_user.password_hash;
@@ -83,17 +87,19 @@ const registerUser = async (req, res) => {
  */
 const loginUser = async (req, res) => {
   try {
+    const { username, password } = req.body;
+
     // Attempt to get the user by username or email
     let user;
-    if (!req.body.username.includes('@')) {
-      user = await userModel.selectUserByUsername(req.body.username);
+    if (!username.includes('@')) {
+      user = await userModel.selectUserByUsername(username);
     } else {
-      user = await userModel.selectUserByEmail(req.body.username);
+      user = await userModel.selectUserByEmail(username);
     }
     if (!user) return res.status(401).json({ error: 'Invalid username or password' });
 
     // Check if provided password is correct
-    const is_match = await bcrypt.compare(req.body.password, user.password_hash);
+    const is_match = await bcrypt.compare(password, user.password_hash);
     if (!is_match) return res.status(401).json({ error: 'Invalid username or password' });
 
     // Update last login timestamp in database
@@ -153,25 +159,27 @@ const logoutUser = async (req, res) => {
  */
 const patchUserPassword = async (req, res) => {
   try {
+    const { logged_user_id, actual_password, new_password } = req.body;
+
     // Check user existence
-    const user = await userModel.selectUserById(req.body.logged_user_id);
+    const user = await userModel.selectUserById(logged_user_id);
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     // Validate provided password against the current user password
-    const is_match = await bcrypt.compare(req.body.password, user.password_hash);
+    const is_match = await bcrypt.compare(actual_password, user.password_hash);
     if (!is_match) return res.status(400).json({ error: 'Invalid password' });
 
     // Validate that the new password is not the same as the current password
-    if (req.body.password === req.body.new_password) {
+    if (actual_password === new_password) {
       return res.status(400).json({ error: 'New password cannot be the same as the current password' });
     }
 
     // Hash the new password
     const salt = await bcrypt.genSalt(10);
-    const password_hash = await bcrypt.hash(req.body.new_password, salt);
+    const password_hash = await bcrypt.hash(new_password, salt);
 
     // Update user password in the database
-    await userModel.updateUserPassword(req.body.logged_user_id, password_hash);
+    await userModel.updateUserPassword(logged_user_id, password_hash);
 
     // Successful response
     res.status(201).json({ message: 'Password updated successfully' });

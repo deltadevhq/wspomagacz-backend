@@ -15,7 +15,6 @@ const fetchNotifications = async (req, res) => {
     const { logged_user_id } = req.body;
 
     const notifications = await notificationModel.selectNotifications(logged_user_id);
-
     if (!notifications) return res.status(404).json({ error: 'Notifications not found' });
 
     res.status(200).json(notifications);
@@ -34,10 +33,9 @@ const fetchNotifications = async (req, res) => {
  */
 const fetchNotificationById = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id: notification_id } = req.params;
 
-    const notification = await notificationModel.selectNotificationById(id);
-
+    const notification = await notificationModel.selectNotificationById(notification_id);
     if (!notification) return res.status(404).json({ error: 'Notification not found' });
 
     res.status(200).json(notification);
@@ -89,7 +87,6 @@ const postMarkAllAsRead = async (req, res) => {
     const { logged_user_id } = req.body;
 
     const result = await notificationModel.updateMarkAllAsRead(logged_user_id);
-
     if (!result) return res.status(404).json({ error: 'Notification not found' });
 
     res.status(200).json({ message: 'Notification marked as read' });
@@ -108,10 +105,9 @@ const postMarkAllAsRead = async (req, res) => {
  */
 const postMarkAsReadById = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id: notification_id } = req.params;
 
-    const result = await notificationModel.updateMarkAsReadById(id);
-
+    const result = await notificationModel.updateMarkAsReadById(notification_id);
     if (!result) return res.status(404).json({ error: 'Notification not found' });
 
     res.status(200).json({ message: 'Notification marked as read' });

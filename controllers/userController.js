@@ -11,17 +11,17 @@ const userModel = require('../models/userModel');
  */
 const searchUserProfile = async (req, res) => {
   try {
-    const { id, username } = req.query;
+    const { id: user_id, username } = req.query;
 
     let user;
     if (username) user = await userModel.selectUserByUsername(username);
-    else user = await userModel.selectUserById(id);
+    else user = await userModel.selectUserById(user_id);
 
     // If no user is found, return a 404 response
     if (!user) return res.status(404).json({ error: 'User not found.' });
 
     // Construct an object with public user information
-    const publicUserData = {
+    const public_user_data = {
       id: user.id,
       username: user.username,
       display_name: user.display_name,
@@ -35,7 +35,7 @@ const searchUserProfile = async (req, res) => {
     };
 
     // Successful response with sanitized user data
-    res.status(200).json(publicUserData);
+    res.status(200).json(public_user_data);
   } catch (error) {
     console.error('Error fetching user by ID:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
@@ -50,19 +50,22 @@ const searchUserProfile = async (req, res) => {
  * @returns {void} - Sends a response with the updated user information or an error.
  */
 const patchUser = async (req, res) => {
-  // Check if the request is for the currently logged-in user
-  if (Number(req.params.id) !== req.body.logged_user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
-
-  // Serialize weights array into JSON string
-  const parsed_weights = JSON.stringify(req.body.weights);
-
   try {
+    const { id: user_id } = req.params;
+    const { logged_user_id, display_name, gender, birthday, weights, height } = req.body;
+
+    // Check if the request is for the currently logged-in user
+    if (Number(user_id) !== logged_user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
+
+    // Serialize weights array into JSON string
+    const parsed_weights = JSON.stringify(weights);
+
     // Check user existence
-    const user = await userModel.selectUserById(req.params.id);
+    const user = await userModel.selectUserById(user_id);
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     // Update user data in database
-    const patched_user = await userModel.updateUser(req.params.id, req.body.display_name, req.body.gender, req.body.birthday, parsed_weights, req.body.height);
+    const patched_user = await userModel.updateUser(user_id, display_name, gender, birthday, parsed_weights, height);
 
     // Remove sensitive data before sending the response
     delete patched_user.password_hash;
@@ -83,16 +86,19 @@ const patchUser = async (req, res) => {
  * @returns {void} - Sends a response confirming the deletion or an error message.
  */
 const deleteUser = async (req, res) => {
-  // Check if the request is for the currently logged-in user
-  if (Number(req.params.id) !== req.body.logged_user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
-
   try {
+    const { id: user_id } = req.params;
+    const { logged_user_id } = req.body;
+
+    // Check if the request is for the currently logged-in user
+    if (Number(user_id) !== logged_user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
+
     // Check user existence
-    const user = await userModel.selectUserById(req.params.id);
+    const user = await userModel.selectUserById(user_id);
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     // Delete user from database
-    await userModel.deleteUser(req.params.id);
+    await userModel.deleteUser(user_id);
 
     // Successful response confirming deletion
     res.status(200).json({ message: 'User deleted successfully' });
@@ -106,7 +112,7 @@ const fetchUserAchievements = async (req, res) => {
   try {
 
     // TODO: IMPLEMENT getUserAchievements ENDPOINT
-    res.status(501).json({error: 'Not implemented'});
+    res.status(501).json({ error: 'Not implemented' });
 
   } catch (error) {
     console.error('Error fetching user achievements:', error.stack);
@@ -118,7 +124,7 @@ const fetchUserAchievementById = async (req, res) => {
   try {
 
     // TODO: IMPLEMENT getUserAchievement ENDPOINT
-    res.status(501).json({error: 'Not implemented'});
+    res.status(501).json({ error: 'Not implemented' });
 
   } catch (error) {
     console.error('Error fetching user achievement:', error.stack);

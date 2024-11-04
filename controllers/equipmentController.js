@@ -34,8 +34,10 @@ const fetchEquipment = async (req, res) => {
  */
 const fetchEquipmentById = async (req, res) => {
   try {
+    const { id: equipment_id } = req.params;
+
     // Fetch equipment from database
-    const equipment = await equipmentModel.selectEquipmentById(req.params.id);
+    const equipment = await equipmentModel.selectEquipmentById(equipment_id);
 
     // Check if anything was returned
     if (!equipment) return res.status(404).json({ error: 'Equipment not found' });

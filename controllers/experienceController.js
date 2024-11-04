@@ -63,11 +63,14 @@ const getLevelByXpHandler = async (xp) => {
  */
 const getXpByLevel = async (req, res) => {
   try {
+    // Convert level to a number
+    const level = Number(req.query.level);
+
     // Calculate experience needed for certain level
-    const xp = await experienceModel.getXpByLevel(Number(req.query.level));
+    const xp = await experienceModel.getXpByLevel(level);
 
     // Successful response with level and required xp
-    res.status(200).json({ level: Number(req.query.level), xp });
+    res.status(200).json({ level: level, xp });
   } catch (error) {
     console.error('Error getting experience by level:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
@@ -112,8 +115,8 @@ const userExperienceHandler = async (workout) => {
     // Publish level up activity 
     if (lvl_before < lvl_after) {
       history_result.multiplier = multiplier;
-      const activityMessage = `osiągnął ${lvl_after} poziom doświadczenia!`;
-      await activitiesModel.insertActivity(workout.user_id, activityMessage, history_result, workout.user_id, 'public');
+      const activity_message = `osiągnął ${lvl_after} poziom doświadczenia!`;
+      await activitiesModel.insertActivity(workout.user_id, activity_message, history_result, workout.user_id, 'public');
       console.log(`Level up from ${lvl_before} to ${lvl_after} for user id: ${workout.user_id} `);
     }
 
@@ -132,9 +135,8 @@ const userExperienceHandler = async (workout) => {
  * @returns {number} - The total experience multiplier for the user.
  */
 const calculateMultiplier = async (user_id) => {
-  let total_multiplier = 1.00;
-
   try {
+    let total_multiplier = 1.00;
     const events = await experienceModel.selectEvents(user_id);
 
     // Sum multipliers from events
@@ -158,9 +160,8 @@ const calculateMultiplier = async (user_id) => {
  * @returns {number} - The total experience calculated based on the exercises.
  */
 const calculateExperience = async (exercises, user) => {
-  let xp = 0;
-
   try {
+    let xp = 0;
     const bodyweight = user.weights ? [0]?.weight ?? user.weights[0].weight : 40;
 
     // Sum XP from exercises

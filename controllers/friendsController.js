@@ -37,10 +37,10 @@ const fetchFriendRequests = async (req, res) => {
     const { logged_user_id } = req.body;
 
     // Fetching pending friend requests
-    const friendRequests = await friendsModel.selectFriendRequests(logged_user_id);
-    if (!friendRequests) return res.status(404).json({ error: 'No friend requests found.' });
+    const friend_requests = await friendsModel.selectFriendRequests(logged_user_id);
+    if (!friend_requests) return res.status(404).json({ error: 'No friend requests found.' });
 
-    res.status(200).json(friendRequests);
+    res.status(200).json(friend_requests);
   } catch (error) {
     console.error('Error fetching friend requests:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
@@ -67,9 +67,9 @@ const sendFriendRequest = async (req, res) => {
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     // Check if request is not duplicated
-    const duplicatedRequest = await friendsModel.checkFriendRequestExists(logged_user_id, to_id);
-    if (duplicatedRequest) {
-      if (duplicatedRequest.direction === 'sent') {
+    const duplicated_request = await friendsModel.checkFriendRequestExists(logged_user_id, to_id);
+    if (duplicated_request) {
+      if (duplicated_request.direction === 'sent') {
         return res.status(400).json({ error: 'You have already sent a friend request to this user.' });
       } else {
         return res.status(400).json({ error: 'This user has already sent you a friend request.' });
@@ -77,14 +77,14 @@ const sendFriendRequest = async (req, res) => {
     }
 
     // Check if request is not rejected
-    const rejectedRequest = await friendsModel.checkFriendRequestExists(logged_user_id, to_id, 'rejected');
-    if (rejectedRequest.direction === 'sent') return res.status(400).json({ error: 'You have already sent a friend request to this user.' });
+    const rejected_request = await friendsModel.checkFriendRequestExists(logged_user_id, to_id, 'rejected');
+    if (rejected_request.direction === 'sent') return res.status(400).json({ error: 'You have already sent a friend request to this user.' });
 
     // Send the friend request
-    const newRequest = await friendsModel.insertFriendRequest(logged_user_id, to_id);
+    const new_request = await friendsModel.insertFriendRequest(logged_user_id, to_id);
 
     // Respond with the newly created request
-    res.status(201).json(newRequest);
+    res.status(201).json(new_request);
   } catch (error) {
     console.error('Error sending friend request:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
@@ -107,15 +107,15 @@ const acceptFriendRequest = async (req, res) => {
     if (logged_user_id === Number(from_id)) return res.status(400).json({ error: 'You cannot accept your own friend request.' });
 
     // Check if the friend request exists
-    const existingRequest = await friendsModel.checkFriendRequestExists(logged_user_id, from_id);
-    if (!existingRequest) return res.status(404).json({ error: 'No pending friend request found from this user.' });
+    const existing_request = await friendsModel.checkFriendRequestExists(logged_user_id, from_id);
+    if (!existing_request) return res.status(404).json({ error: 'No pending friend request found from this user.' });
 
     // Check if the logged user sent the request
-    if (existingRequest.direction === 'sent') return res.status(400).json({ error: 'You cannot accept your own friend request.' });
+    if (existing_request.direction === 'sent') return res.status(400).json({ error: 'You cannot accept your own friend request.' });
 
     // Accept the friend request
-    const updatedRequest = await friendsModel.updateFriendRequestWithAcceptance(from_id, logged_user_id);
-    res.status(200).json(updatedRequest);
+    const updated_request = await friendsModel.updateFriendRequestWithAcceptance(from_id, logged_user_id);
+    res.status(200).json(updated_request);
   } catch (error) {
     console.error('Error accepting friend request:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
@@ -138,15 +138,15 @@ const rejectFriendRequest = async (req, res) => {
     if (logged_user_id === Number(from_id)) return res.status(400).json({ error: 'You cannot reject your own friend request.' });
 
     // Check if the friend request exists
-    const existingRequest = await friendsModel.checkFriendRequestExists(logged_user_id, from_id);
-    if (!existingRequest) return res.status(404).json({ error: 'No pending friend request found from this user.' });
+    const existing_request = await friendsModel.checkFriendRequestExists(logged_user_id, from_id);
+    if (!existing_request) return res.status(404).json({ error: 'No pending friend request found from this user.' });
 
     // Check if the logged user sent the request
-    if (existingRequest.direction === 'sent') return res.status(400).json({ error: 'You cannot reject your own friend request.' });
+    if (existing_request.direction === 'sent') return res.status(400).json({ error: 'You cannot reject your own friend request.' });
 
     // Reject the friend request
-    const updatedRequest = await friendsModel.updateFriendRequestWithRejection(from_id, logged_user_id);
-    res.status(200).json(updatedRequest);
+    const updated_request = await friendsModel.updateFriendRequestWithRejection(from_id, logged_user_id);
+    res.status(200).json(updated_request);
   } catch (error) {
     console.error('Error rejecting friend request:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
@@ -162,26 +162,26 @@ const rejectFriendRequest = async (req, res) => {
  */
 const removeFriend = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id: friend_id } = req.params;
     const { logged_user_id } = req.body;
 
     // Check if sender and receiver IDs are different
-    if (logged_user_id === Number(id)) return res.status(400).json({ error: 'You cannot remove yourself as a friend.' });
+    if (logged_user_id === Number(friend_id)) return res.status(400).json({ error: 'You cannot remove yourself as a friend.' });
 
     // Check if the friend request exists
-    const existingRequest = await friendsModel.checkFriendRequestExists(logged_user_id, id);
+    const existing_request = await friendsModel.checkFriendRequestExists(logged_user_id, friend_id);
 
     // Handle pending friend request sent by the logged user
-    if (existingRequest && existingRequest.direction === 'sent') {
-      const canceledRequest = await friendsModel.deleteFriendRequest(logged_user_id, id);
-      if (canceledRequest) return res.status(200).json({ message: 'Friend request canceled successfully.', canceledRequest });
+    if (existing_request && existing_request.direction === 'sent') {
+      const canceled_request = await friendsModel.deleteFriendRequest(logged_user_id, friend_id);
+      if (canceled_request) return res.status(200).json({ message: 'Friend request canceled successfully.', canceled_request });
       return res.status(404).json({ error: 'Friend request not found or already canceled.' });
     }
 
     // Handle accepted friendship
-    const removedFriend = await friendsModel.deleteFriend(logged_user_id, id);
-    if (removedFriend) {
-      return res.status(200).json({ message: 'Friend removed successfully.', removedFriend });
+    const removed_friend = await friendsModel.deleteFriend(logged_user_id, friend_id);
+    if (removed_friend) {
+      return res.status(200).json({ message: 'Friend removed successfully.', removed_friend });
     } else {
       return res.status(404).json({ error: 'No friendship found to remove.' });
     }

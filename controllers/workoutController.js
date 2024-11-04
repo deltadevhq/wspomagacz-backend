@@ -45,10 +45,10 @@ const fetchWorkouts = async (req, res) => {
  */
 const fetchWorkoutById = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id: workout_id } = req.params;
 
     // Fetch workout from database
-    const workout = await workoutModel.selectWorkoutById(id);
+    const workout = await workoutModel.selectWorkoutById(workout_id);
 
     // Check if anything was returned
     if (!workout) return res.status(404).json({ error: 'Workouts not found' });
@@ -84,11 +84,11 @@ const fetchWorkoutSummary = async (req, res) => {
     if (workout.status !== 'completed') return res.status(409).json({ error: 'Workout is not completed' });
 
     // Fetch workout summary from database
-    const summary = await workoutModel.selectWorkoutSummary(workout_id);
-    if (!summary) return res.status(404).json({ error: 'Workout summary not found' });
+    const workout_summary = await workoutModel.selectWorkoutSummary(workout_id);
+    if (!workout_summary) return res.status(404).json({ error: 'Workout summary not found' });
 
     // Respond with the workout summary
-    res.status(200).json(summary);
+    res.status(200).json(workout_summary);
 
   } catch (error) {
     console.error('Error fetching workout summary:', error.stack);
@@ -104,7 +104,7 @@ const fetchWorkoutSummary = async (req, res) => {
  * @returns {void} - Sends a response with the updated or created workout data or an error message.
  */
 const putWorkout = async (req, res) => {
-  const { logged_user_id, id, related_workout_id, name, exercises, date, notes } = req.body;
+  const { logged_user_id, id: workout_id, related_workout_id, name: workout_name, exercises, date, notes } = req.body;
 
   // Serialize exercises array into JSON string
   const parsed_exercises = JSON.stringify(exercises);
@@ -114,13 +114,13 @@ const putWorkout = async (req, res) => {
   if (error) return res.status(400).json({ error: error.details[0].message });
 
   // Check if a workout with the same date already exists for the user
-  const collidedWorkout = await workoutModel.checkWorkoutCollision(logged_user_id, date);
-  if (collidedWorkout) return res.status(409).json({ error: `Workout with date '${date}' already exists for currently logged user` });
+  const collided_workout = await workoutModel.checkWorkoutCollision(logged_user_id, date);
+  if (collided_workout) return res.status(409).json({ error: `Workout with date '${date}' already exists for currently logged user` });
 
-  if (id) {
+  if (workout_id) {
     try {
       // Check if workout exists
-      const workout = await workoutModel.selectWorkoutById(id);
+      const workout = await workoutModel.selectWorkoutById(workout_id);
       if (!workout) return res.status(404).json({ error: 'Workout not found' });
 
       // Check if the request is for the currently logged-in user
@@ -130,7 +130,7 @@ const putWorkout = async (req, res) => {
       if (workout.status === 'completed') return res.status(409).json({ error: `Workout with status '${workout.status}' cannot be edited` });
 
       // Patch workout data in database
-      const updated_workout = await workoutModel.updateWorkout(id, name, parsed_exercises, date, notes);
+      const updated_workout = await workoutModel.updateWorkout(workout_id, workout_name, parsed_exercises, date, notes);
 
       // Successful response with updated workout data
       res.status(200).json(updated_workout);
@@ -141,7 +141,7 @@ const putWorkout = async (req, res) => {
   } else {
     try {
       // Create new workout in the database
-      const created_workout = await workoutModel.insertWorkout(related_workout_id, logged_user_id, name, parsed_exercises, date, notes);
+      const created_workout = await workoutModel.insertWorkout(related_workout_id, logged_user_id, workout_name, parsed_exercises, date, notes);
 
       // Successful response with created workout data
       res.status(201).json(created_workout);
@@ -161,11 +161,11 @@ const putWorkout = async (req, res) => {
  */
 const deleteWorkout = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id: workout_id } = req.params;
     const { logged_user_id } = req.body;
 
     // Fetch workout details to check existence and ownership
-    const workout = await workoutModel.selectWorkoutById(id);
+    const workout = await workoutModel.selectWorkoutById(workout_id);
     if (!workout) return res.status(404).json({ error: 'Workout not found' });
 
     // Check if the workout belongs to the currently logged-in user
@@ -175,7 +175,7 @@ const deleteWorkout = async (req, res) => {
     if (workout.status === 'completed' || workout.status === 'in_progress') return res.status(409).json({ error: `Workout with status '${workout.status}' cannot be deleted` });
 
     // Delete workout from database
-    await workoutModel.deleteWorkout(id);
+    await workoutModel.deleteWorkout(workout_id);
 
     // Successful response confirming deletion
     res.status(200).json({ message: 'Workout deleted successfully' });
@@ -195,11 +195,11 @@ const deleteWorkout = async (req, res) => {
  */
 const startWorkout = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id: workout_id } = req.params;
     const { logged_user_id } = req.body;
 
     // Check if workout exists
-    const workout = await workoutModel.selectWorkoutById(id);
+    const workout = await workoutModel.selectWorkoutById(workout_id);
     if (!workout) return res.status(404).json({ error: 'Workout not found' });
 
     // Check if the request is for the currently logged-in user
@@ -213,7 +213,7 @@ const startWorkout = async (req, res) => {
     if (error) return res.status(400).json({ error: error.details[0].message });
 
     // Patch started_at for workout in database
-    const started_workout = await workoutModel.updateWorkoutWithStart(id);
+    const started_workout = await workoutModel.updateWorkoutWithStart(workout_id);
 
     // Successful response with updated workout data
     res.status(200).json(started_workout);
@@ -233,11 +233,11 @@ const startWorkout = async (req, res) => {
  */
 const stopWorkout = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id: workout_id } = req.params;
     const { logged_user_id } = req.body;
 
     // Check if workout exists
-    const workout = await workoutModel.selectWorkoutById(id);
+    const workout = await workoutModel.selectWorkoutById(workout_id);
     if (!workout) return res.status(404).json({ error: 'Workout not found' });
 
     // Check if the request is for the currently logged-in user
@@ -247,7 +247,7 @@ const stopWorkout = async (req, res) => {
     if (workout.status !== 'in_progress') return res.status(409).json({ error: `Workout with status ${workout.status} cannot be stopped` });
 
     // Patch started_at for workout in database
-    const stopped_workout = await workoutModel.updateWorkoutWithStop(id);
+    const stopped_workout = await workoutModel.updateWorkoutWithStop(workout_id);
 
     // Successful response with updated workout data
     res.status(200).json(stopped_workout);
@@ -267,11 +267,11 @@ const stopWorkout = async (req, res) => {
  */
 const finishWorkout = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id: workout_id } = req.params;
     const { logged_user_id } = req.body;
 
     // Check if workout exists
-    const workout = await workoutModel.selectWorkoutById(id);
+    const workout = await workoutModel.selectWorkoutById(workout_id);
     if (!workout) return res.status(404).json({ error: 'Workout not found' });
 
     // Check if the request is for the currently logged-in user
@@ -281,7 +281,7 @@ const finishWorkout = async (req, res) => {
     if (workout.status !== 'in_progress') return res.status(409).json({ error: `Workout with status '${workout.status}' cannot be finished` });
 
     // Patch finished_at for workout in database
-    const finished_workout = await workoutModel.updateWorkoutWithFinish(id);
+    const finished_workout = await workoutModel.updateWorkoutWithFinish(workout_id);
     const experience_grant = await experienceController.userExperienceHandler(finished_workout);
 
     // Successful response with updated workout data
