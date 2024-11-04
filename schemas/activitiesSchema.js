@@ -9,14 +9,24 @@ const baseActivitySchema = {
 };
 
 /**
+ * Specific validation schema for fetching activities
+ */
+const fetchActivitiesSchema = Joi.object({
+  user_id: baseActivitySchema.id,
+  offset: baseRequestSchema.offset,
+  limit: baseRequestSchema.limit,
+});
+
+/**
  * Specific validation schema for fetching friends activities
  */
-const getFriendsActivitiesSchema = Joi.object({
+const fetchFriendsActivitiesSchema = Joi.object({
   offset: baseRequestSchema.offset,
   limit: baseRequestSchema.limit,
 });
 
 module.exports = {
   baseActivitySchema,
-  getFriendsActivitiesSchema,
+  fetchActivitiesSchema,
+  fetchFriendsActivitiesSchema,
 };

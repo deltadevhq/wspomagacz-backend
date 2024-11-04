@@ -176,15 +176,6 @@ const patchPasswordSchema = Joi.object({
 });
 
 /**
- * Specific validation schema for fetching user activities
- */
-const fetchUserActivitySchema = Joi.object({
-  id: baseUserSchema.id.required().messages({ 'any.required': 'ID is required' }),
-  offset: baseRequestSchema.offset,
-  limit: baseRequestSchema.limit,
-});
-
-/**
  * Specific validation schema for fetching user achievements
  */
 const getUserAchievements = Joi.object({
@@ -207,7 +198,6 @@ module.exports = {
   loginSchema,
   registerSchema,
   patchPasswordSchema,
-  fetchUserActivitySchema,
   getUserAchievements,
   getUserAchievement,
 };
