@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const exerciseController = require('../controllers/exerciseController.js');
 const exerciseSchema = require('../schemas/exerciseSchema.js');
-const { verifyToken } = require('../controllers/authController');
-const { validateInput } = require('../utilities/validation');
+const { verifyToken } = require('../utilities/middleware/verifyToken');
+const { validateInput } = require('../utilities/middleware/validateInput.js');
 
 // AUTH ROUTES
 router.get('/', validateInput(exerciseSchema.fetchExercisesSchema, 'query'), verifyToken, exerciseController.fetchExercises);

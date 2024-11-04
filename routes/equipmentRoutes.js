@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const equipmentController = require('../controllers/equipmentController');
 const equipmentSchema = require('../schemas/equipmentSchema');
-const { verifyToken } = require('../controllers/authController');
-const { validateInput } = require('../utilities/validation');
+const { verifyToken } = require('../utilities/middleware/verifyToken');
+const { validateInput } = require('../utilities/middleware/validateInput');
 
 // AUTH ROUTES
 router.get('/', verifyToken, equipmentController.fetchEquipment);

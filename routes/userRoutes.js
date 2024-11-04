@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
 const userSchema = require('../schemas/userSchema');
-const { verifyToken } = require('../controllers/authController');
-const { validateInput } = require('../utilities/validation');
+const { verifyToken } = require('../utilities/middleware/verifyToken');
+const { validateInput } = require('../utilities/middleware/validateInput');
 
 // AUTH ROUTES
 router.get('/search', validateInput(userSchema.searchUserProfileSchema, 'query'), verifyToken, userController.searchUserProfile);

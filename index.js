@@ -19,7 +19,7 @@ const {
 } = require('./config/settings');
 const { initDBConnection } = require('./config/database');
 const { swaggerDocs, packageJson } = require('./setup');
-const { dateFormatterMiddleware } = require('./utilities/dateFormatter');
+const { dateFormatter } = require('./utilities/middleware/dateFormatter');
 
 // Use morgan to log requests to the console
 app.use(morgan('[INFO][:date] Request: :method :url HTTP/:http-version, Response: :status, ResponseTime: :response-time ms'));
@@ -39,17 +39,17 @@ app.use(express.json());
 
 // Define specific routes
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-app.use('/api/achievements', dateFormatterMiddleware, routes.achievementRoutes);
-app.use('/api/activities', dateFormatterMiddleware, routes.activitiesRoutes);
-app.use('/api/auth', dateFormatterMiddleware, routes.authRoutes);
-app.use('/api/equipment', dateFormatterMiddleware, routes.equipmentRoutes);
-app.use('/api/exercises', dateFormatterMiddleware, routes.exerciseRoutes);
-app.use('/api/experience', dateFormatterMiddleware, routes.experienceRoutes);
-app.use('/api/friends', dateFormatterMiddleware, routes.friendsRoutes);
-app.use('/api/muscles', dateFormatterMiddleware, routes.muscleRoutes);
-app.use('/api/notifications', dateFormatterMiddleware, routes.notificationRoutes);
-app.use('/api/users', dateFormatterMiddleware, routes.userRoutes);
-app.use('/api/workouts', dateFormatterMiddleware, routes.workoutRoutes);
+app.use('/api/achievements', dateFormatter, routes.achievementRoutes);
+app.use('/api/activities', dateFormatter, routes.activitiesRoutes);
+app.use('/api/auth', dateFormatter, routes.authRoutes);
+app.use('/api/equipment', dateFormatter, routes.equipmentRoutes);
+app.use('/api/exercises', dateFormatter, routes.exerciseRoutes);
+app.use('/api/experience', dateFormatter, routes.experienceRoutes);
+app.use('/api/friends', dateFormatter, routes.friendsRoutes);
+app.use('/api/muscles', dateFormatter, routes.muscleRoutes);
+app.use('/api/notifications', dateFormatter, routes.notificationRoutes);
+app.use('/api/users', dateFormatter, routes.userRoutes);
+app.use('/api/workouts', dateFormatter, routes.workoutRoutes);
 
 
 // Main execution flow
@@ -94,7 +94,6 @@ app.use('/api/workouts', dateFormatterMiddleware, routes.workoutRoutes);
 // TODO: STANDARDIZE ALL VARIABLE AND FUNCTION NAMES
 // TODO: CHECK USER/FRIENDS ACTIVITIES NAMING
 // TODO: ADD JSDOCS COMMENT FOR EVERY FUNCTION
-// TODO: MOVE MIDDLEWARE TO SEPARATE FOLDER
 
 // TODO: EMIT NOTIFICATION FOR AUTOMATICALLY CLOSED WORKOUT BY JOB
 // TODO: EMIT NOTIFICATION FOR USER LEVEL UP

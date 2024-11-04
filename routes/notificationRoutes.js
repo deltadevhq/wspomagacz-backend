@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const notificationController = require('../controllers/notificationController');
 const notificationSchema = require('../schemas/notificationSchema');
-const { verifyToken } = require('../controllers/authController');
-const { validateInput } = require('../utilities/validation');
+const { verifyToken } = require('../utilities/middleware/verifyToken');
+const { validateInput } = require('../utilities/middleware/validateInput');
 
 router.get('/', verifyToken, notificationController.fetchNotifications);
 router.get('/events', verifyToken, notificationController.fetchNotificationEvents);

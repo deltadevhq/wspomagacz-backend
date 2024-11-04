@@ -1,4 +1,4 @@
-const { formatDate } = require('./dateUtils');
+const { formatDate } = require('../dateUtils');
 
 const formatResponseDates = (data) => {
   if (Array.isArray(data)) {
@@ -16,7 +16,7 @@ const formatResponseDates = (data) => {
   return data;
 }
 
-const dateFormatterMiddleware = (req, res, next) => {
+const dateFormatter = (req, res, next) => {
   const originalJson = res.json;
   res.json = (data) => {
     originalJson.call(res, formatResponseDates(data));
@@ -25,5 +25,5 @@ const dateFormatterMiddleware = (req, res, next) => {
 }
 
 module.exports = {
-  dateFormatterMiddleware,
+  dateFormatter,
 }
