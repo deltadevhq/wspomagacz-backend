@@ -21,7 +21,7 @@ const fetchAchievements = async (req, res) => {
     console.error('Error fetching achievements:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+}
 
 /**
  * Fetches a single achievement by its ID.
@@ -46,9 +46,9 @@ const fetchAchievementById = async (req, res) => {
     console.error('Error fetching achievement:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+}
 
 module.exports = {
   fetchAchievements,
   fetchAchievementById,
-};
+}

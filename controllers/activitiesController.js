@@ -1,3 +1,5 @@
+// eslint-disable-next-line no-unused-vars
+const { Response, Request } = require('express');
 const activitiesModel = require('../models/activitiesModel');
 
 /**
@@ -25,7 +27,7 @@ const fetchActivities = async (req, res) => {
     console.error('Error fetching activities:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+}
 
 /**
  * Fetches activities from friends with pagination.
@@ -48,7 +50,7 @@ const fetchFriendsActivities = async (req, res) => {
     console.error('Error fetching friends activity:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+}
 
 /**
  * Fetches a single activity by its ID.
@@ -74,7 +76,7 @@ const fetchActivity = async (req, res) => {
     console.error('Error fetching activity:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+}
 
 /**
  * Deletes a single activity by its ID.
@@ -104,7 +106,7 @@ const deleteActivity = async (req, res) => {
     console.error('Error deleting activity:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+}
 
 /**
  * Likes a single activity by its ID.
@@ -137,7 +139,7 @@ const likeActivity = async (req, res) => {
     console.error('Error posting like for activity:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+}
 
 /**
  * Unlikes a single activity by its ID.
@@ -170,7 +172,7 @@ const unlikeActivity = async (req, res) => {
     console.error('Error posting unlike for activity:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+}
 
 module.exports = {
   fetchActivities,
@@ -179,4 +181,4 @@ module.exports = {
   deleteActivity,
   likeActivity,
   unlikeActivity,
-};
+}

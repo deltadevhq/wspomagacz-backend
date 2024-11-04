@@ -1,15 +1,13 @@
 // eslint-disable-next-line no-unused-vars
 const { Response, Request } = require('express');
-
 const userModel = require('../models/userModel');
 
 /**
- * Function to handle requests for retrieving a user's public profile by their ID or username.
+ * Searches for a user profile by ID or username and returns public user information.
  *
- * @param {Request} req - The request object containing either the user ID or username as a query parameter.
- * @param {Response} res - The response object used to send back the user profile data.
- * @returns {void} - Responds with the user's public profile data if found, or an error message if the user is not available.
- * @throws {Error} - Throws an error if there is an issue fetching the user data from the database.
+ * @param {Request} req - The request object containing either the user ID or username as query parameters.
+ * @param {Response} res - The response object used to send the user data or an error message.
+ * @returns {void} - Sends a response with the user's public information or an error.
  */
 const searchUserProfile = async (req, res) => {
   try {
@@ -42,18 +40,14 @@ const searchUserProfile = async (req, res) => {
     console.error('Error fetching user by ID:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+}
 
 /**
- * Function to handle requests for updating a user by their ID.
+ * Updates the profile information of a user if the request is made by the logged-in user.
  *
- * @param {Request} req - The request object containing the user ID as a route parameter and the new data in the body.
- * @param {Response} res - The response object used to send back the updated user data.
- * @returns {void} - Responds with the updated user data if the update is successful, or an error message if the request fails.
- * @throws {Error} - Throws an error if:
- *   - The request is not for the currently logged-in user.
- *   - The user is not found.
- *   - An internal server error occurs during the update process.
+ * @param {Request} req - The request object containing user ID and new profile data.
+ * @param {Response} res - The response object used to send the updated user data or an error message.
+ * @returns {void} - Sends a response with the updated user information or an error.
  */
 const patchUser = async (req, res) => {
   // Check if the request is for the currently logged-in user
@@ -79,18 +73,14 @@ const patchUser = async (req, res) => {
     console.error('Error patching user:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+}
 
 /**
- * Function to handle requests for deleting a user by their ID.
+ * Deletes a user account if the request is made by the logged-in user.
  *
- * @param {Request} req - The request object containing the user ID as a route parameter.
- * @param {Response} res - The response object used to send back the result of the deletion request.
- * @returns {void} - Responds with a success message upon successful deletion or an error message if the request fails.
- * @throws {Error} - Throws an error if:
- *   - The request is not for the currently logged-in user.
- *   - The user is not found.
- *   - An internal server error occurs during the deletion process.
+ * @param {Request} req - The request object containing the user ID to be deleted.
+ * @param {Response} res - The response object used to send a confirmation message or an error.
+ * @returns {void} - Sends a response confirming the deletion or an error message.
  */
 const deleteUser = async (req, res) => {
   // Check if the request is for the currently logged-in user
@@ -110,7 +100,7 @@ const deleteUser = async (req, res) => {
     console.error('Error deleting user:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+}
 
 const fetchUserAchievements = async (req, res) => {
   try {
@@ -122,7 +112,7 @@ const fetchUserAchievements = async (req, res) => {
     console.error('Error fetching user achievements:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+}
 
 const fetchUserAchievementById = async (req, res) => {
   try {
@@ -134,7 +124,7 @@ const fetchUserAchievementById = async (req, res) => {
     console.error('Error fetching user achievement:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+}
 
 module.exports = {
   searchUserProfile,
@@ -142,4 +132,4 @@ module.exports = {
   deleteUser,
   fetchUserAchievements,
   fetchUserAchievementById,
-};
+}

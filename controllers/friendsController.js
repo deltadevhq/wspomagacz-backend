@@ -1,9 +1,15 @@
 // eslint-disable-next-line no-unused-vars
 const { Response, Request } = require('express');
-
 const friendsModel = require('../models/friendsModel');
 const userModel = require('../models/userModel');
 
+/**
+ * Handles requests to fetch the list of friends for a user.
+ *
+ * @param {Request} req - The request object containing the logged-in user's ID in the body.
+ * @param {Response} res - The response object to return the list of friends or an error message.
+ * @returns {void} - Responds with the list of friends on success or an error message if the fetch fails.
+ */
 const fetchFriends = async (req, res) => {
   try {
     const { logged_user_id } = req.body;
@@ -17,8 +23,15 @@ const fetchFriends = async (req, res) => {
     console.error('Error fetching friends:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+}
 
+/**
+ * Handles requests to fetch pending friend requests for a user.
+ *
+ * @param {Request} req - The request object containing the logged-in user's ID in the body.
+ * @param {Response} res - The response object to return the list of friend requests or an error message.
+ * @returns {void} - Responds with the list of pending friend requests on success or an error message if the fetch fails.
+ */
 const fetchFriendRequests = async (req, res) => {
   try {
     const { logged_user_id } = req.body;
@@ -32,8 +45,15 @@ const fetchFriendRequests = async (req, res) => {
     console.error('Error fetching friend requests:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+}
 
+/**
+ * Handles requests to send a friend request to another user.
+ *
+ * @param {Request} req - The request object containing the recipient's ID in the URL parameters and the logged-in user's ID in the body.
+ * @param {Response} res - The response object to send back the result of the friend request operation.
+ * @returns {void} - Responds with the newly created friend request on success or an error message if sending fails.
+ */
 const sendFriendRequest = async (req, res) => {
   try {
     const { to_id } = req.params;
@@ -69,8 +89,15 @@ const sendFriendRequest = async (req, res) => {
     console.error('Error sending friend request:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+}
 
+/**
+ * Handles requests to accept a friend request from another user.
+ *
+ * @param {Request} req - The request object containing the sender's ID in the URL parameters and the logged-in user's ID in the body.
+ * @param {Response} res - The response object to send back the result of the acceptance operation.
+ * @returns {void} - Responds with the updated request details on success or an error message if acceptance fails.
+ */
 const acceptFriendRequest = async (req, res) => {
   try {
     const { from_id } = req.params;
@@ -93,8 +120,15 @@ const acceptFriendRequest = async (req, res) => {
     console.error('Error accepting friend request:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+}
 
+/**
+ * Handles requests to reject a friend request from another user.
+ *
+ * @param {Request} req - The request object containing the sender's ID in the URL parameters and the logged-in user's ID in the body.
+ * @param {Response} res - The response object to send back the result of the rejection operation.
+ * @returns {void} - Responds with the updated request details on success or an error message if rejection fails.
+ */
 const rejectFriendRequest = async (req, res) => {
   try {
     const { from_id } = req.params;
@@ -117,8 +151,15 @@ const rejectFriendRequest = async (req, res) => {
     console.error('Error rejecting friend request:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+}
 
+/**
+ * Handles requests to remove a friend from the user's friend list.
+ *
+ * @param {Request} req - The request object containing the friend's ID in the URL parameters and the logged-in user's ID in the body.
+ * @param {Response} res - The response object to send back the result of the removal operation.
+ * @returns {void} - Responds with a success message or an error message based on the operation outcome.
+ */
 const removeFriend = async (req, res) => {
   try {
     const { id } = req.params;
@@ -149,7 +190,7 @@ const removeFriend = async (req, res) => {
     console.error('Error removing friend:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+}
 
 module.exports = {
   fetchFriends,
@@ -158,4 +199,4 @@ module.exports = {
   acceptFriendRequest,
   rejectFriendRequest,
   removeFriend,
-};
+}

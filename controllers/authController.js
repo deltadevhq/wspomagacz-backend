@@ -6,12 +6,11 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
 /**
- * Function to handle the request for retrieving the currently logged-in user's data.
+ * Retrieves the currently logged-in user's data and sends it in the response.
  *
- * @param {Request} req - Request object with user ID from the token.
- * @param {Response} res - Response object to send user data or an error message.
- * @returns {void} - Responds with user data on success, or clears the token and returns an error if the user is not found.
- * @throws {Error} - Throws an error if there is an issue fetching user data.
+ * @param {Request} req - The request object containing the logged user's ID.
+ * @param {Response} res - The response object used to send user data or an error message.
+ * @returns {void} - Responds with user data or clears the token and returns an error if the user is not found.
  */
 const fetchCurrentLoggedUser = async (req, res) => {
   try {
@@ -38,15 +37,14 @@ const fetchCurrentLoggedUser = async (req, res) => {
     console.error('Error fetching currently logged user:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+}
 
 /**
- * Function to handle the request for registering a new user
+ * Handles user registration, creating a new user in the database.
  *
- * @param {Request} req - Request object with user registration details in the body.
- * @param {Response} res - Response object to send back the new user data or an error.
- * @returns {void} - Responds with the created user data or an error if registration fails.
- * @throws {Error} - Throws an error if email or username is already taken, or if user creation fails.
+ * @param {Request} req - The request containing user registration details in the body.
+ * @param {Response} res - The response to send back the created user data or an error.
+ * @returns {void} - Responds with new user data or an error if registration fails.
  */
 const registerUser = async (req, res) => {
   try {
@@ -74,15 +72,14 @@ const registerUser = async (req, res) => {
     console.error('Error registering user:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+}
 
 /**
- * Handles user login request by verifying credentials and generating a JWT.
+ * Handles user login by verifying credentials and generating a JWT.
  *
- * @param {Request} req - Request object with username and password in the body.
- * @param {Response} res - Response object to send login status or error.
- * @returns {void} - Responds with a JWT token if login is successful, or an error message if login fails.
- * @throws {Error} - Throws an error if user verification fails or if an internal error occurs.
+ * @param {Request} req - Request with username and password in the body.
+ * @param {Response} res - Response to send login status or error.
+ * @returns {void} - Responds with a JWT token if login succeeds, or an error if login fails.
  */
 const loginUser = async (req, res) => {
   try {
@@ -121,15 +118,14 @@ const loginUser = async (req, res) => {
     console.error('Error logging in user:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+}
 
 /**
- * Handles user logout request by clearing the authentication token.
+ * Handles user logout by clearing the authentication token.
  *
- * @param {Request} req - Request object containing user session information.
- * @param {Response} res - Response object to send logout status.
- * @returns {void} - Responds with a success status upon successful logout.
- * @throws {Error} - Throws an error if clearing the token fails.
+ * @param {Request} req - Request with user session information.
+ * @param {Response} res - Response to send logout status.
+ * @returns {void} - Responds with a success status upon logout.
  */
 const logoutUser = async (req, res) => {
   try {
@@ -146,15 +142,14 @@ const logoutUser = async (req, res) => {
     console.error('Error logging out user:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+}
 
 /**
  * Updates the currently logged-in user's password.
  *
  * @param {Request} req - Request object with user ID and new password.
  * @param {Response} res - Response object to send a success message or error.
- * @returns {void} - Responds with a success message or an error if the update fails.
- * @throws {Error} - Throws an error if user is not found or if there's a server issue.
+ * @returns {void} - Responds with a success message if update is successful, or an error if it fails.
  */
 const patchUserPassword = async (req, res) => {
   try {
@@ -184,7 +179,7 @@ const patchUserPassword = async (req, res) => {
     console.error('Error patching user:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+}
 
 module.exports = {
   fetchCurrentLoggedUser,
@@ -192,4 +187,4 @@ module.exports = {
   loginUser,
   logoutUser,
   patchUserPassword,
-};
+}

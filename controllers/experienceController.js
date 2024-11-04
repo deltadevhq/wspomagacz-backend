@@ -1,17 +1,15 @@
 // eslint-disable-next-line no-unused-vars
 const { Response, Request } = require('express');
-
 const experienceModel = require('../models/experienceModel');
 const activitiesModel = require('../models/activitiesModel');
 const userModel = require('../models/userModel');
 
 /**
- * Function to handle the request for the user's level based on provided experience points (XP).
+ * Retrieves the level corresponding to a given amount of experience points (XP).
  *
- * @param {Request} req - The request object containing the XP query parameter.
- * @param {Response} res - The response object used to send back the results.
- * @returns {void} - Responds with the user's level, provided XP, progress, and missing XP.
- * @throws {Error} - Throws an error if there is an issue fetching the level or if the input is invalid.
+ * @param {Request} req - Request object containing the XP as a query parameter.
+ * @param {Response} res - Response object to send back the level data or an error message.
+ * @returns {void} - Responds with the level and XP if successful, or an error if there is an issue.
  */
 const getLevelByXp = async (req, res) => {
   try {
@@ -27,13 +25,13 @@ const getLevelByXp = async (req, res) => {
     console.error('Error getting level by experience:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+}
 
 /**
- * Function to calculate the level, progress, and XP details based on provided experience points (XP).
- * @param {number} xp - The total XP earned by the user.
- * @returns {Object} - Returns the user's level, progress, and missing XP for the next level.
- * @throws {Error} - Throws an error if there is an issue fetching the XP or level information.
+ * Calculates the user's level and experience progression based on provided XP.
+ *
+ * @param {number} xp - The amount of experience points to evaluate.
+ * @returns {Object} - An object containing the user's level, XP, progress towards the next level, and missing XP for the next level.
  */
 const getLevelByXpHandler = async (xp) => {
   try {
@@ -54,15 +52,14 @@ const getLevelByXpHandler = async (xp) => {
     console.error('Error handling get level by experience:', error.stack);
     throw new Error('Failed to calculate level and XP progression.');
   }
-};
+}
 
 /**
- * Function to handle the request for experience points required to reach a specified level.
+ * Handles requests to retrieve the experience points required for a specific level.
  *
- * @param {Request} req - The request object containing the level query parameter.
- * @param {Response} res - The response object used to send back the results.
- * @returns {void} - Responds with the required XP for the specified level.
- * @throws {Error} - Throws an error if there is an issue fetching the XP or if the input is invalid.
+ * @param {Request} req - Request object containing the desired level as a query parameter.
+ * @param {Response} res - Response object to return the level and required experience points.
+ * @returns {void} - Responds with the level and required experience points.
  */
 const getXpByLevel = async (req, res) => {
   try {
@@ -75,20 +72,13 @@ const getXpByLevel = async (req, res) => {
     console.error('Error getting experience by level:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+}
 
 /**
- * Function to handle user experience after a workout.
- * This includes fetching the user's current experience, calculating
- * the experience earned from the workout, determining if the user levels up,
- * and recording the experience history.
+ * Handles user experience processing after a workout.
  *
- * @param {Object} workout - The workout object containing details about the workout.
- * @param {number} workout.id - The ID of the workout.
- * @param {number} workout.user_id - The ID of the user performing the workout.
- * @param {Array} workout.exercises - The exercises included in the workout.
- * @returns {Object} - The result of inserting the experience history.
- * @throws {Error} - Throws an error if the user is not found or if processing fails.
+ * @param {Object} workout - The workout object containing workout details.
+ * @returns {Object} - Returns the history result of experience granted.
  */
 const userExperienceHandler = async (workout) => {
   console.log(`Start user experience handler for workout id: ${workout.id}, user id: ${workout.user_id}`);
@@ -133,13 +123,13 @@ const userExperienceHandler = async (workout) => {
     console.error(`Error in user experience handler for workout id: ${workout.id}, user id: ${workout.user_id}:`, error.stack);
     throw new Error('Failed to process user experience after workout.');
   }
-};
+}
 
 /**
- * Function to calculate the total experience multiplier for a user based on active events.
- * @param {number} user_id - The ID of the user for which to calculate the multiplier.
- * @returns {number} - The total multiplier applied to the user's experience.
- * @throws {Error} - Throws an error if there is an issue fetching events.
+ * Calculates the experience multiplier based on user events.
+ *
+ * @param {number} user_id - The ID of the user for whom to calculate the multiplier.
+ * @returns {number} - The total experience multiplier for the user.
  */
 const calculateMultiplier = async (user_id) => {
   let total_multiplier = 1.00;
@@ -158,15 +148,14 @@ const calculateMultiplier = async (user_id) => {
     console.error('Error executing query to fetch events:', error.stack);
     throw new Error('Failed to calculate experience multiplier.');
   }
-};
+}
 
 /**
- * Function to calculate the total experience points based on the user's exercises.
- * @param {Array} exercises - The list of exercises performed by the user.
- * @param {Object} user - The user object containing user information.
- * @param {Array} user.weights - An array of weight objects for the user.
- * @returns {number} - The total experience points earned by the user.
- * @throws {Error} - Throws an error if there is an issue during calculation.
+ * Calculates the total experience gained from a set of exercises performed by a user.
+ *
+ * @param {Array} exercises - An array of exercise objects containing details about the exercises performed.
+ * @param {Object} user - The user object containing information such as weights.
+ * @returns {number} - The total experience calculated based on the exercises.
  */
 const calculateExperience = async (exercises, user) => {
   let xp = 0;
@@ -200,7 +189,7 @@ const calculateExperience = async (exercises, user) => {
     console.error('Error calculating experience:', error.stack);
     throw new Error('Failed to calculate experience.');
   }
-};
+}
 
 module.exports = {
   getLevelByXp,
@@ -208,4 +197,4 @@ module.exports = {
   userExperienceHandler,
   calculateMultiplier,
   calculateExperience,
-};
+}

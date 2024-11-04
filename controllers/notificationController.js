@@ -1,13 +1,14 @@
 // eslint-disable-next-line no-unused-vars
 const { Response, Request } = require('express');
-
 const notificationModel = require('../models/notificationModel');
 const { sse_connections } = require('../config/sse');
 
 /**
- * Fetch all notifications for the logged-in user
- * @param {Request} req
- * @param {Response} res
+ * Handles requests to fetch notifications for a specific user.
+ *
+ * @param {Request} req - The request object containing the logged user's ID in the body.
+ * @param {Response} res - The response object to return the notifications or an error message.
+ * @returns {void} - Responds with the notifications data on success or an error message if the fetch fails.
  */
 const fetchNotifications = async (req, res) => {
   try {
@@ -22,12 +23,14 @@ const fetchNotifications = async (req, res) => {
     console.error('Error fetching notifications:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+}
 
 /**
- * Fetch a notification by its ID
- * @param {Request} req
- * @param {Response} res
+ * Handles requests to fetch a specific notification by its ID.
+ *
+ * @param {Request} req - The request object containing the notification ID as a route parameter.
+ * @param {Response} res - The response object to return the notification data or an error message.
+ * @returns {void} - Responds with the notification data on success or an error message if the fetch fails.
  */
 const fetchNotificationById = async (req, res) => {
   try {
@@ -42,12 +45,14 @@ const fetchNotificationById = async (req, res) => {
     console.error('Error fetching notification by its ID:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+}
 
 /**
- * Open a stream to listen for notification events
- * @param {Request} req
- * @param {Response} res
+ * Opens a Server-Sent Events (SSE) stream for sending real-time notification updates to the client.
+ *
+ * @param {Request} req - The request object containing the logged user ID in the request body.
+ * @param {Response} res - The response object used to send the SSE headers and notifications.
+ * @returns {void} - Sets headers for SSE and maintains the connection for sending notifications.
  */
 const openNotificationEventsStream = async (req, res) => {
   try {
@@ -70,12 +75,14 @@ const openNotificationEventsStream = async (req, res) => {
     console.error('Error fetching notification stream:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+}
 
 /**
- * Mark all notifications as read for the logged-in user
- * @param {Request} req
- * @param {Response} res
+ * Marks all notifications for the logged-in user as read.
+ *
+ * @param {Request} req - The request object containing the logged user ID in the request body.
+ * @param {Response} res - The response object used to send the success or error message.
+ * @returns {void} - Sends a response indicating success or failure of the operation.
  */
 const postMarkAllAsRead = async (req, res) => {
   try {
@@ -90,12 +97,14 @@ const postMarkAllAsRead = async (req, res) => {
     console.error('Error marking notification as read:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+}
 
 /**
- * Mark a notification as read by its ID
- * @param {Request} req
- * @param {Response} res
+ * Marks a specific notification as read based on its ID.
+ *
+ * @param {Request} req - The request object containing the notification ID in the parameters.
+ * @param {Response} res - The response object used to send the success or error message.
+ * @returns {void} - Sends a response indicating success or failure of the operation.
  */
 const postMarkAsReadById = async (req, res) => {
   try {
@@ -110,7 +119,7 @@ const postMarkAsReadById = async (req, res) => {
     console.error('Error marking notification as read by its ID:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
-};
+}
 
 module.exports = {
   fetchNotifications,
@@ -118,4 +127,4 @@ module.exports = {
   fetchNotificationEvents: openNotificationEventsStream,
   postMarkAllAsRead,
   postMarkAsReadById,
-};
+}
