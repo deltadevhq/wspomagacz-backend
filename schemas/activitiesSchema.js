@@ -25,8 +25,16 @@ const fetchFriendsActivitiesSchema = Joi.object({
   limit: baseRequestSchema.limit,
 });
 
+/**
+ * Specific validation schema for fetching activity
+ */
+const fetchActivitySchema = Joi.object({
+  id: baseActivitySchema.id.required().messages({ 'any.required': 'ID is required' }),
+});
+
 module.exports = {
   baseActivitySchema,
   fetchActivitiesSchema,
   fetchFriendsActivitiesSchema,
+  fetchActivitySchema,
 };
