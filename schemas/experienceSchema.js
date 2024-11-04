@@ -25,24 +25,24 @@ const baseExperienceSchema = {
       'number.min': 'XP must be a positive number or 0',
       'number.max': 'XP must be at most 10100000',
     }),
-};
+}
 
 /**
  * Specific validation schema for getting experience by level
  */
 const getXpByLevelSchema = Joi.object({
   level: baseExperienceSchema.level.required().messages({ 'any.required': 'Level is required' }),
-});
+})
 
 /**
  * Specific validation schema for getting level by experience
  */
 const getLevelByXpSchema = Joi.object({
   xp: baseExperienceSchema.xp.required().messages({ 'any.required': 'XP is required' }),
-});
+})
 
 module.exports = {
   baseExperienceSchema,
   getXpByLevelSchema,
   getLevelByXpSchema,
-};
+}

@@ -6,23 +6,32 @@ const { baseRequestSchema } = require('./requestSchema');
  */
 const baseNotificationSchema = {
   id: baseRequestSchema.id,
-};
+}
 
-const getNotificationByIdSchema = Joi.object({
+/**
+ * Base validation schema for notification by its id
+ */
+const fetchNotificationByIdSchema = Joi.object({
   id: baseNotificationSchema.id.required().messages({ 'any.required': 'ID is required' }),
-});
+})
 
+/**
+ * Base validation schema for posting mark as read by notification id
+ */
 const postMarkAsReadByIdSchema = Joi.object({
   id: baseNotificationSchema.id.required().messages({ 'any.required': 'ID is required' }),
-});
+})
 
+/**
+ * Base validation schema for posting mark as read for all notification
+ */
 const postMarkAllAsReadSchema = Joi.object({
   user_id: baseNotificationSchema.id.required().messages({ 'any.required': 'ID is required' }),
-});
+})
 
 module.exports = {
   baseNotificationSchema,
-  getNotificationByIdSchema,
+  fetchNotificationByIdSchema,
   postMarkAsReadByIdSchema,
   postMarkAllAsReadSchema,
-};
+}

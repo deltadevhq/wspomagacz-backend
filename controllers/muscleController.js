@@ -11,7 +11,7 @@ const muscleModel = require('../models/muscleModel');
  * @returns {void} - Responds with an array of muscle groups if found, or an error message if no muscles are available.
  * @throws {Error} - Throws an error if there is an issue fetching the muscle data from the database.
  */
-const getMuscles = async (req, res) => {
+const fetchMuscles = async (req, res) => {
   try {
     // Fetch muscles from database
     const muscles = await muscleModel.selectMuscles();
@@ -35,7 +35,7 @@ const getMuscles = async (req, res) => {
  * @returns {void} - Responds with the muscle group data if found, or an error message if the muscle is not available.
  * @throws {Error} - Throws an error if there is an issue fetching the muscle data from the database.
  */
-const getMuscleById = async (req, res) => {
+const fetchMuscleById = async (req, res) => {
   try {
     // Fetch muscle from database
     const muscle = await muscleModel.selectMuscleById(req.params.id);
@@ -52,6 +52,6 @@ const getMuscleById = async (req, res) => {
 };
 
 module.exports = {
-  getMuscles,
-  getMuscleById,
+  fetchMuscles,
+  fetchMuscleById,
 };

@@ -13,7 +13,7 @@ const bcrypt = require('bcryptjs');
  * @returns {void} - Responds with user data on success, or clears the token and returns an error if the user is not found.
  * @throws {Error} - Throws an error if there is an issue fetching user data.
  */
-const getCurrentLoggedUser = async (req, res) => {
+const fetchCurrentLoggedUser = async (req, res) => {
   try {
     // Fetch user from database
     const user = await userModel.selectUserById(req.body.logged_user_id);
@@ -218,7 +218,7 @@ const verifyToken = async (req, res, next) => {
 };
 
 module.exports = {
-  getCurrentLoggedUser,
+  fetchCurrentLoggedUser,
   registerUser,
   loginUser,
   logoutUser,

@@ -9,7 +9,7 @@ router.post('/login', validateInput(userSchema.loginSchema), authController.logi
 router.post('/register', validateInput(userSchema.registerSchema), authController.registerUser);
 
 // AUTH ROUTES
-router.get('/user', authController.verifyToken, authController.getCurrentLoggedUser);
+router.get('/user', authController.verifyToken, authController.fetchCurrentLoggedUser);
 router.get('/logout', authController.verifyToken, authController.logoutUser);
 router.patch('/user/password', validateInput(userSchema.patchPasswordSchema), authController.verifyToken, authController.patchUserPassword);
 

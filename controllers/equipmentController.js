@@ -11,7 +11,7 @@ const equipmentModel = require('../models/equipmentModel');
  * @returns {void} - Responds with an array of equipment if found, or an error message if no equipment is available.
  * @throws {Error} - Throws an error if there is an issue fetching the equipment data from the database.
  */
-const getEquipment = async (req, res) => {
+const fetchEquipment = async (req, res) => {
   try {
     // Fetch equipment from database
     const equipment = await equipmentModel.selectEquipment();
@@ -35,7 +35,7 @@ const getEquipment = async (req, res) => {
  * @returns {void} - Responds with the equipment data if found, or an error message if the equipment is not available.
  * @throws {Error} - Throws an error if there is an issue fetching the equipment data or if an internal server error occurs.
  */
-const getEquipmentById = async (req, res) => {
+const fetchEquipmentById = async (req, res) => {
   try {
     // Fetch equipment from database
     const equipment = await equipmentModel.selectEquipmentById(req.params.id);
@@ -52,6 +52,6 @@ const getEquipmentById = async (req, res) => {
 };
 
 module.exports = {
-  getEquipment,
-  getEquipmentById,
+  fetchEquipment,
+  fetchEquipmentById,
 };

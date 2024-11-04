@@ -77,7 +77,7 @@ const openNotificationEventsStream = async (req, res) => {
  * @param {Request} req
  * @param {Response} res
  */
-const postMarkAsRead = async (req, res) => {
+const postMarkAllAsRead = async (req, res) => {
   try {
     const { logged_user_id } = req.body;
 
@@ -113,9 +113,9 @@ const postMarkAsReadById = async (req, res) => {
 };
 
 module.exports = {
-  getNotifications: fetchNotifications,
-  getNotificationById: fetchNotificationById,
-  getNotificationEvents: openNotificationEventsStream,
-  postMarkAsRead,
+  fetchNotifications,
+  fetchNotificationById,
+  fetchNotificationEvents: openNotificationEventsStream,
+  postMarkAllAsRead,
   postMarkAsReadById,
 };

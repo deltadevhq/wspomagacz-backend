@@ -7,6 +7,6 @@ const { validateInput } = require('../utilities/validation');
 
 // AUTH ROUTES
 router.get('/', verifyToken, achievementController.fetchAchievements);
-router.get('/:id', validateInput(achievementSchema.fetchAchievementSchema, 'params'), verifyToken, achievementController.fetchAchievement);
+router.get('/:id', validateInput(achievementSchema.fetchAchievementByIdSchema, 'params'), verifyToken, achievementController.fetchAchievementById);
 
 module.exports = router;

@@ -15,7 +15,7 @@ const userModel = require('../models/userModel');
  *   - No exercises match the query.
  *   - There is a server error during the fetch.
  */
-const getExercises = async (req, res) => {
+const fetchExercises = async (req, res) => {
   try {
     // Check user existence if user_id is provided
     if (req.query.user_id) {
@@ -45,7 +45,7 @@ const getExercises = async (req, res) => {
  * @returns {void} - Responds with the exercise data if found, or an error if not found.
  * @throws {Error} - Throws an error if the user does not exist (if specified), the exercise is not found, or if there is a server error.
  */
-const getExerciseById = async (req, res) => {
+const fetchExerciseById = async (req, res) => {
   try {
     // Check user existence if user_id is provided
     if (req.query.user_id) {
@@ -121,8 +121,8 @@ const deleteExercise = async (req, res) => {
 };
 
 module.exports = {
-  getExercises,
-  getExerciseById,
+  fetchExercises,
+  fetchExerciseById,
   postExercise,
   deleteExercise,
 };

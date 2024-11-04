@@ -6,15 +6,16 @@ const { baseRequestSchema } = require('./requestSchema');
  */
 const baseAchievementSchema = {
   id: baseRequestSchema.id,
-};
+}
 
 /**
  * Specific validation schema for fetching achievement
  */
-const fetchAchievementSchema = Joi.object({
+const fetchAchievementByIdSchema = Joi.object({
   id: baseAchievementSchema.id.required().messages({ 'any.required': 'ID is required' }),
-});
+})
 
 module.exports = {
-  fetchAchievementSchema,
-};
+  baseAchievementSchema,
+  fetchAchievementByIdSchema,
+}

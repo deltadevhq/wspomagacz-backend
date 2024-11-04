@@ -115,7 +115,7 @@ const baseUserSchema = {
       'number.positive': 'Height must be a positive number',
       'number.max': 'Height must be at most 250',
     }),
-};
+}
 
 /**
  * Specific validation schema for searching user profile
@@ -127,22 +127,22 @@ const searchUserProfileSchema = Joi.object({
 }).xor('id', 'username').messages({
     'object.missing': 'Please provide either an ID or a username.',
     'object.xor': 'Please provide either an ID or a username, but not both.'
-});
+})
 
 /**
- * Specific validation schema for patching user
+ * Specific validation schema for fetching user achievements
  */
-const patchUserSchema = Joi.object({
+const fetchUserAchievements = Joi.object({
   id: baseUserSchema.id.required().messages({ 'any.required': 'ID is required' }),
-  ...baseUserSchema,
-});
+})
 
 /**
- * Specific validation schema for deleting user
+ * Specific validation schema for fetching user achievement
  */
-const deleteUserSchema = Joi.object({
+const fetchUserAchievementById = Joi.object({
   id: baseUserSchema.id.required().messages({ 'any.required': 'ID is required' }),
-});
+  achievement_id: baseUserSchema.id.required().messages({ 'any.required': 'Achievement ID is required' }),
+})
 
 /**
  * Specific validation schema for user login
@@ -156,7 +156,7 @@ const loginSchema = Joi.object({
       'alternatives.match': 'Either a valid username or a valid email is required.'
     }),
   password: baseUserSchema.password.required().messages({ 'any.required': 'Password is required' }),
-});
+})
 
 /**
  * Specific validation schema for user registration
@@ -165,7 +165,15 @@ const registerSchema = Joi.object({
   username: baseUserSchema.username.required().messages({ 'any.required': 'Username is required' }),
   password: baseUserSchema.password.required().messages({ 'any.required': 'Password is required' }),
   email: baseUserSchema.email.required().messages({ 'any.required': 'Email is required' }),
-});
+})
+
+/**
+ * Specific validation schema for patching user
+ */
+const patchUserSchema = Joi.object({
+  id: baseUserSchema.id.required().messages({ 'any.required': 'ID is required' }),
+  ...baseUserSchema,
+})
 
 /**
  * Specific validation schema for user password change
@@ -173,31 +181,23 @@ const registerSchema = Joi.object({
 const patchPasswordSchema = Joi.object({
   password: baseUserSchema.password.required().messages({ 'any.required': 'Password is required' }),
   new_password: baseUserSchema.password.required().messages({ 'any.required': 'New password is required' }),
-});
+})
 
 /**
- * Specific validation schema for fetching user achievements
+ * Specific validation schema for deleting user
  */
-const getUserAchievements = Joi.object({
+const deleteUserSchema = Joi.object({
   id: baseUserSchema.id.required().messages({ 'any.required': 'ID is required' }),
-});
-
-/**
- * Specific validation schema for fetching user achievement
- */
-const getUserAchievement = Joi.object({
-  id: baseUserSchema.id.required().messages({ 'any.required': 'ID is required' }),
-  achievement_id: baseUserSchema.id.required().messages({ 'any.required': 'Achievement ID is required' }),
-});
+})
 
 module.exports = {
   baseUserSchema,
   searchUserProfileSchema,
-  patchUserSchema,
-  deleteUserSchema,
+  fetchUserAchievements,
+  fetchUserAchievementById,
   loginSchema,
   registerSchema,
+  patchUserSchema,
   patchPasswordSchema,
-  getUserAchievements,
-  getUserAchievement,
-};
+  deleteUserSchema,
+}

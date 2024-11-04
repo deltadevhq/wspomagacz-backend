@@ -6,7 +6,7 @@ const { verifyToken } = require('../controllers/authController');
 const { validateInput } = require('../utilities/validation');
 
 // AUTH ROUTES
-router.get('/', verifyToken, muscleController.getMuscles);
-router.get('/:id', validateInput(muscleSchema.getMuscleSchema, 'params'), verifyToken, muscleController.getMuscleById);
+router.get('/', verifyToken, muscleController.fetchMuscles);
+router.get('/:id', validateInput(muscleSchema.fetchMuscleByIdSchema, 'params'), verifyToken, muscleController.fetchMuscleById);
 
 module.exports = router;

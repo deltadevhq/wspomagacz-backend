@@ -18,16 +18,16 @@ const baseEquipmentSchema = {
       'string.pattern.base': 'Equipment name must contain only letters, numbers, and spaces. You are required to use at least 3 alphanumeric symbols and can only use one space between words.',
       'any.required': 'Equipment name is required',
     }),
-};
+}
 
 /**
  * Specific validation schema for fetching single equipment by its id
  */
-const getEquipmentSchema = Joi.object({
+const fetchEquipmentByIdSchema = Joi.object({
   id: baseEquipmentSchema.id,
-});
+})
 
 module.exports = {
   baseEquipmentSchema,
-  getEquipmentSchema,
-};
+  fetchEquipmentByIdSchema,
+}

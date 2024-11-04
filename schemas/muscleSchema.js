@@ -18,16 +18,16 @@ const baseMuscleSchema = {
       'string.pattern.base': 'Muscle name must contain only letters, numbers, and spaces. You are required to use at least 3 alphanumeric symbols and can only use one space between words.',
       'any.required': 'Muscle name is required',
     }),
-};
+}
 
 /**
  * Specific validation schema for fetching single muscle by its id
  */
-const getMuscleSchema = Joi.object({
+const fetchMuscleByIdSchema = Joi.object({
   id: baseMuscleSchema.id,
-});
+})
 
 module.exports = {
   baseMuscleSchema,
-  getMuscleSchema,
-};
+  fetchMuscleByIdSchema,
+}

@@ -42,24 +42,24 @@ const baseExerciseSchema = {
     .messages({
       'any.only': 'Exercise type must be one of all, custom or standard',
     }),
-};
+}
 
 /**
  * Specific validation schema for fetching exercises
  */
-const getExerciseSchema = Joi.object({
+const fetchExercisesSchema = Joi.object({
   type: baseExerciseSchema.exercise_type,
   user_id: baseExerciseSchema.user_id,
-});
+})
 
 /**
  * Specific validation schema for fetching exercise by its id
  */
-const getExerciseByIdSchema = Joi.object({
+const fetchExerciseByIdSchema = Joi.object({
   id: baseExerciseSchema.exercise_id.required().messages({ 'any.required': 'ID is required' }),
   type: baseExerciseSchema.exercise_type,
   user_id: baseExerciseSchema.user_id,
-});
+})
 
 /**
  * Specific validation schema for posting exercise
@@ -68,19 +68,19 @@ const postExerciseSchema = Joi.object({
   name: baseExerciseSchema.exercise_name.required().messages({ 'any.required': 'Exercise name is required' }),
   equipment: baseExerciseSchema.equipment.required().messages({ 'any.required': 'Equipment is required' }),
   muscles: baseExerciseSchema.muscles.required().messages({ 'any.required': 'Muscles are required' }),
-});
+})
 
 /**
  * Specific validation schema for deleting exercise
  */
 const deleteExerciseSchema = Joi.object({
   id: baseExerciseSchema.exercise_id.required().messages({ 'any.required': 'ID is required' }),
-});
+})
 
 module.exports = {
   baseExerciseSchema,
-  getExerciseSchema,
-  getExerciseByIdSchema,
+  fetchExercisesSchema,
+  fetchExerciseByIdSchema,
   postExerciseSchema,
   deleteExerciseSchema,
-};
+}

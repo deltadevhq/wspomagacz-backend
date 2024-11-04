@@ -14,7 +14,7 @@ const experienceController = require('./experienceController');
  * @returns {void} - Responds with an array of workouts matching the query parameters.
  * @throws {Error} - Throws an error if there's an issue fetching workouts or if the user does not exist.
  */
-const getWorkouts = async (req, res) => {
+const fetchWorkouts = async (req, res) => {
   try {
     const { user_id, status, date } = req.query;
 
@@ -46,7 +46,7 @@ const getWorkouts = async (req, res) => {
  * @returns {void} - Responds with the workout data if found.
  * @throws {Error} - Throws an error if there's an issue fetching the workout or if the workout is not found.
  */
-const getWorkoutById = async (req, res) => {
+const fetchWorkoutById = async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -327,8 +327,8 @@ const finishWorkout = async (req, res) => {
 };
 
 module.exports = {
-  getWorkouts,
-  getWorkoutById,
+  fetchWorkouts,
+  fetchWorkoutById,
   putWorkout,
   deleteWorkout,
   startWorkout,

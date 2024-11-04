@@ -112,7 +112,7 @@ const deleteUser = async (req, res) => {
   }
 };
 
-const getUserAchievements = async (req, res) => {
+const fetchUserAchievements = async (req, res) => {
   try {
 
     // TODO: IMPLEMENT getUserAchievements ENDPOINT
@@ -124,7 +124,7 @@ const getUserAchievements = async (req, res) => {
   }
 };
 
-const getUserAchievement = async (req, res) => {
+const fetchUserAchievementById = async (req, res) => {
   try {
 
     // TODO: IMPLEMENT getUserAchievement ENDPOINT
@@ -140,6 +140,6 @@ module.exports = {
   searchUserProfile,
   patchUser,
   deleteUser,
-  getUserAchievements,
-  getUserAchievement,
+  fetchUserAchievements,
+  fetchUserAchievementById,
 };

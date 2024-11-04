@@ -6,7 +6,7 @@ const { verifyToken } = require('../controllers/authController');
 const { validateInput } = require('../utilities/validation');
 
 // AUTH ROUTES
-router.get('/', verifyToken, equipmentController.getEquipment);
-router.get('/:id', validateInput(equipmentSchema.getEquipmentSchema, 'params'), verifyToken, equipmentController.getEquipmentById);
+router.get('/', verifyToken, equipmentController.fetchEquipment);
+router.get('/:id', validateInput(equipmentSchema.fetchEquipmentByIdSchema, 'params'), verifyToken, equipmentController.fetchEquipmentById);
 
 module.exports = router;

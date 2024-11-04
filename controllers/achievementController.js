@@ -30,7 +30,7 @@ const fetchAchievements = async (req, res) => {
  * @param {Response} res - Response object for sending results.
  * @returns {void} - Responds with the achievement or an error message.
  */
-const fetchAchievement = async (req, res) => {
+const fetchAchievementById = async (req, res) => {
   try {
     const { id: achievement_id } = req.params;
 
@@ -50,5 +50,5 @@ const fetchAchievement = async (req, res) => {
 
 module.exports = {
   fetchAchievements,
-  fetchAchievement,
+  fetchAchievementById,
 };

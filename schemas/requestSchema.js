@@ -36,4 +36,4 @@ const baseRequestSchema = {
 
 module.exports = {
   baseRequestSchema,
-};
+}

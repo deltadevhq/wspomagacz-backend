@@ -46,7 +46,7 @@ const baseSetsSchema = {
       'number.max': 'Order must be less than or equal to 50',
       'any.required': 'Order is required',
     }),
-};
+}
 
 /**
  * Base validation schema for exercise request data
@@ -160,30 +160,30 @@ const baseWorkoutSchema = {
       'string.max': 'Notes must be at most 100 characters long',
       'string.pattern.base': 'Notes must contain only letters, numbers, spaces and selected special characters(!.,). You are required to use at least 3 alphanumeric symbols and can only use one space between words.',
     }),
-};
+}
 
 /**
  * Specific validation schema for fetching workouts
  */
-const getWorkoutSchema = Joi.object({
+const fetchWorkoutSchema = Joi.object({
   status: baseWorkoutSchema.status,
   user_id: baseWorkoutSchema.user_id,
   date: baseWorkoutSchema.date,
-});
+})
 
 /**
  * Specific validation schema for fetching workout by its id
  */
-const getWorkoutByIdSchema = Joi.object({
+const fetchWorkoutByIdSchema = Joi.object({
   id: baseWorkoutSchema.id.required().messages({ 'any.required': 'ID is required' }),
-});
+})
 
 /**
  * Specific validation schema for fetching workout summary
  */
 const fetchWorkoutSummarySchema = Joi.object({
   id: baseWorkoutSchema.id.required().messages({ 'any.required': 'ID is required' }),
-});
+})
 
 /**
  * Specific validation schema for workout creation or update
@@ -193,35 +193,35 @@ const putWorkoutSchema = Joi.object({
   exercises: baseWorkoutSchema.exercises.required().messages({ 'any.required': 'Exercises are required' }),
   date: baseWorkoutSchema.date.required().messages({ 'any.required': 'Date is required' }),
   ...baseWorkoutSchema,
-});
-
-/**
- * Specific validation schema for deleting workout
- */
-const deleteWorkoutSchema = Joi.object({
-  id: baseWorkoutSchema.id.required().messages({ 'any.required': 'ID is required' }),
-});
+})
 
 /**
  * Specific validation schema for starting workout
  */
 const startWorkoutSchema = Joi.object({
   id: baseWorkoutSchema.id.required().messages({ 'any.required': 'ID is required' }),
-});
+})
 
 /**
  * Specific validation schema for stopping workout
  */
 const stopWorkoutSchema = Joi.object({
   id: baseWorkoutSchema.id.required().messages({ 'any.required': 'ID is required' }),
-});
+})
 
 /**
  * Specific validation schema for finishing workout
  */
 const finishWorkoutSchema = Joi.object({
   id: baseWorkoutSchema.id.required().messages({ 'any.required': 'ID is required' }),
-});
+})
+
+/**
+ * Specific validation schema for deleting workout
+ */
+const deleteWorkoutSchema = Joi.object({
+  id: baseWorkoutSchema.id.required().messages({ 'any.required': 'ID is required' }),
+})
 
 /**
  * Specific validation schema to check if workout date is today
@@ -241,7 +241,7 @@ const isWorkoutDateToday = Joi.object({
     .messages({
       'any.required': 'Date is required',
     }),
-});
+})
 
 /**
  * Specific validation schema to check if workout date is not in the past
@@ -261,19 +261,19 @@ const isWorkoutDateNotInPast = Joi.object({
     .messages({
       'any.required': 'Date is required',
     }),
-});
+})
 
 module.exports = {
-  baseWorkoutSchema,
   baseSetsSchema,
-  getWorkoutSchema,
-  getWorkoutByIdSchema,
+  baseWorkoutSchema,
+  fetchWorkoutSchema,
+  fetchWorkoutByIdSchema,
   fetchWorkoutSummarySchema,
   putWorkoutSchema,
-  deleteWorkoutSchema,
   startWorkoutSchema,
   stopWorkoutSchema,
   finishWorkoutSchema,
+  deleteWorkoutSchema,
   isWorkoutDateToday,
   isWorkoutDateNotInPast,
-};
+}

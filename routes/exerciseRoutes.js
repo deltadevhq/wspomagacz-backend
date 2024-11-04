@@ -6,8 +6,8 @@ const { verifyToken } = require('../controllers/authController');
 const { validateInput } = require('../utilities/validation');
 
 // AUTH ROUTES
-router.get('/', validateInput(exerciseSchema.getExerciseSchema, 'query'), verifyToken, exerciseController.getExercises);
-router.get('/:id', validateInput(exerciseSchema.getExerciseByIdSchema, '{ id: req.params.id, ...req.query }'), verifyToken, exerciseController.getExerciseById);
+router.get('/', validateInput(exerciseSchema.fetchExercisesSchema, 'query'), verifyToken, exerciseController.fetchExercises);
+router.get('/:id', validateInput(exerciseSchema.fetchExerciseByIdSchema, '{ id: req.params.id, ...req.query }'), verifyToken, exerciseController.fetchExerciseById);
 router.post('/', validateInput(exerciseSchema.postExerciseSchema), verifyToken, exerciseController.postExercise);
 router.delete('/:id', validateInput(exerciseSchema.deleteExerciseSchema, 'params'), verifyToken, exerciseController.deleteExercise);
 
