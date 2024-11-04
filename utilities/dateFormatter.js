@@ -8,7 +8,7 @@ const formatResponseDates = (data) => {
       if (typeof data[key] === 'object'){
         data[key] = formatResponseDates(data[key]);
       } 
-      if (data[key] instanceof Date || key.endsWith('_at')) {
+      if (data[key] instanceof Date || (key.endsWith('_at') && data[key])) {
         data[key] = formatDate(data[key]);
       }
     }
