@@ -49,6 +49,25 @@ const getWorkoutByDate = async (user_id, date) => {
 };
 
 /**
+ * Retrieves the workout summary for a specified workout ID.
+ *
+ * @param {number} workout_id - ID of the workout to retrieve the summary for.
+ * @returns {Object|null} - The workout summary if found, otherwise null.
+ */
+const selectWorkoutSummary = async (workout_id) => {
+  const query = 'SELECT * FROM workout_summaries WHERE workout_id = $1';
+  const values = [workout_id];
+
+  try {
+    const result = await pool.query(query, values);
+    return result.rows.length > 0 ? result.rows[0] : null;
+  } catch (error) {
+    console.error('Error executing query', error.stack);
+    throw error;
+  }
+};
+
+/**
  * Insert workout to database
  */
 const createWorkout = async (related_workout_id, user_id, name, exercises, date, notes) => {
@@ -195,6 +214,7 @@ module.exports = {
   getWorkouts,
   getWorkoutById,
   getWorkoutByDate,
+  selectWorkoutSummary,
   createWorkout,
   updateWorkout,
   deleteWorkout,

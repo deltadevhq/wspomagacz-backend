@@ -171,33 +171,33 @@
         required: true
         description: Workout ID
     responses:
-    200:
-      description: Successfully retrieved workout summary
-      content:
-      application/json:
-        schema:
-        type: object
-        properties:
-          workout:
-            $ref: "#/components/schemas/Workout"
-          experience_history:
-            type: object
-          duration:
-            type: integer
-            example: 60
-            minimum: 0
-          total_weight:
-            type: float
-            example: 750
-            minimum: 0
-    400:
-      description: Bad request - Invalid workout ID
-    401:
-      description: Unauthorized - Invalid or missing token
-    403:
-      description: Forbidden - Token does not have the required permissions
-    404:
-      description: Not Found - Workout not found
+      200:
+        description: Successfully retrieved workout summary
+        content:
+        application/json:
+          schema:
+          type: object
+          properties:
+            workout:
+              $ref: "#/components/schemas/Workout"
+            experience_history:
+              type: object
+            duration:
+              type: integer
+              example: 60
+              minimum: 0
+            total_weight:
+              type: float
+              example: 750
+              minimum: 0
+      400:
+        description: Bad request - Invalid workout ID
+      401:
+        description: Unauthorized - Invalid or missing token
+      403:
+        description: Forbidden - Token does not have the required permissions
+      404:
+        description: Not Found - Workout not found
 
 /api/workouts/{id}/start:
   post:

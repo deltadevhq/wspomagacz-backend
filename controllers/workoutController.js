@@ -64,11 +64,34 @@ const getWorkoutById = async (req, res) => {
   }
 };
 
+/**
+ * Fetches the workout summary for a specified workout.
+ *
+ * @param {Request} req - Request object containing the workout ID.
+ * @param {Response} res - Response object for sending results.
+ * @returns {void} - Responds with the workout summary or an error message.
+ */
 const fetchWorkoutSummary = async (req, res) => {
   try {
+    const { logged_user_id } = req.body;
+    const { id: workout_id } = req.params;
 
-    // TODO: IMPLEMENT getWorkoutSummary ENDPOINT
-    res.status(501).json({error: 'Not implemented'});
+    // Check if workout exists
+    const workout = await workoutModel.getWorkoutById(workout_id);
+    if (!workout) return res.status(404).json({ error: 'Workout not found' });
+
+    // Check if the request is for the currently logged-in user
+    if (workout.user_id !== logged_user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
+
+    // Check if workout status is completed
+    if (workout.status !== 'completed') return res.status(409).json({ error: 'Workout is not completed' });
+
+    // Fetch workout summary from database
+    const summary = await workoutModel.selectWorkoutSummary(workout_id);
+    if (!summary) return res.status(404).json({ error: 'Workout summary not found' });
+
+    // Respond with the workout summary
+    res.status(200).json(summary);
 
   } catch (error) {
     console.error('Error fetching workout summary:', error.stack);
