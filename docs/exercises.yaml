@@ -1,8 +1,8 @@
 /api/exercises:
   get:
-    summary: Fetch all exercises
-    description: This endpoint requires authorization token
-    tags: [Exercises]
+    summary: Retrieve exercises
+    description: Retrieves exercises for a specific user if ID is provided, otherwise retrieves exercises for the currently logged-in user. By default all exercises for a user are shown.
+    tags: [ Exercises ]
     parameters:
       - in: query
         name: user_id
@@ -13,11 +13,11 @@
         name: type
         schema:
           type: string
-          enum: [all, custom, standard]
+          enum: [ all, custom, standard ]
         description: Type of exercises which will be shown
     responses:
       200:
-        description: Successfully retrieved exercises
+        description: OK - Successfully retrieved exercises
         content:
           application/json:
             schema:
@@ -26,12 +26,9 @@
         description: Unauthorized - Invalid or missing token
       403:
         description: Forbidden - Token does not have the required permissions
-      404:
-        description: Not Found - Exercises not found
   post:
-    summary: Create custom exercise (You can only create exercise for currently logged user)
-    description: This endpoint requires authorization token
-    tags: [Exercises]
+    summary: Create custom exercise for currently logged-in user
+    tags: [ Exercises ]
     requestBody:
       required: true
       content:
@@ -44,32 +41,30 @@
                 example: Pompki
               equipment:
                 type: array
-                example: [{ "id": 4, "name": "Sztanga" }]
+                example:
+                  $ref: "#/components/schemas/Equipment"
               muscles:
                 type: array
-                example: [{ "id": 2, "name": "Biceps" }]
+                example:
+                  $ref: "#/components/schemas/Muscle"
     responses:
       201:
         description: Successfully created new exercise
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                insert_custom_exercise:
-                  type: object
-                  $ref: "#/components/schemas/Exercise"
+              $ref: "#/components/schemas/Exercise"
       400:
         description: Bad Request - One or more required parameters is missing
       401:
         description: Unauthorized - Invalid or missing token
       403:
         description: Forbidden - Token does not have the required permissions
+
 /api/exercises/{id}:
   get:
-    summary: Fetch single exercise by its ID
-    description: This endpoint requires authorization token
-    tags: [Exercises]
+    summary: Retrieve exercise by ID
+    tags: [ Exercises ]
     parameters:
       - in: path
         name: id
@@ -85,7 +80,7 @@
         name: type
         schema:
           type: string
-          enum: [custom, standard]
+          enum: [ custom, standard ]
         description: Type of exercises which will be shown
     responses:
       200:
@@ -103,9 +98,8 @@
       404:
         description: Not Found - Exercise not found
   delete:
-    summary: Delete custom exercise (You can only delete exercise for currently logged user)
-    description: This endpoint requires authorization token
-    tags: [Exercises]
+    summary: Delete custom exercise by ID (You can only delete custom exercises created by currently logged-in user)
+    tags: [ Exercises ]
     parameters:
       - in: path
         name: id
@@ -113,13 +107,8 @@
         schema:
           type: integer
     responses:
-      200:
-        description: Successfully deleted exercise
-        content:
-          application/json:
-            schema:
-              type: object
-              example: { "message": "Exercise deleted successfully" }
+      204:
+        description: No Content - Successfully deleted exercise
       400:
         description: Bad request - Invalid exercise ID
       401:
@@ -128,6 +117,7 @@
         description: Forbidden - Token does not have the required permissions
       404:
         description: Not Found - Exercise not found
+
 components:
   schemas:
     Exercise:
@@ -138,17 +128,16 @@ components:
           example: 1
         exercise_name:
           type: string
-          example: "Wyciskanie hantli"
+          description: Name of the exercise
+          example: "Exercise name"
         equipment:
           type: array
           items:
             $ref: "#/components/schemas/Equipment"
-          example: [{ id: 1, name: "Hantle" }]
         muscles:
           type: array
           items:
             $ref: "#/components/schemas/Muscle"
-          example: [{ id: 1, name: "Biceps" }]
         user_id:
           type: integer
           example: 1
@@ -156,5 +145,5 @@ components:
           description: ID of user who created custom exercise, null if standard
         exercise_type:
           type: string
-          example: "custom"
-          enum: [standard, custom]
+          example: custom
+          enum: [ standard, custom ]

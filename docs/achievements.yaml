@@ -1,10 +1,10 @@
 /api/achievements:
   get:
-    summary: Returns all achievements
+    summary: Retrieve achievements
     tags: [ Achievements ]
     responses:
       200:
-        description: Successfully retrieved all achievements
+        description: OK - Successfully retrieved achievements
         content:
           application/json:
             schema:
@@ -14,6 +14,26 @@
       401:
         description: Unauthorized - Invalid or missing token
 
+/api/achievements/{id}:
+  get:
+    summary: Retrieve achievement by ID
+    tags: [ Achievements ]
+    responses:
+      200:
+        description: OK - Successfully retrieved achievement
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/Achievement"
+      400:
+        description: Bad request - Invalid achievement ID
+      401:
+        description: Unauthorized - Invalid or missing token
+      404:
+        description: Not Found - Achievement not found
+
 components:
   schemas:
     Achievement:
@@ -21,25 +41,25 @@ components:
       properties:
         id:
           type: integer
-          description: The unique identifier of the achievement.
+          description: The unique identifier of the achievement
           example: 1
         name:
           type: string
-          description: The name of the achievement.
-          example: "First Workout"
+          description: The name of the achievement
+          example: "Achievement name"
         description:
           type: string
-          description: The description of the achievement.
-          example: "Complete your first workout."
+          description: The description of the achievement
+          example: "Achievement description."
         goal:
           type: integer
-          description: The goal required to complete the achievement.
+          description: The goal required to complete the achievement
           example: 1
         xp:
           type: integer
-          description: The number of points awarded for completing the achievement.
+          description: The number of points awarded for completing the achievement
           example: 10
         category:
           type: string
-          description: The category of the achievement.
-          example: "Fitness"
+          description: The category of the achievement
+          example: "basics"

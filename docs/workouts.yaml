@@ -1,40 +1,53 @@
 /api/workouts:
   get:
-    summary: Fetch all workouts
-    description: This endpoint requires authorization token
+    summary: Retrieve workouts
     tags: [ Workouts ]
     parameters:
       - in: query
         name: user_id
+        description: User ID
         required: false
       - in: query
         name: status
+        description: Workout status
         required: false
         schema:
           type: string
           enum: [ completed, in_progress, planned, skipped ]
       - in: query
         name: date
+        description: Date in format YYYY-MM-DD
         required: false
-        example: 2024-10-28
+        schema:
+          type: date
+          format: date
+      - in: query
+        name: limit
+        description: The maximum number of items to retrieve
+        required: false
+        schema:
+          type: integer
+      - in: query
+        name: offset
+        description: The number of items to skip
+        required: false
+        schema:
+          type: integer
     responses:
       200:
-        description: Successfully retrieved all workouts
+        description: OK - Successfully retrieved workouts
         content:
           application/json:
             schema:
               type: array
               items:
                 $ref: "#/components/schemas/Workout"
+      400:
+        description: Bad request - Invalid request parameters
       401:
         description: Unauthorized - Invalid or missing token
-      403:
-        description: Forbidden - Token does not have the required permissions
-      404:
-        description: Not Found - No workouts found
   put:
-    summary: Create new workout or edit existing
-    description: This endpoint requires authorization token, you can only put workout for currently logged user
+    summary: Create new workout or edit existing for currently logged-in user
     tags: [ Workouts ]
     requestBody:
       required: true
@@ -103,10 +116,10 @@
         description: Forbidden - Token does not have the required permissions
       404:
         description: Not Found - Workout not found
+
 /api/workouts/{id}:
   get:
-    summary: Fetch single workout by its ID
-    description: This endpoint requires authorization token
+    summary: Retrieve workout by ID
     tags: [ Workouts ]
     parameters:
       - in: path
@@ -115,7 +128,7 @@
         description: Workout ID
     responses:
       200:
-        description: Successfully retrieved workout data
+        description: Successfully retrieved workout
         content:
           application/json:
             schema:
@@ -129,8 +142,7 @@
       404:
         description: Not Found - Workout not found
   delete:
-    summary: Delete workout by its ID
-    description: This endpoint requires authorization token, you can only delete workout for currently logged user
+    summary: Delete workout by ID (You can only delete currently logged-in user's workouts)
     tags: [ Workouts ]
     parameters:
       - in: path
@@ -138,13 +150,8 @@
         required: true
         description: Workout ID
     responses:
-      200:
-        description: Successfully deleted workout
-        content:
-          application/json:
-            schema:
-              type: object
-              example: { "message": "Workout deleted successfully" }
+      204:
+        description: No Content - Successfully deleted workout
       400:
         description: Bad request - Invalid workout ID
       401:
@@ -153,10 +160,10 @@
         description: Forbidden - Token does not have the required permissions
       404:
         description: Not Found - Workout not found
+
 /api/workouts/{id}/summary:
   get:
-    summary: Fetch workout summary
-    description: This endpoint requires authorization token
+    summary: Fetch workout summary (You can only fetch summary for currently logged-in user's workouts)
     tags: [ Workouts ]
     parameters:
       - in: path
@@ -191,10 +198,10 @@
       description: Forbidden - Token does not have the required permissions
     404:
       description: Not Found - Workout not found
+
 /api/workouts/{id}/start:
   post:
-    summary: Sets the workout start time to current time
-    description: This endpoint requires authorization token
+    summary: Sets the workout start time to current time (You can only start currently logged-in's user workouts)
     tags: [ Workouts ]
     parameters:
       - in: path
@@ -203,7 +210,7 @@
         description: Workout ID
     responses:
       200:
-        description: Successfully started the workout
+        description: OK - Successfully started the workout
       400:
         description: Bad request - Invalid workout ID
       401:
@@ -212,10 +219,12 @@
         description: Forbidden - Token does not have the required permissions
       404:
         description: Not Found - Workout not found
+      409:
+        description: Conflict - Workout already started
+
 /api/workouts/{id}/stop:
   post:
-    summary: Removes the workout start time
-    description: This endpoint requires authorization token
+    summary: Removes the workout start time (You can only stop currently logged-in user's workouts)
     tags: [ Workouts ]
     parameters:
       - in: path
@@ -224,7 +233,7 @@
         description: Workout ID
     responses:
       200:
-        description: Successfully stopped the workout
+        description: OK - Successfully stopped the workout
       400:
         description: Bad request - Invalid workout ID
       401:
@@ -233,10 +242,12 @@
         description: Forbidden - Token does not have the required permissions
       404:
         description: Not Found - Workout not found
+      409:
+        description: Conflict - Workout not started
+
 /api/workouts/{id}/finish:
   post:
-    summary: Sets the workout finish time to current time
-    description: This endpoint requires authorization token
+    summary: Sets the workout finish time to current time (You can only finish currently logged-in user's workouts)
     tags: [ Workouts ]
     parameters:
       - in: path
@@ -245,7 +256,7 @@
         description: Workout ID
     responses:
       200:
-        description: Successfully finished the workout
+        description: OK - Successfully finished the workout
       400:
         description: Bad request - Invalid workout ID
       401:
@@ -254,6 +265,9 @@
         description: Forbidden - Token does not have the required permissions
       404:
         description: Not Found - Workout not found
+      409:
+        description: Conflict - Workout already finished
+
 components:
   schemas:
     Workout:
@@ -271,7 +285,7 @@ components:
           example: 1
         name:
           type: string
-          example: "Arm day"
+          example: "Workout name"
         exercises:
           type: array
           items:
@@ -292,7 +306,6 @@ components:
                       type: float
                       example: 75
                       minimum: 0
-                      nullable: true
                     order:
                       type: integer
                       example: 1
@@ -306,11 +319,11 @@ components:
           example: 2024-09-08
         started_at:
           type: date
-          example: 2024-09-08T10:00:00
+          example: 2024-09-08T10:00:00+01:00
           nullable: true
         finished_at:
           type: date
-          example: 2024-09-08T11:00:00
+          example: 2024-09-08T11:00:00+01:00
           nullable: true
         status:
           type: string
@@ -318,4 +331,4 @@ components:
           enum: [ completed, in_progress, planned, skipped ]
         notes:
           type: string
-          example: "Great workout"
+          example: "Workout Note."
