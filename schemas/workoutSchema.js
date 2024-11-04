@@ -179,6 +179,13 @@ const getWorkoutByIdSchema = Joi.object({
 });
 
 /**
+ * Specific validation schema for fetching workout summary
+ */
+const fetchWorkoutSummarySchema = Joi.object({
+  id: baseWorkoutSchema.id.required().messages({ 'any.required': 'ID is required' }),
+});
+
+/**
  * Specific validation schema for workout creation or update
  */
 const putWorkoutSchema = Joi.object({
@@ -261,6 +268,7 @@ module.exports = {
   baseSetsSchema,
   getWorkoutSchema,
   getWorkoutByIdSchema,
+  fetchWorkoutSummarySchema,
   putWorkoutSchema,
   deleteWorkoutSchema,
   startWorkoutSchema,

@@ -64,7 +64,7 @@ const getWorkoutById = async (req, res) => {
   }
 };
 
-const getWorkoutSummary = async (req, res) => {
+const fetchWorkoutSummary = async (req, res) => {
   try {
 
     // TODO: IMPLEMENT getWorkoutSummary ENDPOINT
@@ -311,5 +311,5 @@ module.exports = {
   startWorkout,
   stopWorkout,
   finishWorkout,
-  getWorkoutSummary,
+  fetchWorkoutSummary,
 };
