@@ -2,7 +2,7 @@ const Joi = require('joi');
 const moment = require('moment-timezone');
 const { baseExerciseSchema } = require('./exerciseSchema');
 const { baseRequestSchema } = require('./requestSchema');
-const { applicationTimezone } = require('../config/settings');
+const { application_timezone } = require('../config/settings');
 
 /**
  * Base validation schema for sets request data
@@ -231,8 +231,8 @@ const deleteWorkoutSchema = Joi.object({
 const isWorkoutDateToday = Joi.object({
   date: Joi.date()
     .custom((value, helpers) => {
-      const todayDate = moment().tz(applicationTimezone).startOf('day');
-      const inputDate = moment(value).tz(applicationTimezone).startOf('day');
+      const todayDate = moment().tz(application_timezone).startOf('day');
+      const inputDate = moment(value).tz(application_timezone).startOf('day');
 
       if (!inputDate.isSame(todayDate, 'day')) {
         return helpers.message('Workout date must be today');
@@ -251,8 +251,8 @@ const isWorkoutDateToday = Joi.object({
 const isWorkoutDateNotInPast = Joi.object({
   date: Joi.date()
     .custom((value, helpers) => {
-      const todayDate = moment().tz(applicationTimezone).startOf('day');
-      const inputDate = moment(value).tz(applicationTimezone).startOf('day');
+      const todayDate = moment().tz(application_timezone).startOf('day');
+      const inputDate = moment(value).tz(application_timezone).startOf('day');
 
       if (inputDate.isBefore(todayDate, 'day')) {
         return helpers.message('Workout date must not be in the past');

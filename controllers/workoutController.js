@@ -4,6 +4,7 @@ const workoutModel = require('../models/workoutModel');
 const userModel = require('../models/userModel');
 const workoutSchema = require('../schemas/workoutSchema');
 const experienceController = require('./experienceController');
+const activitiesModel = require('../models/activitiesModel');
 
 /**
  * Fetches workouts based on user ID, status, and date.
@@ -112,6 +113,9 @@ const putWorkout = async (req, res) => {
   // Check if workout date is not in the past
   const { error } = workoutSchema.isWorkoutDateNotInPast.validate({ date: date });
   if (error) return res.status(400).json({ error: error.details[0].message });
+
+  console.log(req.body.date);
+
 
   // Check if a workout with the same date already exists for the user
   const collided_workout = await workoutModel.checkWorkoutCollision(logged_user_id, date);
@@ -282,6 +286,12 @@ const finishWorkout = async (req, res) => {
 
     // Patch finished_at for workout in database
     const finished_workout = await workoutModel.updateWorkoutWithFinish(workout_id);
+
+    // Insert activity for finished workout
+    const activity_message = `ukończył trening '${workout.name}'!`;
+    await activitiesModel.insertActivity(workout.user_id, activity_message, workout, workout.user_id, 'public');
+
+    // Grant experience to user for finished workout
     const experience_grant = await experienceController.userExperienceHandler(finished_workout);
 
     // Successful response with updated workout data
