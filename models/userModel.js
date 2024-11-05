@@ -58,6 +58,28 @@ const selectUserByEmail = async (email) => {
 }
 
 /**
+ * Selects a single user from the database by their email.
+ *
+ * @param {string} email - The email address of the user to search for.
+ * @returns {Object|null} - The user object if found, or null if no user matches the email.
+ */
+const selectUserAchievements = async (user_id) => {
+  const query = `
+    SELECT * FROM user_achievements
+    WHERE user_id = $1
+  `;
+  const values = [user_id];
+
+  try {
+    const result = await pool.query(query, values);
+    return result.rows.length > 0 ? result.rows : null;
+  } catch (error) {
+    console.error('Error executing query', error.stack);
+    throw error;
+  }
+}
+
+/**
  * Inserts a new user into the database.
  *
  * @param {string} username - The username of the user.
@@ -71,7 +93,7 @@ const insertUser = async (username, password_hash, email) => {
     VALUES ($1, $2, $3, $4)
     RETURNING *
   `;
-  const values = [username, username, password_hash, email]; 
+  const values = [username, username, password_hash, email];
 
   try {
     const result = await pool.query(query, values);
@@ -183,6 +205,7 @@ module.exports = {
   selectUserById,
   selectUserByUsername,
   selectUserByEmail,
+  selectUserAchievements,
   insertUser,
   updateUser,
   updateUserPassword,

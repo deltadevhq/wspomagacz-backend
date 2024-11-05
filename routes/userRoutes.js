@@ -10,4 +10,7 @@ router.get('/search', validateInput(userSchema.searchUserProfileSchema, 'query')
 router.get('/:id/achievements', validateInput(userSchema.fetchUserAchievements, 'params'), verifyToken, userController.fetchUserAchievements);
 router.get('/:id/achievements/:achievement_id', validateInput(userSchema.fetchUserAchievementById, 'params'), verifyToken, userController.fetchUserAchievementById);
 
+// TODO: GET /API/USERS
+// TODO: GET /API/USERS/ID
+
 module.exports = router;
