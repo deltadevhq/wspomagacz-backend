@@ -1,6 +1,6 @@
 {
   "name": "wspomagacz-backend",
-  "version": "1.73.2",
+  "version": "1.73.3",
   "main": "index.js",
   "scripts": {
     "start": "node index.js --config=./config.yaml",

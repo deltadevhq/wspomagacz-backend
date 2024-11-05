@@ -105,9 +105,6 @@ const userExperienceHandler = async (workout) => {
     const progression = await getLevelByXpHandler(exp_after);
     const lvl_after = progression.level;
 
-    // TODO: EXTRA EXPERIENCE FOR EACH PERSONAL RECORD
-    // TODO: EXTRA EXPERIENCE FOR EACH ACHIEVEMENT
-
     // Grant experience and level for user and insert row in history
     await experienceModel.insertExperience(workout.user_id, exp_after, lvl_after);
     const history_result = await experienceModel.insertExperienceHistory(workout.user_id, workout.id, exp_granted, exp_before, exp_after, lvl_before, lvl_after);
