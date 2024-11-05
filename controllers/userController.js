@@ -69,12 +69,27 @@ const fetchUserAchievements = async (req, res) => {
   }
 }
 
+/**
+ * Fetches a specific user achievement by user ID and achievement ID.
+ *
+ * @param {Request} req - The request object containing the user ID and achievement ID in the route parameters.
+ * @param {Response} res - The response object used to send the user's achievement or an error message.
+ * @returns {void} - Sends a response with the user's achievement or an error.
+ */
 const fetchUserAchievementById = async (req, res) => {
   try {
+    const { id: user_id, achievement_id } = req.params;
 
-    // TODO: IMPLEMENT getUserAchievement ENDPOINT
-    res.status(501).json({ error: 'Not implemented' });
+    // Check user existence
+    const user = await userModel.selectUserById(user_id);
+    if (!user) return res.status(404).json({ error: 'User not found' });
 
+    // Fetch user achievements
+    const user_achievement = await userModel.selectUserAchievementById(user_id, achievement_id);
+    if (!user_achievement) return res.status(404).json({ error: 'User achievements not found' });
+
+    // Return the user's achievements
+    return res.status(200).json(user_achievement);
   } catch (error) {
     console.error('Error fetching user achievement:', error.stack);
     res.status(500).json({ error: 'Internal server error' });

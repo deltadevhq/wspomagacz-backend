@@ -58,10 +58,10 @@ const selectUserByEmail = async (email) => {
 }
 
 /**
- * Selects a single user from the database by their email.
+ * Retrieves all achievements for a specified user by user ID.
  *
- * @param {string} email - The email address of the user to search for.
- * @returns {Object|null} - The user object if found, or null if no user matches the email.
+ * @param {number} user_id - The ID of the user whose achievements are to be fetched.
+ * @returns {Array|null} - An array of user achievements or null if none are found.
  */
 const selectUserAchievements = async (user_id) => {
   const query = `
@@ -73,6 +73,30 @@ const selectUserAchievements = async (user_id) => {
   try {
     const result = await pool.query(query, values);
     return result.rows.length > 0 ? result.rows : null;
+  } catch (error) {
+    console.error('Error executing query', error.stack);
+    throw error;
+  }
+}
+
+/**
+ * Retrieves a specific achievement for a user by user ID and achievement ID.
+ *
+ * @param {number} user_id - The ID of the user whose achievement is to be fetched.
+ * @param {number} achievement_id - The ID of the achievement to retrieve.
+ * @returns {Object|null} - The user's achievement object or null if not found.
+ */
+const selectUserAchievementById = async (user_id, achievement_id) => {
+  const query = `
+    SELECT * FROM user_achievements
+    WHERE user_id = $1
+    AND achievement_id = $2
+  `;
+  const values = [user_id, achievement_id];
+
+  try {
+    const result = await pool.query(query, values);
+    return result.rows.length > 0 ? result.rows[0] : null;
   } catch (error) {
     console.error('Error executing query', error.stack);
     throw error;
@@ -206,6 +230,7 @@ module.exports = {
   selectUserByUsername,
   selectUserByEmail,
   selectUserAchievements,
+  selectUserAchievementById,
   insertUser,
   updateUser,
   updateUserPassword,
