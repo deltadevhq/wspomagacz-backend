@@ -1,9 +1,9 @@
 // eslint-disable-next-line no-unused-vars
 const { Response, Request } = require('express');
-const { applicationSecret, applicationTokenExpirationTime } = require('../config/settings');
+const { application_secret, application_token_expiration_time } = require('../config/settings');
 const userModel = require('../models/userModel');
-const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 /**
  * Retrieves the currently logged-in user's data and sends it in the response.
@@ -106,8 +106,8 @@ const loginUser = async (req, res) => {
     await userModel.updateUserLastLogin(user.username);
 
     // Generate JWT token
-    const token = jwt.sign({ id: user.id, username: user.username }, applicationSecret, {
-      expiresIn: applicationTokenExpirationTime,
+    const token = jwt.sign({ id: user.id, username: user.username }, application_secret, {
+      expiresIn: application_token_expiration_time,
     });
 
     // Set the cookie with the token

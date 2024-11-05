@@ -7,17 +7,14 @@ database:
 
 application:
   host: "localhost"
+  port: 3000
   timezone: "Europe/Warsaw"
   secret: "%APPLICATION_SECRET%"
   corsOrigin: "http://localhost:4200"
   tokenExpirationTime: "7d"
 
-backend:
-  port: 3000
-
-websocket:
-  port: 3030
-
-cronJobs:
-  closeSkippedWorkouts: "0 0 * * *"
-  closeUnfinishedWorkouts: "0 0 * * *"
+jobs:
+  closeSkippedWorkoutsEnabled: true
+  closeUnfinishedWorkoutsEnabled: true
+  closeSkippedWorkoutsCronDefinition: "0 0 * * *"
+  closeUnfinishedWorkoutsCronDefinition: "0 0 * * *"

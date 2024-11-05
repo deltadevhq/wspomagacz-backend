@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 const { Response, Request } = require('express');
-const notificationModel = require('../models/notificationModel');
 const { sse_connections } = require('../config/sse');
+const notificationModel = require('../models/notificationModel');
 
 /**
  * Handles requests to fetch notifications for a specific user.

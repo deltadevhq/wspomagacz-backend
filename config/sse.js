@@ -1,14 +1,20 @@
+const {
+  database_host,
+  database_port,
+  database_name,
+  database_user,
+  database_password
+} = require('./settings');
 const { Client } = require('pg');
-const { databaseHost, databasePort, databaseName, databaseUser, databasePassword } = require('../config/settings');
 
 const sse_connections = new Map();
 
 const client = new Client({
-  host: databaseHost,
-  port: databasePort,
-  database: databaseName,
-  user: databaseUser,
-  password: databasePassword,
+  host: database_host,
+  port: database_port,
+  database: database_name,
+  user: database_user,
+  password: database_password,
   ssl: { rejectUnauthorized: false },
 });
 

@@ -9,15 +9,8 @@ const cron = require('node-cron');
 const swaggerUi = require('swagger-ui-express');
 const jobs = require('./utilities/jobs');
 const routes = require('./routes');
-const {
-  applicationHost,
-  backendPort,
-  closeSkippedWorkoutsJobCronDefinition,
-  closeUnfinishedWorkoutsJobCronDefinition,
-  applicationCorsOrigin,
-  applicationTimezone,
-} = require('./config/settings');
-const { initDBConnection } = require('./config/database');
+const config = require('./config/settings');
+const { initializeDatabaseConnection } = require('./config/database');
 const { swaggerDocs, packageJson } = require('./setup');
 const { dateFormatter } = require('./utilities/middleware/dateFormatter');
 
@@ -32,7 +25,7 @@ app.use(compression());
 
 // Use CORS to control allow origin access
 app.use(cors({
-  origin: applicationCorsOrigin,
+  origin: config.application_cors_origin,
   credentials: true,
 }));
 app.use(express.json());
@@ -56,24 +49,30 @@ app.use('/api/workouts', dateFormatter, routes.workoutRoutes);
 (async () => {
   try {
     console.log(`Starting ${packageJson.name} version ${packageJson.version}`);
-    console.log(`Application timezone: ${applicationTimezone}`);
+    console.log(`Application timezone: ${config.application_timezone}`);
 
-    await initDBConnection();
+    await initializeDatabaseConnection();
 
-    const server = app.listen(backendPort, () => {
-      console.log(`API listening at http://${applicationHost}:${backendPort}`);
+    const server = app.listen(config.application_port, () => {
+      console.log(`API listening at http://${config.application_host}:${config.application_port}`);
     });
 
-    // Schedule daily jobs
-    cron.schedule(closeSkippedWorkoutsJobCronDefinition, () => {
-      jobs.closeSkippedWorkouts();
-    }, { timezone: applicationTimezone });
-    console.log(`Scheduled 'closeSkippedWorkoutsJob' with cron expression: '${closeSkippedWorkoutsJobCronDefinition}'`);
+    // Schedule jobs if enabled
+    if (config.close_skipped_workouts_enabled === true) {
+      cron.schedule(config.close_skipped_workouts_cron_definition, () => {
+        jobs.closeSkippedWorkouts();
+      }, { timezone: config.application_timezone });
 
-    cron.schedule(closeUnfinishedWorkoutsJobCronDefinition, () => {
-      jobs.closeUnfinishedWorkouts();
-    }, { timezone: applicationTimezone });
-    console.log(`Scheduled 'closeUnfinishedWorkoutsJob' with cron expression: '${closeUnfinishedWorkoutsJobCronDefinition}'`);
+      console.log(`Scheduled 'closeSkippedWorkoutsJob' with cron expression: '${config.close_skipped_workouts_cron_definition}'`);
+    }
+
+    if (config.close_unfinished_workouts_enabled === true) {
+      cron.schedule(config.close_unfinished_workouts_cron_definition, () => {
+        jobs.closeUnfinishedWorkouts();
+      }, { timezone: config.application_timezone });
+
+      console.log(`Scheduled 'closeUnfinishedWorkoutsJob' with cron expression: '${config.close_unfinished_workouts_cron_definition}'`);
+    }
 
     server.on('listening', () => {
       console.log('Server initialization completed.');

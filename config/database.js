@@ -1,33 +1,33 @@
 const {
-  databaseHost,
-  databasePort,
-  databaseName,
-  databaseUser,
-  databasePassword,
-  applicationTimezone,
+  database_host,
+  database_port,
+  database_name,
+  database_user,
+  database_password,
+  application_timezone,
 } = require('./settings');
 const { Pool } = require('pg');
 
 const pool = new Pool({
-  host: databaseHost,
-  port: databasePort,
-  database: databaseName,
-  user: databaseUser,
-  password: databasePassword,
+  host: database_host,
+  port: database_port,
+  database: database_name,
+  user: database_user,
+  password: database_password,
   ssl: { rejectUnauthorized: false },
 });
 
 // Initialize connection and return a Promise
-const initDBConnection = async () => {
+const initializeDatabaseConnection = async () => {
   try {
     await pool.query('SELECT NOW()');
     console.log(`Database connection successful!`);
 
-    const timezoneResult = await pool.query('SHOW TIMEZONE');
-    const { TimeZone } = timezoneResult.rows[0];
+    const timezone_result = await pool.query('SHOW TIMEZONE');
+    const { TimeZone: timezone } = timezone_result.rows[0];
 
-    if (TimeZone !== applicationTimezone) {
-      console.error(`Database timezone (${TimeZone}) is not equal to timezone from configuration (${applicationTimezone}).`);
+    if (timezone !== application_timezone) {
+      console.error(`Database timezone (${timezone}) is not equal to timezone from configuration (${application_timezone}).`);
       process.exit(-1);
     }
   } catch (error) {
@@ -43,6 +43,6 @@ pool.on('error', (err) => {
 
 // Export the pool and the init function
 module.exports = {
-  initDBConnection,
+  initializeDatabaseConnection,
   pool,
 };

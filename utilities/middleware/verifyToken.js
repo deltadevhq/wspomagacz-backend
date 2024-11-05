@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 const { Response, Request } = require('express');
-const { applicationSecret } = require('../../config/settings');
+const { application_secret } = require('../../config/settings');
 const jwt = require('jsonwebtoken');
 
 /**
@@ -10,20 +10,19 @@ const jwt = require('jsonwebtoken');
  * @param {Response} res - Response object to send error status if token verification fails.
  * @param {Function} next - Callback to proceed to the next middleware or route handler.
  * @returns {void} - Calls next() if the token is valid; otherwise, responds with an error.
- * @throws {Error} - Throws an error for missing, expired, or invalid tokens.
  */
 const verifyToken = async (req, res, next) => {
-  const token = req.cookies.token;
+  const { token } = req.cookies;
 
   // Validation for missing token
   if (!token) return res.status(401).json({ error: 'No token provided' });
 
   try {
     // Verify the token using the secret key
-    const decoded = jwt.verify(token, applicationSecret);
+    const decoded_token = jwt.verify(token, application_secret);
 
     // Attach user ID from token to the request body
-    req.body.logged_user_id = decoded.id;
+    req.body.logged_user_id = decoded_token.id;
 
     // Proceed to the next middleware or route handler
     next();

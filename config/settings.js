@@ -34,9 +34,8 @@ try {
 // Validate configuration
 const requiredKeys = [
   'database.host', 'database.port', 'database.name', 'database.user', 'database.password',
-  'application.host', 'application.timezone', 'application.secret', 'application.corsOrigin','application.tokenExpirationTime',
-  'backend.port', 'websocket.port',
-  'cronJobs.closeSkippedWorkouts', 'cronJobs.closeUnfinishedWorkouts'
+  'application.host', 'application.port', 'application.timezone', 'application.secret', 'application.corsOrigin', 'application.tokenExpirationTime',
+  'jobs.closeSkippedWorkoutsEnabled', 'jobs.closeUnfinishedWorkoutsEnabled', 'jobs.closeSkippedWorkoutsCronDefinition', 'jobs.closeUnfinishedWorkoutsCronDefinition'
 ];
 
 requiredKeys.forEach((key) => {
@@ -55,26 +54,43 @@ requiredKeys.forEach((key) => {
 
 // Destructure configuration keys
 const {
-  database: { host: databaseHost, port: databasePort, name: databaseName, user: databaseUser, password: databasePassword },
-  application: { host: applicationHost, timezone: applicationTimezone, secret: applicationSecret, corsOrigin: applicationCorsOrigin, tokenExpirationTime: applicationTokenExpirationTime  },
-  backend: { port: backendPort },
-  websocket: { port: websocketPort },
-  cronJobs: { closeSkippedWorkouts: closeSkippedWorkoutsJobCronDefinition, closeUnfinishedWorkouts: closeUnfinishedWorkoutsJobCronDefinition },
+  database: {
+    host: database_host,
+    port: database_port,
+    name: database_name,
+    user: database_user,
+    password: database_password,
+  },
+  application: {
+    host: application_host,
+    port: application_port,
+    timezone: application_timezone,
+    secret: application_secret,
+    corsOrigin: application_cors_origin,
+    tokenExpirationTime: application_token_expiration_time,
+  },
+  jobs: {
+    closeSkippedWorkoutsEnabled: close_skipped_workouts_enabled,
+    closeUnfinishedWorkoutsEnabled: close_unfinished_workouts_enabled,
+    closeSkippedWorkoutsCronDefinition: close_skipped_workouts_cron_definition,
+    closeUnfinishedWorkoutsCronDefinition: close_unfinished_workouts_cron_definition,
+  },
 } = config;
 
 module.exports = {
-  databaseHost,
-  databasePort,
-  databaseName,
-  databaseUser,
-  databasePassword,
-  applicationHost,
-  applicationTimezone,
-  applicationSecret,
-  applicationCorsOrigin,
-  applicationTokenExpirationTime,
-  backendPort,
-  websocketPort,
-  closeSkippedWorkoutsJobCronDefinition,
-  closeUnfinishedWorkoutsJobCronDefinition,
+  database_host,
+  database_port,
+  database_name,
+  database_user,
+  database_password,
+  application_host,
+  application_port,
+  application_timezone,
+  application_secret,
+  application_cors_origin,
+  application_token_expiration_time,
+  close_skipped_workouts_enabled,
+  close_unfinished_workouts_enabled,
+  close_skipped_workouts_cron_definition,
+  close_unfinished_workouts_cron_definition,
 }
