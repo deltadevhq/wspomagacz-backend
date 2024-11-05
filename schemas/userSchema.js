@@ -183,13 +183,6 @@ const patchPasswordSchema = Joi.object({
   new_password: baseUserSchema.password.required().messages({ 'any.required': 'New password is required' }),
 })
 
-/**
- * Specific validation schema for deleting user
- */
-const deleteUserSchema = Joi.object({
-  id: baseUserSchema.id.required().messages({ 'any.required': 'ID is required' }),
-})
-
 module.exports = {
   baseUserSchema,
   searchUserProfileSchema,
@@ -199,5 +192,4 @@ module.exports = {
   registerSchema,
   patchUserSchema,
   patchPasswordSchema,
-  deleteUserSchema,
 }

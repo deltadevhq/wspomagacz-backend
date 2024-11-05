@@ -151,6 +151,56 @@ const logoutUser = async (req, res) => {
 }
 
 /**
+ * Deletes a user account if the request is made by the logged-in user.
+ *
+ * @param {Request} req - The request object containing the user ID to be deleted.
+ * @param {Response} res - The response object used to send a confirmation message or an error.
+ * @returns {void} - Sends a response confirming the deletion or an error message.
+ */
+const deleteUser = async (req, res) => {
+  try {
+    const { logged_user_id } = req.body;
+
+    // Delete user from database
+    await userModel.deleteUser(logged_user_id);
+
+    // Successful response confirming deletion
+    res.status(200).json({ message: 'User deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting user:', error.stack);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+/**
+ * Updates the profile information of a logged-in user.
+ *
+ * @param {Request} req - The request object containing user ID and new profile data.
+ * @param {Response} res - The response object used to send the updated user data or an error message.
+ * @returns {void} - Sends a response with the updated user information or an error.
+ */
+const patchUser = async (req, res) => {
+  try {
+    const { logged_user_id, display_name, gender, birthday, weights, height } = req.body;
+
+    // Serialize weights array into JSON string
+    const parsed_weights = JSON.stringify(weights);
+
+    // Update user data in database
+    const patched_user = await userModel.updateUser(logged_user_id, display_name, gender, birthday, parsed_weights, height);
+
+    // Remove sensitive data before sending the response
+    delete patched_user.password_hash;
+
+    // Successful response with updated user data
+    res.status(200).json(patched_user);
+  } catch (error) {
+    console.error('Error patching user:', error.stack);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+/**
  * Updates the currently logged-in user's password.
  *
  * @param {Request} req - Request object with user ID and new password.
@@ -194,5 +244,7 @@ module.exports = {
   registerUser,
   loginUser,
   logoutUser,
+  deleteUser,
+  patchUser,
   patchUserPassword,
 }

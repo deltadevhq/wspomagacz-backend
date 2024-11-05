@@ -10,8 +10,11 @@ router.post('/login', validateInput(userSchema.loginSchema), authController.logi
 router.post('/register', validateInput(userSchema.registerSchema), authController.registerUser);
 
 // AUTH ROUTES
-router.get('/user', verifyToken, authController.fetchCurrentLoggedUser);
 router.get('/logout', verifyToken, authController.logoutUser);
+router.get('/user', verifyToken, authController.fetchCurrentLoggedUser);
+router.delete('/user', verifyToken,  authController.deleteUser);
+router.patch('/user', validateInput(userSchema.patchUserSchema), verifyToken, authController.patchUser);
 router.patch('/user/password', validateInput(userSchema.patchPasswordSchema), verifyToken, authController.patchUserPassword);
+// TODO: router.post('/user/password/reset', verifyToken, authController.resetUserPassword);
 
 module.exports = router;

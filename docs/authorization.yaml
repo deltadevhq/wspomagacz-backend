@@ -99,7 +99,6 @@
       404:
         description: Not Found - User not found
   delete:
-    deprecated: true
     summary: Delete currently logged-in user
     description: Deletes user and all associated data. Removes cookie with authorization token. Currently DELETE /api/users/{id}.
     tags: [ Authorization ]
@@ -107,7 +106,6 @@
       404:
         description: Cannot DELETE /api/auth/user
   patch:
-    deprecated: true
     summary: Patch currently logged-in user
     description: Only display_name, gender, birthday, weights and height can be updated through this endpoint. Currently PATCH /api/users/{id}.
     tags: [ Authorization ]
