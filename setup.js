@@ -1,30 +1,6 @@
+require('./config/logger');
 const swaggerJsDoc = require('swagger-jsdoc');
 const packageJson = require('./package.json');
-const morgan = require('morgan');
-const { getTimestamp } = require('./utilities/dateUtils');
-
-// Override console.log to include a timestamp and state
-const baseConsoleLog = console.log;
-console.log = function (...args) {
-    baseConsoleLog(`[INFO][${getTimestamp()}]`, ...args);
-};
-
-// Override console.warn to include a timestamp and state
-const baseConsoleWarn = console.warn;
-console.warn = function (...args) {
-    baseConsoleWarn(`[WARN][${getTimestamp()}]`, ...args);
-};
-
-// Override console.error to include a timestamp and state
-const baseConsoleError = console.error;
-console.error = function (...args) {
-    baseConsoleError(`[ERROR][${getTimestamp()}]`, ...args);
-};
-
-// Define a custom token for the date in timezone from configuration
-morgan.token('date', () => {
-    return getTimestamp();
-});
 
 // Swagger definition
 const swaggerOptions = {

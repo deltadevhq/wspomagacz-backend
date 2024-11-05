@@ -35,7 +35,8 @@ try {
 const requiredKeys = [
   'database.host', 'database.port', 'database.name', 'database.user', 'database.password',
   'application.host', 'application.port', 'application.timezone', 'application.secret', 'application.corsOrigin', 'application.tokenExpirationTime',
-  'jobs.closeSkippedWorkoutsEnabled', 'jobs.closeUnfinishedWorkoutsEnabled', 'jobs.closeSkippedWorkoutsCronDefinition', 'jobs.closeUnfinishedWorkoutsCronDefinition'
+  'jobs.closeSkippedWorkoutsEnabled', 'jobs.closeUnfinishedWorkoutsEnabled', 'jobs.closeSkippedWorkoutsCronDefinition', 'jobs.closeUnfinishedWorkoutsCronDefinition',
+  'logs.enabled', 'logs.level', 'logs.filePath', 'logs.fileMaxSize', 'logs.fileMaxCount', 'logs.compression',
 ];
 
 requiredKeys.forEach((key) => {
@@ -75,6 +76,14 @@ const {
     closeSkippedWorkoutsCronDefinition: close_skipped_workouts_cron_definition,
     closeUnfinishedWorkoutsCronDefinition: close_unfinished_workouts_cron_definition,
   },
+  logs: {
+    enabled: logs_enabled,
+    level: logs_level,
+    filePath: logs_file_path,
+    fileMaxSize: logs_max_size,
+    fileMaxCount: logs_max_files,
+    compression: logs_compression,
+  }
 } = config;
 
 module.exports = {
@@ -93,4 +102,10 @@ module.exports = {
   close_unfinished_workouts_enabled,
   close_skipped_workouts_cron_definition,
   close_unfinished_workouts_cron_definition,
+  logs_enabled,
+  logs_level,
+  logs_file_path,
+  logs_max_size,
+  logs_max_files,
+  logs_compression,
 }

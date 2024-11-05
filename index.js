@@ -15,7 +15,14 @@ const { swaggerDocs, packageJson } = require('./setup');
 const { dateFormatter } = require('./utilities/middleware/dateFormatter');
 
 // Use morgan to log requests to the console
-app.use(morgan('[INFO][:date] Request: :method :url HTTP/:http-version, Response: :status, ResponseTime: :response-time ms'));
+const morganFormat = 'Request: :method :url HTTP/:http-version, Response: :status, ResponseTime: :response-time ms'
+app.use(morgan(morganFormat, {
+  stream: {
+    write: (message) => {
+      console.log(message.trim());
+    }
+  }
+}));
 
 // Use cookieParser to parse cookies
 app.use(cookieParser());
@@ -78,8 +85,6 @@ app.use('/api/workouts', dateFormatter, routes.workoutRoutes);
       console.log('Server initialization completed.');
 
 
-
-
     });
   } catch (error) {
     console.error('Failed to start the server:', error);
@@ -121,7 +126,6 @@ app.use('/api/workouts', dateFormatter, routes.workoutRoutes);
 // CONSIDER: OPERATIONS_TO_EXECUTE TABLE IN DATABASE FOR OPERATIONS LIKE USER DELETION
 // CONSIDER: LIMIT RATE ENDPOINTS - DDS PROTECTION
 
-// OPTIONAL: [QUALITY] LOG TO FILE
 // OPTIONAL: [QUALITY] DEBUG LOGGING LEVEL
 // OPTIONAL: [QUALITY] JOB MANAGER
 // OPTIONAL: [QUALITY] SMTP MAILER IMPLEMENTATION

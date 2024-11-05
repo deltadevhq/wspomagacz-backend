@@ -18,3 +18,11 @@ jobs:
   closeUnfinishedWorkoutsEnabled: true
   closeSkippedWorkoutsCronDefinition: "0 0 * * *"
   closeUnfinishedWorkoutsCronDefinition: "0 0 * * *"
+
+logs:
+  enabled: false
+  level: "info"                                       # ERROR -> WARN -> INFO -> DEBUG
+  filePath: "./logs/wspomagacz-backend-%DATE%.log"    # Specifies the log file path pattern, where '%DATE%' will be replaced with the current date
+  fileMaxSize: "20m"                                  # Specifies the maximum size of a log file ('k' for kb,'m' for mb,'g' for gb)
+  fileMaxCount: "14d"                                 # Specifies how many old log files to keep (If using days, add 'd' as the suffix.)
+  compression: true                                   # If true, compresses older log files into .gz format
