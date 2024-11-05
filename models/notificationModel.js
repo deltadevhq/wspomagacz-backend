@@ -13,7 +13,7 @@ const selectNotifications = async (user_id, offset = 0, limit = 10) => {
     SELECT *
     FROM notifications
     WHERE user_id = $1
-    ORDER BY created_at DESC;
+    ORDER BY created_at DESC
     LIMIT $2 OFFSET $3
   `;
   const values = [user_id, limit, offset];

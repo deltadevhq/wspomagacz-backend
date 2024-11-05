@@ -8,9 +8,16 @@ const { pool } = require('../config/database');
  * @param {string|null} date - The date of the workouts to filter by (can be null).
  * @returns {Array|null} - An array of workout objects if found, or null if no workouts match the criteria.
  */
-const selectWorkouts = async (user_id, status, date) => {
-  const query = 'SELECT * FROM workouts WHERE user_id = COALESCE($1, user_id) AND status = COALESCE($2, status) AND date = COALESCE($3, date)';
-  const values = [user_id, status, date];
+const selectWorkouts = async (user_id, status, date, offset = 0, limit = 10) => {
+  const query = `
+    SELECT * FROM workouts 
+    WHERE user_id = COALESCE($1, user_id) 
+    AND status = COALESCE($2, status) 
+    AND date = COALESCE($3, date)
+    ORDER BY date DESC
+    LIMIT $4 OFFSET $5
+  `;
+  const values = [user_id, status, date, limit, offset];
 
   try {
     const result = await pool.query(query, values);

@@ -6,7 +6,7 @@ const { verifyToken } = require('../utilities/middleware/verifyToken');
 const { validateInput } = require('../utilities/middleware/validateInput');
 
 // AUTH ROUTES
-router.get('/', validateInput(workoutSchema.fetchWorkoutSchema, 'query'), verifyToken, workoutController.fetchWorkouts);
+router.get('/', validateInput(workoutSchema.fetchWorkoutsSchema, 'query'), verifyToken, workoutController.fetchWorkouts);
 router.get('/:id', validateInput(workoutSchema.fetchWorkoutByIdSchema, 'params'), verifyToken, workoutController.fetchWorkoutById);
 router.get('/:id/summary', validateInput(workoutSchema.fetchWorkoutSummarySchema, 'params'), verifyToken, workoutController.fetchWorkoutSummary);
 router.put('/', validateInput(workoutSchema.putWorkoutSchema), verifyToken, workoutController.putWorkout);

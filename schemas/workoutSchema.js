@@ -165,10 +165,12 @@ const baseWorkoutSchema = {
 /**
  * Specific validation schema for fetching workouts
  */
-const fetchWorkoutSchema = Joi.object({
+const fetchWorkoutsSchema = Joi.object({
   status: baseWorkoutSchema.status,
   user_id: baseWorkoutSchema.user_id,
   date: baseWorkoutSchema.date,
+  offset: baseRequestSchema.offset,
+  limit: baseRequestSchema.limit,
 })
 
 /**
@@ -266,7 +268,7 @@ const isWorkoutDateNotInPast = Joi.object({
 module.exports = {
   baseSetsSchema,
   baseWorkoutSchema,
-  fetchWorkoutSchema,
+  fetchWorkoutsSchema,
   fetchWorkoutByIdSchema,
   fetchWorkoutSummarySchema,
   putWorkoutSchema,

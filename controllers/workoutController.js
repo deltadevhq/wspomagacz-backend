@@ -14,7 +14,7 @@ const experienceController = require('./experienceController');
  */
 const fetchWorkouts = async (req, res) => {
   try {
-    const { user_id, status, date } = req.query;
+    const { user_id, status, date, offset, limit } = req.query;
 
     // Check user existence if user_id is provided
     if (user_id) {
@@ -23,7 +23,7 @@ const fetchWorkouts = async (req, res) => {
     }
 
     // Fetch workouts from database
-    const workouts = await workoutModel.selectWorkouts(user_id, status, date);
+    const workouts = await workoutModel.selectWorkouts(user_id, status, date, offset, limit);
 
     // Check if anything was returned
     if (!workouts) return res.status(404).json({ error: 'Workouts not found' });
