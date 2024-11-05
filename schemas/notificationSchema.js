@@ -9,7 +9,15 @@ const baseNotificationSchema = {
 }
 
 /**
- * Base validation schema for notification by its id
+ * Base validation schema for fetching all notifications
+ */
+const fetchNotificationsSchema = Joi.object({
+  offset: baseRequestSchema.offset,
+  limit: baseRequestSchema.limit,
+})
+
+/**
+ * Base validation schema for fetching notification by its id
  */
 const fetchNotificationByIdSchema = Joi.object({
   id: baseNotificationSchema.id.required().messages({ 'any.required': 'ID is required' }),
@@ -31,6 +39,7 @@ const postMarkAllAsReadSchema = Joi.object({
 
 module.exports = {
   baseNotificationSchema,
+  fetchNotificationsSchema,
   fetchNotificationByIdSchema,
   postMarkAsReadByIdSchema,
   postMarkAllAsReadSchema,

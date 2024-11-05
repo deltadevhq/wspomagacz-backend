@@ -1,21 +1,25 @@
 const { pool } = require('../config/database');
 
 /**
- * Retrieves notifications for a specific user.
+ * Selects notifications for a specified user with pagination.
  *
- * @param {number} user_id - The ID of the user to retrieve notifications for.
- * @returns {Array|null} - An array of notification objects if found, or null if no notifications exist for the user.
+ * @param {number} user_id - The ID of the user whose notifications are to be fetched.
+ * @param {number} [offset=0] - The number of records to skip (for pagination).
+ * @param {number} [limit=10] - The maximum number of records to return (for pagination).
+ * @returns {Array|null} - An array of notifications or null if none found.
  */
-const selectNotifications = async (user_id) => {
+const selectNotifications = async (user_id, offset = 0, limit = 10) => {
   const query = `
     SELECT *
     FROM notifications
     WHERE user_id = $1
     ORDER BY created_at DESC;
+    LIMIT $2 OFFSET $3
   `;
+  const values = [user_id, limit, offset];
 
   try {
-    const result = await pool.query(query, [user_id]);
+    const result = await pool.query(query, values);
     return result.rows.length > 0 ? result.rows : null;
   } catch (error) {
     console.error('Error executing query', error.stack);
@@ -29,15 +33,16 @@ const selectNotifications = async (user_id) => {
  * @param {number} id - The ID of the notification to retrieve.
  * @returns {Object|null} - The notification object if found, or null if no notification exists with the provided ID.
  */
-const selectNotificationById = async (id) => {
+const selectNotificationById = async (notification_id) => {
   const query = `
     SELECT *
     FROM notifications
     WHERE id = $1;
   `;
+  const values = [notification_id];
 
   try {
-    const result = await pool.query(query, [id]);
+    const result = await pool.query(query, values);
     return result.rows.length > 0 ? result.rows[0] : null;
   } catch (error) {
     console.error('Error executing query', error.stack);
@@ -89,9 +94,10 @@ const updateMarkAllAsRead = async (user_id) => {
     WHERE user_id = $1
     RETURNING *;
   `;
+  const values = [user_id];
 
   try {
-    const result = await pool.query(query, [user_id]);
+    const result = await pool.query(query, values);
     return result.rows.length > 0 ? result.rows[0] : null;
   } catch (error) {
     console.error('Error executing query', error.stack);
@@ -105,16 +111,17 @@ const updateMarkAllAsRead = async (user_id) => {
  * @param {number} id - The ID of the notification to mark as read.
  * @returns {Object|null} - The updated notification record if successful, or null if no notification was found.
  */
-const updateMarkAsReadById = async (id) => {
+const updateMarkAsReadById = async (notification_id) => {
   const query = `
     UPDATE notifications
     SET read = true
     WHERE id = $1
     RETURNING *;
   `;
+  const values = [notification_id];
 
   try {
-    const result = await pool.query(query, [id]);
+    const result = await pool.query(query, values);
     return result.rows.length > 0 ? result.rows[0] : null;
   } catch (error) {
     console.error('Error executing query', error.stack);

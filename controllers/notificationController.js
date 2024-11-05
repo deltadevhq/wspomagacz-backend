@@ -13,8 +13,9 @@ const notificationModel = require('../models/notificationModel');
 const fetchNotifications = async (req, res) => {
   try {
     const { logged_user_id } = req.body;
+    const { offset, limit } = req.query;
 
-    const notifications = await notificationModel.selectNotifications(logged_user_id);
+    const notifications = await notificationModel.selectNotifications(logged_user_id, offset, limit);
     if (!notifications) return res.status(404).json({ error: 'Notifications not found' });
 
     res.status(200).json(notifications);

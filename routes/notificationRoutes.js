@@ -5,7 +5,7 @@ const notificationSchema = require('../schemas/notificationSchema');
 const { verifyToken } = require('../utilities/middleware/verifyToken');
 const { validateInput } = require('../utilities/middleware/validateInput');
 
-router.get('/', verifyToken, notificationController.fetchNotifications);
+router.get('/', validateInput(notificationSchema.fetchNotificationsSchema, 'query'), verifyToken, notificationController.fetchNotifications);
 router.get('/events', verifyToken, notificationController.fetchNotificationEvents);
 router.get('/:id', validateInput(notificationSchema.fetchNotificationByIdSchema, 'params'), verifyToken, notificationController.fetchNotificationById);
 router.post('/mark-as-read', validateInput(notificationSchema.postMarkAllAsReadSchema, 'body'), verifyToken, notificationController.postMarkAllAsRead);
