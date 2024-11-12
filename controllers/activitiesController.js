@@ -193,11 +193,14 @@ const hideActivity = async (req, res) => {
     // Check if the logged-in user is the owner of the activity
     if (activity.user_id !== logged_user_id) return res.status(403).json({ error: 'Insufficient permissions to change status of this activity to private.' });
 
+    // Check if activity is already private
+    if (activity.hidden) return res.status(409).json({ error: 'Activity status is already private.' });
+
     // Hide the activity
-    const hidden_activity = await activitiesModel.updateUserActivityVisibility(activity_id, 'private');
+    const hidden_activity = await activitiesModel.updateUserActivityVisibility(activity_id, logged_user_id, 'private');
     if (!hidden_activity) return res.status(500).json({ error: 'Failed to change status of activity to private.' });
 
-    res.status(204);
+    res.status(204).json();
   } catch (error) {
     console.error('Error changing status of activity to private:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
@@ -223,11 +226,14 @@ const showActivity = async (req, res) => {
     // Check if the logged-in user is the owner of the activity
     if (activity.user_id !== logged_user_id) return res.status(403).json({ error: 'Insufficient permissions to change status of this activity to public.' });
 
+    // Check if activity is already public
+    if (!activity.hidden) return res.status(409).json({ error: 'Activity status is already public.' });
+
     // Show the activity
-    const shown_activity = await activitiesModel.updateUserActivityVisibility(activity_id, 'public');
+    const shown_activity = await activitiesModel.updateUserActivityVisibility(activity_id, logged_user_id, 'public');
     if (!shown_activity) return res.status(500).json({ error: 'Failed to change status of activity to public.' });
 
-    res.status(204);
+    res.status(204).json();
   } catch (error) {
     console.error('Error changing status of activity to public:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
