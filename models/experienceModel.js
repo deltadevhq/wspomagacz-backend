@@ -53,10 +53,7 @@ const selectEvents = async (user_id) => {
     const result = await pool.query(query, values);
 
     // If no events are found, return a default event with multiplier 1.00
-    if (result.rows.length === 0) {
-      console.warn(`No events found for user_id: ${user_id}.`);
-      return [{ multiplier: 1.00 }];
-    }
+    if (result.rows.length === 0) return [{ multiplier: 1.00 }];
 
     return result.rows;
   } catch (error) {
@@ -111,21 +108,20 @@ const insertExperience = async (user_id, exp, level) => {
  * @param {number} lvl_after - The user's level after the update
  * @returns {Object} - An object with the inserted record
  */
-const insertExperienceHistory = async (user_id, workout_id, exp_granted, exp_before, exp_after, lvl_before, lvl_after) => {
+const insertExperienceHistory = async (user_id, exp_granted, exp_before, exp_after, lvl_before, lvl_after) => {
   const query = `
     INSERT INTO experience_history ( 
       user_id, 
-      workout_id, 
       exp_granted, 
       exp_before, 
       exp_after, 
       lvl_before, 
       lvl_after
     ) 
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
+    VALUES ($1, $2, $3, $4, $5, $6)
     RETURNING *;
   `;
-  const values = [user_id, workout_id, exp_granted, exp_before, exp_after, lvl_before, lvl_after];
+  const values = [user_id, exp_granted, exp_before, exp_after, lvl_before, lvl_after];
 
   try {
     const result = await pool.query(query, values);

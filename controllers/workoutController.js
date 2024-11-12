@@ -284,11 +284,30 @@ const finishWorkout = async (req, res) => {
     // Patch finished_at for workout in database
     const finished_workout = await workoutModel.updateWorkoutWithFinish(workout_id);
 
+    // Deconstruct finished workout and calculate duration
+    const { user_id, exercises, started_at, finished_at } = finished_workout;
+    const workout_duration = Math.round((finished_at - started_at) / 1000);
+
+    // Sum total weight of exercises
+    const user = await userModel.selectUserById(user_id);
+    let total_weight = 0;
+    const bodyweight = user.weights ? [user.weights.length-1]?.weight ?? user.weights[user.weights.length-1].weight : 40;
+    for (const exercise_obj of exercises) {
+      const exercise = exercise_obj.exercise;
+      exercise_obj.sets.forEach(set => {
+        if (exercise.equipment.length === 0) total_weight += set.reps * bodyweight;
+        else total_weight += set.reps * set.weight;
+      });
+    }
+    
     // Insert activity for finished workout
-    await activitiesModel.insertActivity(finished_workout.user_id, 'workout', finished_workout, finished_workout.user_id, 'public');
+    await activitiesModel.insertActivity(user_id, 'workout', finished_workout, user_id, 'public');
 
     // Grant experience to user for finished workout
     const experience_grant = await experienceController.userExperienceHandler(finished_workout);
+
+    // Insert workout summary for finished workout
+    await workoutModel.insertWorkoutSummary(workout_id, experience_grant.id, workout_duration, total_weight);
 
     // Successful response with updated workout data
     res.status(200).json({ finished_workout, experience_grant });

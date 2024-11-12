@@ -154,7 +154,7 @@ const calculateMultiplier = async (user_id) => {
 const calculateExperience = async (exercises, user) => {
   try {
     let xp = 0;
-    const bodyweight = user.weights ? [0]?.weight ?? user.weights[0].weight : 40;
+    const bodyweight = user.weights ? [user.weights.length-1]?.weight ?? user.weights[user.weights.length-1].weight : 40;
 
     // Sum XP from exercises
     for (const exercise_obj of exercises) {

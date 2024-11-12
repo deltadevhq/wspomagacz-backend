@@ -115,6 +115,32 @@ const insertWorkout = async (related_workout_id, user_id, name, exercises, date,
 }
 
 /**
+ * Inserts a new workout summary into the database.
+ *
+ * @param {number} workout_id - The ID of the related workout.
+ * @param {number} experience_history_id - The ID of the user's experience history.
+ * @param {number} duration - The duration of the workout in minutes.
+ * @param {number} total_weight - The total weight lifted during the workout.
+ * @returns {Object|null} - The newly created workout summary object if successful, or null if the insert failed.
+ */
+const insertWorkoutSummary = async (workout_id, experience_history_id, duration, total_weight) => {
+  const query = `
+    INSERT INTO workout_summaries (workout_id, experience_history_id, duration, total_weight)
+    VALUES ($1, $2, $3, $4)
+    RETURNING *
+  `;
+  const values = [workout_id, experience_history_id, duration, total_weight];
+
+  try {
+    const result = await pool.query(query, values);
+    return result.rows.length > 0 ? result.rows[0] : null;
+  } catch (error) {
+    console.error('Error executing query', error.stack);
+    throw error;
+  }
+}
+
+/**
  * Updates a workout in the database by its ID.
  *
  * @param {number} workout_id - The ID of the workout to update.
@@ -266,6 +292,7 @@ module.exports = {
   selectWorkoutByDate,
   selectWorkoutSummary,
   insertWorkout,
+  insertWorkoutSummary,
   updateWorkout,
   updateWorkoutWithStart,
   updateWorkoutWithStop,
