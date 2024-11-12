@@ -2,6 +2,7 @@
 const { Response, Request } = require('express');
 const friendsModel = require('../models/friendsModel');
 const userModel = require('../models/userModel');
+const activitiesModel = require('../models/activitiesModel');
 
 /**
  * Handles requests to fetch the list of friends for a user.
@@ -69,7 +70,7 @@ const sendFriendRequest = async (req, res) => {
     // Check if request is not duplicated
     const duplicated_request = await friendsModel.checkFriendRequestExists(logged_user_id, to_id);
     if (duplicated_request) {
-      if (duplicated_request.direction === 'sent') {
+      if (duplicated_request?.direction === 'sent') {
         return res.status(400).json({ error: 'You have already sent a friend request to this user.' });
       } else {
         return res.status(400).json({ error: 'This user has already sent you a friend request.' });
@@ -78,7 +79,7 @@ const sendFriendRequest = async (req, res) => {
 
     // Check if request is not rejected
     const rejected_request = await friendsModel.checkFriendRequestExists(logged_user_id, to_id, 'rejected');
-    if (rejected_request.direction === 'sent') return res.status(400).json({ error: 'You have already sent a friend request to this user.' });
+    if (rejected_request?.direction === 'sent') return res.status(400).json({ error: 'You have already sent a friend request to this user.' });
 
     // Send the friend request
     const new_request = await friendsModel.insertFriendRequest(logged_user_id, to_id);
@@ -115,6 +116,11 @@ const acceptFriendRequest = async (req, res) => {
 
     // Accept the friend request
     const updated_request = await friendsModel.updateFriendRequestWithAcceptance(from_id, logged_user_id);
+
+    // Insert activity for new friendship
+    await activitiesModel.insertActivity(logged_user_id, 'friendship', JSON.stringify(updated_request), from_id, 'public');
+    await activitiesModel.insertActivity(from_id, 'friendship', JSON.stringify(updated_request), logged_user_id, 'public');
+
     res.status(200).json(updated_request);
   } catch (error) {
     console.error('Error accepting friend request:', error.stack);

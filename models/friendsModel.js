@@ -82,7 +82,12 @@ const insertFriendRequest = async (sender_id, receiver_id) => {
  * @returns {Object|null} - The updated friend request object if successful, or null if no matching request was found
  */
 const updateFriendRequestWithAcceptance = async (sender_id, receiver_id) => {
-  const query = `UPDATE friends SET status = 'accepted', modified_at = NOW() WHERE status = 'pending' AND sender_id = $1 AND receiver_id = $2 RETURNING *`;
+  const query = `
+    UPDATE friends 
+    SET status = 'accepted', modified_at = NOW() 
+    WHERE status = 'pending' AND sender_id = $1 AND receiver_id = $2 
+    RETURNING *, (SELECT jsonb_build_object('id', id, 'display_name', display_name) FROM users WHERE id = $1) AS sender, (SELECT jsonb_build_object('id', id, 'display_name', display_name) FROM users WHERE id = $2) AS receiver
+  `;
   const values = [sender_id, receiver_id];
 
   try {
