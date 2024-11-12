@@ -122,17 +122,17 @@ const selectActivityLike = async (activity_id, user_id) => {
  * Inserts a new user activity into the database.
  *
  * @param {number} user_id - The ID of the user for whom the activity is being recorded.
- * @param {string} message - The message associated with the activity.
+ * @param {string} type - Type of the activity.
  * @param {Object} data - Additional data related to the activity.
  * @param {number} [created_by=1] - The ID of the creator of the activity, defaults to 1.
  * @param {string} visibility - The visibility of the activity ('private' or 'public').
  * @returns {Object|null} - The inserted user activity object if successful, or null if not.
  */
-const insertActivity = async (user_id, message, data, created_by = 1,  visibility) => {
+const insertActivity = async (user_id, type, data, created_by = 1,  visibility) => {
   const query = `
     INSERT INTO user_activities (
       user_id,
-      message,
+      type,
       data,
       created_by,
       hidden
@@ -141,7 +141,7 @@ const insertActivity = async (user_id, message, data, created_by = 1,  visibilit
     RETURNING *;
   `;
   const hidden = visibility === 'private';
-  const values = [user_id, message, data, created_by, hidden];
+  const values = [user_id, type, data, created_by, hidden];
 
   try {
     const result = await pool.query(query, values);

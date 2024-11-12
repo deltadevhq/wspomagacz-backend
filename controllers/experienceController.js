@@ -112,8 +112,7 @@ const userExperienceHandler = async (workout) => {
     // Publish level up activity 
     if (lvl_before < lvl_after) {
       history_result.multiplier = multiplier;
-      const activity_message = `osiągnął ${lvl_after} poziom doświadczenia!`;
-      await activitiesModel.insertActivity(workout.user_id, activity_message, history_result, workout.user_id, 'public');
+      await activitiesModel.insertActivity(workout.user_id, 'level_up', history_result, workout.user_id, 'public');
       console.log(`Level up from ${lvl_before} to ${lvl_after} for user id: ${workout.user_id} `);
     }
 
