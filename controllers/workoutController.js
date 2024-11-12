@@ -266,20 +266,29 @@ const stopWorkout = async (req, res) => {
  * @param {Response} res - The response object used to send the updated workout data or an error.
  * @returns {void} - Sends a response with the updated workout and granted experience or an error message.
  */
-const finishWorkout = async (req, res) => {
+const finishWorkout = async (req, res = null) => {
   try {
     const { id: workout_id } = req.params;
     const { logged_user_id } = req.body;
 
     // Check if workout exists
     const workout = await workoutModel.selectWorkoutById(workout_id);
-    if (!workout) return res.status(404).json({ error: 'Workout not found' });
+    if (!workout) {
+      if (res) return res.status(404).json({ error: 'Workout not found' });
+      return `Error finishing workout: ${workout_id}, Workout not found`;
+    }
 
     // Check if the request is for the currently logged-in user
-    if (workout.user_id !== logged_user_id) return res.status(403).json({ error: 'Token does not have the required permissions' });
+    if (workout.user_id !== logged_user_id) {
+      if (res) return res.status(403).json({ error: 'Token does not have the required permissions' });
+      return `Error finishing workout: ${workout_id}, Token does not have the required permissions`;
+    }
 
     // Check if workout status is in_progress
-    if (workout.status !== 'in_progress') return res.status(409).json({ error: `Workout with status '${workout.status}' cannot be finished` });
+    if (workout.status !== 'in_progress') {
+      if (res) return res.status(409).json({ error: `Workout with status '${workout.status}' cannot be finished` });
+      return `Error finishing workout: ${workout_id}, Workout with status '${workout.status}' cannot be finished`;
+    }
 
     // Patch finished_at for workout in database
     const finished_workout = await workoutModel.updateWorkoutWithFinish(workout_id);
@@ -301,19 +310,22 @@ const finishWorkout = async (req, res) => {
     }
     
     // Insert activity for finished workout
-    await activitiesModel.insertActivity(user_id, 'workout', finished_workout, user_id, 'public');
+    if (res) await activitiesModel.insertActivity(user_id, 'workout', finished_workout, user_id, 'public');
+    else await activitiesModel.insertActivity(user_id, 'workout', finished_workout, user_id, 'private');
 
     // Grant experience to user for finished workout
-    const experience_grant = await experienceController.userExperienceHandler(finished_workout);
+    let experience_grant;
+    if (res) experience_grant = await experienceController.userExperienceHandler(finished_workout);
+    else experience_grant = await experienceController.userExperienceHandler(finished_workout);
 
     // Insert workout summary for finished workout
     await workoutModel.insertWorkoutSummary(workout_id, experience_grant.id, workout_duration, total_weight);
 
     // Successful response with updated workout data
-    res.status(200).json({ finished_workout, experience_grant });
+    if (res) res.status(200).json({ finished_workout, experience_grant });
   } catch (error) {
     console.error('Error finishing workout:', error.stack);
-    res.status(500).json({ error: 'Internal server error' });
+    if (res) res.status(500).json({ error: 'Internal server error' });
   }
 }
 

@@ -1,4 +1,5 @@
 const { pool } = require('../config/database');
+const workoutController =  require('../controllers/workoutController');
 
 /**
  * Closes all planned workouts for today that were not started by marking them as 'skipped'.
@@ -38,15 +39,25 @@ const closeSkippedWorkouts = async () => {
 const closeUnfinishedWorkouts = async () => {
   console.log(`Starting closeUnfinishedWorkoutsJob`);
   const query = `
-    UPDATE workouts
-    SET finished_at = now()
-    WHERE date <= now() - INTERVAL '2 hours'
+    SELECT id, user_id FROM workouts
+    WHERE started_at <= now() - INTERVAL '2 hours'
       AND status = 'in_progress'
   `;
   
   try {
     const result = await pool.query(query);
-    console.log(`Finishing closeUnfinishedWorkoutsJob with ${result.rowCount} updated workouts`);
+    let error_count = 0;
+
+    for (const workout of result.rows) {
+      const req = { params: { id: workout.id }, body: { logged_user_id: workout.user_id} }
+      const message = await workoutController.finishWorkout(req)
+      if (message) {
+        console.error(message);
+        error_count++;
+      }
+    };
+    
+    console.log(`Finishing closeUnfinishedWorkoutsJob with ${result.rowCount - error_count} updated workouts and ${error_count} errors`);
   } catch (error) {
     console.error('Error executing query', error.stack);
     throw error;
