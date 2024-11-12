@@ -84,7 +84,6 @@ const getXpByLevel = async (req, res) => {
  * @returns {Object} - Returns the history result of experience granted.
  */
 const userExperienceHandler = async (workout) => {
-  console.log(`Start user experience handler for workout id: ${workout.id}, user id: ${workout.user_id}`);
   try {
     // Fetch user actual experience
     const user = await userModel.selectUserById(workout.user_id);
@@ -113,10 +112,8 @@ const userExperienceHandler = async (workout) => {
     if (lvl_before < lvl_after) {
       history_result.multiplier = multiplier;
       await activitiesModel.insertActivity(workout.user_id, 'level_up', history_result, workout.user_id, 'public');
-      console.log(`Level up from ${lvl_before} to ${lvl_after} for user id: ${workout.user_id} `);
     }
 
-    console.log(`Finished user experience handler with XP granted: ${history_result.exp_granted}`);
     return history_result;
   } catch (error) {
     console.error(`Error in user experience handler for workout id: ${workout.id}, user id: ${workout.user_id}:`, error.stack);
@@ -140,7 +137,6 @@ const calculateMultiplier = async (user_id) => {
       total_multiplier += --event.multiplier;
     });
 
-    console.log(`Total multiplier: ${total_multiplier.toFixed(2)}`);
     return total_multiplier;
   } catch (error) {
     console.error('Error executing query to fetch events:', error.stack);
@@ -168,19 +164,13 @@ const calculateExperience = async (exercises, user) => {
 
       // Use user body weight if no equipment is used else use equipment weight
       exercise_obj.sets.forEach(set => {
-        if (exercise.equipment.length === 0) {
-          xp += set.reps * bodyweight;
-          console.log(`Added XP using body weight: ${set.reps} * ${bodyweight}`);
-        } else {
-          xp += set.reps * set.weight;
-          console.log(`Added XP using equipment weight: ${set.reps} * ${set.weight}`);
-        }
+        if (exercise.equipment.length === 0) xp += set.reps * bodyweight;
+        else xp += set.reps * set.weight;
       });
     }
 
     xp = Math.round(xp / 50);
 
-    console.log(`Total experience: ${xp}`);
     return xp;
   } catch (error) {
     console.error('Error calculating experience:', error.stack);
