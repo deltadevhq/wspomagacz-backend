@@ -82,6 +82,60 @@
       404:
         description: Not Found - Activity not found
 
+/api/activities/{id}/show:
+  post:
+    summary: Show user activity by ID
+    tags: [ User Activities ]
+    parameters:
+      - in: path
+        name: id
+        description: The ID of the activity to retrieve
+        required: true
+        schema:
+        type: integer
+    responses:
+    200:
+      description: OK - Successfully retrieved user activity
+      content:
+      application/json:
+        schema:
+        $ref: "#/components/schemas/UserActivity"
+    401:
+      description: Unauthorized - Invalid or missing token
+    403:
+      description: Forbidden - Token does not have the required permissions
+    404:
+      description: Not Found - Activity not found
+    409:
+      description: Conflict - Activity is not hidden by the user
+
+/api/activities/{id}/hide:
+  post:
+    summary: Hide user activity by ID
+    tags: [ User Activities ]
+    parameters:
+      - in: path
+        name: id
+        description: The ID of the activity to retrieve
+        required: true
+        schema:
+          type: integer
+    responses:
+      200:
+        description: OK - Successfully retrieved user activity
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserActivity"
+      401:
+        description: Unauthorized - Invalid or missing token
+      403:
+        description: Forbidden - Token does not have the required permissions
+      404:
+        description: Not Found - Activity not found
+      409:
+        description: Conflict - Activity already hidden by the user
+
 /api/activities/{id}/like:
   post:
     summary: Like user activity with the given ID by the currently logged-in user
@@ -202,3 +256,33 @@ components:
           type: string
           format: date-time
           example: 2024-01-01T12:00:00+01:00
+        user:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            username:
+              type: string
+              example: system
+            display_name:
+              type: string
+              example: System
+        creator:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            username:
+              type: string
+              example: system
+            display_name:
+              type: string
+              example: System
+        likes:
+          type: integer
+          example: 0
+        liked:
+          type: boolean
+          example: false
