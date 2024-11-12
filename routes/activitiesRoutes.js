@@ -12,5 +12,7 @@ router.get('/:id', validateInput(activitiesSchema.fetchActivitySchema, 'params')
 router.delete('/:id', validateInput(activitiesSchema.deleteActivitySchema, 'params'), verifyToken, activitiesController.deleteActivity);
 router.post('/:id/like', validateInput(activitiesSchema.likeActivitySchema, 'params'), verifyToken, activitiesController.likeActivity);
 router.post('/:id/unlike', validateInput(activitiesSchema.unlikeActivitySchema, 'params'), verifyToken, activitiesController.unlikeActivity);
+router.post('/:id/hide', validateInput(activitiesSchema.hideActivitySchema, 'params'), verifyToken, activitiesController.hideActivity);
+router.post('/:id/show', validateInput(activitiesSchema.showActivitySchema, 'params'), verifyToken, activitiesController.showActivity);
 
 module.exports = router;

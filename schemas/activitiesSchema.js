@@ -53,6 +53,20 @@ const unlikeActivitySchema = Joi.object({
   id: baseActivitySchema.id.required().messages({ 'any.required': 'ID is required' }),
 })
 
+/**
+ * Specific validation schema for hiding activity
+ */
+const hideActivitySchema = Joi.object({
+  id: baseActivitySchema.id.required().messages({ 'any.required': 'ID is required' }),
+})
+
+/**
+ * Specific validation schema for showing activity
+ */
+const showActivitySchema = Joi.object({
+  id: baseActivitySchema.id.required().messages({ 'any.required': 'ID is required' }),
+})
+
 module.exports = {
   baseActivitySchema,
   fetchActivitySchema,
@@ -61,4 +75,6 @@ module.exports = {
   deleteActivitySchema,
   likeActivitySchema,
   unlikeActivitySchema,
+  hideActivitySchema,
+  showActivitySchema,
 }

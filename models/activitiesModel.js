@@ -239,6 +239,34 @@ const deleteLike = async (activity_id, user_id) => {
   }
 }
 
+/**
+ * Changes the visibility of a specific activity for a user by setting the hidden status.
+ *
+ * @param {number} activity_id - ID of the activity to change visibility for.
+ * @param {number} user_id - ID of the user changing the visibility.
+ * @param {string} visibility - The visibility status ('private' to hide, 'public' to show).
+ * @returns {Object|null} - The updated activity object if successful, or null if not found.
+ */
+const updateUserActivityVisibility = async (activity_id, user_id, visibility) => {
+  const query = `
+    UPDATE user_activities 
+    SET hidden = $3 
+    WHERE id = $1
+    AND user_id =  $2
+    RETURNING *
+  `;
+  const hidden = visibility === 'private';
+  const values = [activity_id, user_id, hidden];
+
+  try {
+    const result = await pool.query(query, values);
+    return result.rows.length > 0 ? result.rows[0] : null;
+  } catch (error) {
+    console.error('Error executing query', error.stack);
+    throw error;
+  }
+}
+
 module.exports = {
   selectActivity,
   selectActivities,
@@ -248,4 +276,5 @@ module.exports = {
   insertLike,
   deleteActivity,
   deleteLike,
+  updateUserActivityVisibility,
 }

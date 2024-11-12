@@ -174,6 +174,66 @@ const unlikeActivity = async (req, res) => {
   }
 }
 
+/**
+ * Toggles hidden activity to private by its ID.
+ *
+ * @param {Request} req - Request containing logged-in user ID and activity ID.
+ * @param {Response} res - Response object for sending results.
+ * @returns {void} - Responds with a success message or an error message.
+ */
+const hideActivity = async (req, res) => {
+  try {
+    const { logged_user_id } = req.body;
+    const { id: activity_id } = req.params;
+
+    // Check if the activity exists
+    const activity = await activitiesModel.selectActivity(activity_id, logged_user_id);
+    if (!activity) return res.status(404).json({ error: 'Activity not found.' });
+
+    // Check if the logged-in user is the owner of the activity
+    if (activity.user_id !== logged_user_id) return res.status(403).json({ error: 'Insufficient permissions to change status of this activity to private.' });
+
+    // Hide the activity
+    const hidden_activity = await activitiesModel.updateUserActivityVisibility(activity_id, 'private');
+    if (!hidden_activity) return res.status(500).json({ error: 'Failed to change status of activity to private.' });
+
+    res.status(204);
+  } catch (error) {
+    console.error('Error changing status of activity to private:', error.stack);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+/**
+ * Toggles hidden activity to public by its ID.
+ *
+ * @param {Request} req - Request containing logged-in user ID and activity ID.
+ * @param {Response} res - Response object for sending results.
+ * @returns {void} - Responds with a success message or an error message.
+ */
+const showActivity = async (req, res) => {
+  try {
+    const { logged_user_id } = req.body;
+    const { id: activity_id } = req.params;
+
+    // Check if the activity exists
+    const activity = await activitiesModel.selectActivity(activity_id, logged_user_id);
+    if (!activity) return res.status(404).json({ error: 'Activity not found.' });
+
+    // Check if the logged-in user is the owner of the activity
+    if (activity.user_id !== logged_user_id) return res.status(403).json({ error: 'Insufficient permissions to change status of this activity to public.' });
+
+    // Show the activity
+    const shown_activity = await activitiesModel.updateUserActivityVisibility(activity_id, 'public');
+    if (!shown_activity) return res.status(500).json({ error: 'Failed to change status of activity to public.' });
+
+    res.status(204);
+  } catch (error) {
+    console.error('Error changing status of activity to public:', error.stack);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
 module.exports = {
   fetchActivities,
   fetchFriendsActivities,
@@ -181,4 +241,6 @@ module.exports = {
   deleteActivity,
   likeActivity,
   unlikeActivity,
+  hideActivity,
+  showActivity,
 }
