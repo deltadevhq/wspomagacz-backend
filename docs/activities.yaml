@@ -94,20 +94,16 @@
         schema:
         type: integer
     responses:
-    200:
-      description: OK - Successfully retrieved user activity
-      content:
-      application/json:
-        schema:
-        $ref: "#/components/schemas/UserActivity"
-    401:
-      description: Unauthorized - Invalid or missing token
-    403:
-      description: Forbidden - Token does not have the required permissions
-    404:
-      description: Not Found - Activity not found
-    409:
-      description: Conflict - Activity is not hidden by the user
+      204:
+        description: No Content - Successfully shown user activity
+      401:
+        description: Unauthorized - Invalid or missing token
+      403:
+        description: Forbidden - Token does not have the required permissions
+      404:
+        description: Not Found - Activity not found
+      409:
+        description: Conflict - Activity is not hidden by the user
 
 /api/activities/{id}/hide:
   post:
@@ -121,12 +117,8 @@
         schema:
           type: integer
     responses:
-      200:
-        description: OK - Successfully retrieved user activity
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UserActivity"
+      204:
+        description: No Content - Successfully hid user activity
       401:
         description: Unauthorized - Invalid or missing token
       403:
