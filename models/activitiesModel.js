@@ -1,20 +1,27 @@
 const { pool } = require('../config/database');
 
 /**
- * Fetches a single activity with like count by its ID.
+ * Fetches a single activity with like count by its ID
  * 
- * @param {number} activity_id - ID of the activity to fetch.
- * @returns {Object|null} - Activity with like count, or null if not found.
+ * @param {number} activity_id - ID of the activity to fetch
+ * @param {number} logged_user_id - The ID of the user viewing activities
+ * @returns {Object|null} - Activity with like count, or null if not found
  */
-const selectActivity = async (activity_id) => {
+const selectActivity = async (activity_id, logged_user_id) => {
   const query = `
-    SELECT ua.*, COUNT(ual.activity_id) AS likes
+    SELECT ua.*,
+      JSON_BUILD_OBJECT('id', u.id, 'display_name', u.display_name) AS "user",
+      JSON_BUILD_OBJECT('id', creator.id, 'display_name', creator.display_name) AS creator,
+      COUNT(ual.activity_id) AS likes,
+      CASE WHEN ual.user_id = $2 THEN true ELSE false END AS liked
     FROM user_activities ua
-    LEFT JOIN user_activity_likes ual ON ual.activity_id = ua.id
+      JOIN users u ON ua.user_id = u.id
+      JOIN users creator ON ua.created_by = creator.id
+      LEFT JOIN user_activity_likes ual ON ual.activity_id = ua.id
     WHERE ua.id = $1
-    GROUP BY ua.id
+    GROUP BY ua.id, u.id, creator.id, ual.user_id
   `;
-  const values = [activity_id];
+  const values = [activity_id, logged_user_id];
 
   try {
     const result = await pool.query(query, values);
@@ -26,26 +33,34 @@ const selectActivity = async (activity_id) => {
 }
 
 /**
- * Fetches user activities with like counts, ordered by creation date.
+ * Fetches user activities with like counts, ordered by creation date
  * 
- * @param {number} user_id - ID of the user whose activities to fetch.
- * @param {string} visibility - 'private' or 'public' to filter visibility.
- * @param {number} offset - Number of items to skip for pagination.
- * @param {number} limit - Max number of items to return.
- * @returns {Array|null} - Array of activities with like counts, ordered by most recent, or null if none found.
+ * @param {number} user_id - ID of the user whose activities to fetch
+ * @param {string} visibility - 'private' or 'public' to filter visibility
+ * @param {number} logged_user_id - The ID of the user viewing activities
+ * @param {number} offset - Number of items to skip for pagination
+ * @param {number} limit - Max number of items to return
+ * @returns {Array|null} - Array of activities with like counts, ordered by most recent, or null if none found
  */
-const selectActivities = async (user_id, visibility, offset = 0, limit = 10) => {
+const selectActivities = async (user_id, visibility, logged_user_id, offset = 0, limit = 10) => {
   const query = `
-    SELECT ua.*, COUNT(ual.activity_id) AS likes
+    SELECT ua.*,
+      JSON_BUILD_OBJECT('id', u.id, 'display_name', u.display_name) AS "user",
+      JSON_BUILD_OBJECT('id', creator.id, 'display_name', creator.display_name) AS creator,
+      COUNT(ual.activity_id) AS likes,
+      CASE WHEN ual.user_id = $3 THEN true ELSE false END AS liked
     FROM user_activities ua
-    LEFT JOIN user_activity_likes ual ON ual.activity_id = ua.id
-    WHERE ua.user_id = $1 AND (CASE WHEN $2 = FALSE THEN ua.hidden = $2 ELSE TRUE END)
-    GROUP BY ua.id, ua.created_at 
+      JOIN users u ON ua.user_id = u.id
+      JOIN users creator ON ua.created_by = creator.id
+      LEFT JOIN user_activity_likes ual ON ual.activity_id = ua.id
+    WHERE ua.user_id = $1 
+      AND (CASE WHEN $2 = FALSE THEN ua.hidden = $2 ELSE TRUE END)
+    GROUP BY ua.id, ua.created_at, u.id, creator.id, ual.user_id
     ORDER BY ua.created_at DESC
-    LIMIT $3 OFFSET $4
+    LIMIT $4 OFFSET $5;
   `;
   const hidden = visibility === 'private';
-  const values = [user_id, hidden, limit, offset];
+  const values = [user_id, hidden, logged_user_id, limit, offset];
 
   try {
     const result = await pool.query(query, values);
@@ -57,33 +72,34 @@ const selectActivities = async (user_id, visibility, offset = 0, limit = 10) => 
 }
 
 /**
- * Fetches user activity from friends based on visibility and pagination options
+ * Fetches user activity from friends based on pagination options
  * 
- * @param {number} user_id - The ID of the user viewing activities
- * @param {string} visibility - Determines whether to show private or public activities ('private' or 'public')
+ * @param {number} logged_user_id - The ID of the user viewing activities
  * @param {number} offset - The number of items to skip for pagination
  * @param {number} limit - The maximum number of items to return
  * @returns {Array|null} - An array of friend activities with like counts, or null if none found
  */
-const selectFriendsActivity = async (user_id, offset = 0, limit = 10) => {
+const selectFriendsActivity = async (logged_user_id, offset = 0, limit = 10) => {
   const query = `
-    SELECT ua.*, COUNT(ual.activity_id) AS likes
-    FROM user_activities ua
-    LEFT JOIN user_activity_likes ual ON ual.activity_id = ua.id
-    WHERE ua.user_id IN (
-      SELECT CASE 
-        WHEN sender_id = $1 THEN receiver_id
-        ELSE sender_id 
-      END 
-      FROM friends 
-      WHERE (sender_id = $1 OR receiver_id = $1) AND status = 'accepted'
-    ) 
-    AND ua.hidden = false
-    GROUP BY ua.id, ua.created_at 
-    ORDER BY ua.created_at DESC
-    LIMIT $2 OFFSET $3
+      SELECT ua.*,
+        JSON_BUILD_OBJECT('id', u.id, 'display_name', u.display_name) AS "user",
+        JSON_BUILD_OBJECT('id', creator.id, 'display_name', creator.display_name) AS creator,
+        COUNT(ual.activity_id) AS likes,
+        CASE WHEN ual.user_id = $1 THEN true ELSE false END AS liked
+      FROM user_activities ua
+        JOIN users u ON ua.user_id = u.id
+        JOIN users creator ON ua.created_by = creator.id
+        LEFT JOIN user_activity_likes ual ON ual.activity_id = ua.id
+      WHERE ua.user_id IN (
+        SELECT CASE WHEN sender_id = $1 THEN receiver_id ELSE sender_id END
+        FROM friends WHERE (sender_id = $1 OR receiver_id = $1) AND status = 'accepted'
+      )
+        AND ua.hidden = false
+      GROUP BY ua.id, ua.created_at, u.id, creator.id, ual.user_id
+      ORDER BY ua.created_at DESC
+      LIMIT $2 OFFSET $3;
   `;
-  const values = [user_id, limit, offset];
+  const values = [logged_user_id, limit, offset];
 
   try {
     const result = await pool.query(query, values);
@@ -128,7 +144,7 @@ const selectActivityLike = async (activity_id, user_id) => {
  * @param {string} visibility - The visibility of the activity ('private' or 'public').
  * @returns {Object|null} - The inserted user activity object if successful, or null if not.
  */
-const insertActivity = async (user_id, type, data, created_by = 1,  visibility) => {
+const insertActivity = async (user_id, type, data, created_by = 1, visibility) => {
   const query = `
     INSERT INTO user_activities (
       user_id,

@@ -18,7 +18,7 @@ const fetchActivities = async (req, res) => {
     const user_id = request_user_id || logged_user_id;
     if (logged_user_id === Number(user_id)) visibility = 'private';
 
-    const activities = await activitiesModel.selectActivities(user_id, visibility, offset, limit);
+    const activities = await activitiesModel.selectActivities(user_id, visibility, logged_user_id, offset, limit);
     if (!activities) return res.status(404).json({ error: 'Activities not found.' });
 
     res.status(200).json(activities);
@@ -65,7 +65,7 @@ const fetchActivity = async (req, res) => {
     const { id: activity_id } = req.params;
 
     // Fetch the activity by ID
-    const activity = await activitiesModel.selectActivity(activity_id);
+    const activity = await activitiesModel.selectActivity(activity_id, logged_user_id);
     if (!activity) return res.status(404).json({ error: 'Activity not found.' });
 
     // Check if the user has permissions to view the activity
@@ -91,7 +91,7 @@ const deleteActivity = async (req, res) => {
     const { id: activity_id } = req.params;
 
     // Fetch the activity to ensure it exists and belongs to the user
-    const activity = await activitiesModel.selectActivity(activity_id);
+    const activity = await activitiesModel.selectActivity(activity_id, logged_user_id);
     if (!activity) return res.status(404).json({ error: 'Activity not found.' });
 
     // Check if the logged-in user is the owner of the activity
@@ -121,7 +121,7 @@ const likeActivity = async (req, res) => {
     const { id: activity_id } = req.params;
 
     // Check if the activity exists
-    const activity = await activitiesModel.selectActivity(activity_id);
+    const activity = await activitiesModel.selectActivity(activity_id, logged_user_id);
     if (!activity) return res.status(404).json({ error: 'Activity not found.' });
 
     // Check if the user has already liked the activity
@@ -131,7 +131,7 @@ const likeActivity = async (req, res) => {
     // Add a like to the activity
     await activitiesModel.insertLike(activity_id, logged_user_id);
 
-    const updated_activity = await activitiesModel.selectActivity(activity_id);
+    const updated_activity = await activitiesModel.selectActivity(activity_id, logged_user_id);
     const updated_like_count = updated_activity.likes;
 
     res.status(200).json({ likes: updated_like_count });
@@ -154,7 +154,7 @@ const unlikeActivity = async (req, res) => {
     const { id: activity_id } = req.params;
 
     // Check if the activity exists
-    const activity = await activitiesModel.selectActivity(activity_id);
+    const activity = await activitiesModel.selectActivity(activity_id, logged_user_id);
     if (!activity) return res.status(404).json({ error: 'Activity not found.' });
 
     // Check if the user has liked the activity
@@ -164,7 +164,7 @@ const unlikeActivity = async (req, res) => {
     // Remove the like from the activity
     await activitiesModel.deleteLike(activity_id, logged_user_id);
 
-    const updated_activity = await activitiesModel.selectActivity(activity_id);
+    const updated_activity = await activitiesModel.selectActivity(activity_id, logged_user_id);
     const updated_like_count = updated_activity.likes;
 
     res.status(200).json({ likes: updated_like_count });
