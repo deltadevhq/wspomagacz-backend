@@ -101,7 +101,26 @@
 
 /api/users/{id}/achievements:
   get:
-    summary: Get user achievements by user ID
+    summary: Retrieve user achievements by user ID
+    tags: [ User Achievements ]
+    parameters:
+      - in: path
+        name: id
+        description: The ID of the user whose achievements are being requested.
+        required: true
+        schema:
+          type: integer
+    responses:
+      200:
+        description: Successfully retrieved user achievements
+      404:
+        description: Not Found - User achievements not found
+
+/api/users/{id}/achievements/categories:
+  get:
+    deprecated: true
+    summary: Retrieve user achievements category data by user ID
+    description: This retrieves the progress of the user in each achievement category
     tags: [ User Achievements ]
     parameters:
       - in: path
