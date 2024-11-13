@@ -1,6 +1,8 @@
 // eslint-disable-next-line no-unused-vars
 const { Response, Request } = require('express');
+const { multer } = require('multer');
 const { application_secret, application_token_expiration_time } = require('../config/settings');
+const { resizeAndCropImage } = require('../utilities/middleware/fileUpload');
 const userModel = require('../models/userModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -217,12 +219,31 @@ const patchUserAvatar = async (req, res) => {
       return res.status(400).json({ error: 'Avatar file is required' });
     }
 
+    // Resize and crop the image to 128x128
+    const avatarBuffer = await resizeAndCropImage(req.file.buffer);
+
     // Update user avatar in the database
-    await userModel.updateUserAvatar(logged_user_id, avatar);
+    await userModel.updateUserAvatar(logged_user_id, avatarBuffer);
 
     // Successful response
     res.status(204).json();
   } catch (error) {
+    // Handle Multer file size errors
+    if (error instanceof multer.MulterError && error.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({ error: 'File size exceeds the 512 KB limit' });
+    }
+
+    // Handle image dimension errors
+    if (error.message.includes('Invalid file type')) {
+      return res.status(400).json({ error: 'Invalid file type. Only JPEG images are allowed.' });
+    }
+
+    // Handle image cropping errors
+    if (error.message.includes('Input buffer contains unsupported image format')) {
+      return res.status(400).json({ error: 'Unsupported image format' });
+    }
+
+    // Handle general errors
     console.error('Error uploading avatar:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
