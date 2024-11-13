@@ -19,10 +19,8 @@ const fetchActivities = async (req, res) => {
     if (logged_user_id === Number(user_id)) visibility = 'private';
 
     const activities = await activitiesModel.selectActivities(user_id, visibility, logged_user_id, offset, limit);
-    if (!activities) return res.status(404).json({ error: 'Activities not found.' });
 
     res.status(200).json(activities);
-
   } catch (error) {
     console.error('Error fetching activities:', error.stack);
     res.status(500).json({ error: 'Internal server error' });
@@ -43,7 +41,6 @@ const fetchFriendsActivities = async (req, res) => {
 
     // Fetch activities from friends
     const activities = await activitiesModel.selectFriendsActivity(logged_user_id, offset, limit);
-    if (!activities) return res.status(404).json({ error: 'No activities found.' });
 
     res.status(200).json(activities);
   } catch (error) {

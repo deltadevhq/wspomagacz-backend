@@ -26,9 +26,6 @@ const fetchWorkouts = async (req, res) => {
     // Fetch workouts from database
     const workouts = await workoutModel.selectWorkouts(user_id, status, date, offset, limit);
 
-    // Check if anything was returned
-    if (!workouts) return res.status(404).json({ error: 'Workouts not found' });
-
     // Successful response with all workouts
     res.status(200).json(workouts);
   } catch (error) {

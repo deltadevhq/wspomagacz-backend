@@ -17,7 +17,6 @@ const fetchFriends = async (req, res) => {
 
     // Fetch friends user profile
     const friends = await friendsModel.selectFriends(logged_user_id);
-    if (!friends) return res.status(404).json({ error: 'No friends found.' });
 
     res.status(200).json(friends);
   } catch (error) {
@@ -39,7 +38,6 @@ const fetchFriendRequests = async (req, res) => {
 
     // Fetching pending friend requests
     const friend_requests = await friendsModel.selectFriendRequests(logged_user_id);
-    if (!friend_requests) return res.status(404).json({ error: 'No friend requests found.' });
 
     res.status(200).json(friend_requests);
   } catch (error) {

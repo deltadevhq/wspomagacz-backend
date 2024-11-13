@@ -18,7 +18,7 @@ const selectFriends = async (user_id) => {
 
   try {
     const result = await pool.query(query, values);
-    return result.rows.length > 0 ? result.rows : null;
+    return result.rows.length > 0 ? result.rows : [];
   } catch (error) {
     console.error('Error executing query', error.stack);
     throw error;
@@ -43,7 +43,7 @@ const selectFriendRequests = async (user_id) => {
 
   try {
     const result = await pool.query(query, values);
-    return result.rows.length > 0 ? result.rows : null;
+    return result.rows.length > 0 ? result.rows : [];
   } catch (error) {
     console.error('Error executing query', error.stack);
     throw error;
@@ -67,7 +67,7 @@ const insertFriendRequest = async (sender_id, receiver_id) => {
 
   try {
     const result = await pool.query(query, values);
-    return result.rows.length > 0 ? result.rows : null;
+    return result.rows.length > 0 ? result.rows[0] : null;
   } catch (error) {
     console.error('Error executing query', error.stack);
     throw error;
@@ -92,7 +92,7 @@ const updateFriendRequestWithAcceptance = async (sender_id, receiver_id) => {
 
   try {
     const result = await pool.query(query, values);
-    return result.rows.length > 0 ? result.rows : null;
+    return result.rows.length > 0 ? result.rows[0] : null;
   } catch (error) {
     console.error('Error executing query', error.stack);
     throw error;
@@ -112,7 +112,7 @@ const updateFriendRequestWithRejection = async (sender_id, receiver_id) => {
 
   try {
     const result = await pool.query(query, values);
-    return result.rows.length > 0 ? result.rows : null;
+    return result.rows.length > 0 ? result.rows[0] : null;
   } catch (error) {
     console.error('Error executing query', error.stack);
     throw error;
@@ -161,7 +161,7 @@ const deleteFriend = async (user_id, removed_friend_id) => {
 
   try {
     const result = await pool.query(query, values);
-    return result.rows.length > 0 ? result.rows : null;
+    return result.rows.length > 0 ? result.rows[0] : null;
   } catch (error) {
     console.error('Error executing query', error.stack);
     throw error;

@@ -14,9 +14,6 @@ const fetchEquipment = async (req, res) => {
     // Fetch equipment from database
     const equipment = await equipmentModel.selectEquipment();
 
-    // Check if anything was returned
-    if (!equipment) return res.status(404).json({ error: 'Equipment not found' });
-
     // Successful response with all equipment
     res.status(200).json(equipment);
   } catch (error) {

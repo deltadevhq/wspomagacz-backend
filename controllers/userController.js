@@ -59,7 +59,6 @@ const fetchUserAchievements = async (req, res) => {
 
     // Fetch user achievements
     const user_achievements = await userModel.selectUserAchievements(user_id);
-    if (!user_achievements) return res.status(404).json({ error: 'User achievements not found' });
 
     // Return the user's achievements
     return res.status(200).json(user_achievements);

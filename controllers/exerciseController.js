@@ -23,9 +23,6 @@ const fetchExercises = async (req, res) => {
     // Fetch exercises from database
     const exercises = await exerciseModel.selectExercises(user_id, exercise_type);
 
-    // Check if anything was returned
-    if (!exercises) return res.status(404).json({ error: 'Exercises not found' });
-
     // Successful response with all exercises
     res.status(200).json(exercises);
   } catch (error) {

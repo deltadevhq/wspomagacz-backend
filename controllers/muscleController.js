@@ -14,9 +14,6 @@ const fetchMuscles = async (req, res) => {
     // Fetch muscles from database
     const muscles = await muscleModel.selectMuscles();
 
-    // Check if anything was returned
-    if (!muscles) return res.status(404).json({ error: 'Muscles not found' });
-
     // Successful response with all muscles
     res.status(200).json(muscles);
   } catch (error) {

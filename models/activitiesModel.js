@@ -64,7 +64,7 @@ const selectActivities = async (user_id, visibility, logged_user_id, offset = 0,
 
   try {
     const result = await pool.query(query, values);
-    return result.rows.length > 0 ? result.rows : null;
+    return result.rows.length > 0 ? result.rows : [];
   } catch (error) {
     console.error('Error executing query', error.stack);
     throw error;
@@ -103,7 +103,7 @@ const selectFriendsActivity = async (logged_user_id, offset = 0, limit = 10) => 
 
   try {
     const result = await pool.query(query, values);
-    return result.rows.length > 0 ? result.rows : null;
+    return result.rows.length > 0 ? result.rows : [];
   } catch (error) {
     console.error('Error executing query', error.stack);
     throw error;
@@ -243,7 +243,7 @@ const deleteLike = async (activity_id, user_id) => {
  * Changes the visibility of a specific activity for a user by setting the hidden status.
  *
  * @param {number} activity_id - ID of the activity to change visibility for.
- * @param {number} logged_user_id - ID of the user changing the visibility.
+ * @param {number} user_id - ID of the user changing the visibility.
  * @param {string} visibility - The visibility status ('private' to hide, 'public' to show).
  * @returns {Object|null} - The updated activity object if successful, or null if not found.
  */

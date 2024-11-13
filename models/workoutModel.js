@@ -21,7 +21,7 @@ const selectWorkouts = async (user_id, status, date, offset = 0, limit = 10) => 
 
   try {
     const result = await pool.query(query, values);
-    return result.rows.length > 0 ? result.rows : null;
+    return result.rows.length > 0 ? result.rows : [];
   } catch (error) {
     console.error('Error executing query', error.stack);
     throw error;
@@ -279,7 +279,7 @@ const checkWorkoutCollision = async (user_id, date) => {
 
   try {
     const result = await pool.query(query, values);
-    return result.rows.length > 0 ? result.rows : null;
+    return result.rows.length > 0 ? result.rows[0] : null;
   } catch (error) {
     console.error('Error executing query', error.stack);
     throw error;
