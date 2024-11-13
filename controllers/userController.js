@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 const { Response, Request } = require('express');
 const userModel = require('../models/userModel');
+const system_user_id = 1;
 
 /**
  * Searches for a user profile by ID or username and returns public user information.
@@ -107,7 +108,9 @@ const fetchUserAvatar = async (req, res) => {
     const { id: user_id } = req.params;
 
     // Fetch the user's avatar from the database
-    const userAvatar = await userModel.selectUserAvatarById(user_id);
+    let userAvatar;
+    userAvatar = await userModel.selectUserAvatarById(user_id);
+    if (!userAvatar) userAvatar = await userModel.selectUserAvatarById(system_user_id);
     if (!userAvatar) return res.status(404).json({ error: 'User avatar not found' });
 
     // Set the response header to the appropriate content type
