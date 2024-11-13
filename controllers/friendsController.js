@@ -119,6 +119,9 @@ const acceptFriendRequest = async (req, res) => {
     // Accept the friend request
     const updated_request = await friendsModel.updateFriendRequestWithAcceptance(from_id, logged_user_id);
 
+    // Send notification
+    await notificationModel.insertNotification(from_id, 'friend_request_accepted', logged_user_id, updated_request);
+
     // Insert activity for new friendship
     await activitiesModel.insertActivity(logged_user_id, 'friendship', JSON.stringify(updated_request), from_id, 'public');
     await activitiesModel.insertActivity(from_id, 'friendship', JSON.stringify(updated_request), logged_user_id, 'public');
