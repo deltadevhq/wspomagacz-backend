@@ -113,6 +113,31 @@
       404:
         description: Cannot PATCH /api/auth/user
 
+/api/auth/user/avatar:
+  patch:
+    summary: Change currently logged-in user's avatar
+    tags: [ Authorization ]
+    requestBody:
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              avatar:
+                type: string
+                description: The avatar image file
+                format: binary
+    responses:
+      204:
+        description: No content - Successfully updated user avatar
+      400:
+        description: Bad Request - Missing or invalid avatar file
+      401:
+        description: Unauthorized - Invalid or missing token
+      404:
+        description: Not Found - User not found
+
 /api/auth/user/password:
   patch:
     summary: Change currently logged-in user's password

@@ -201,6 +201,34 @@ const patchUser = async (req, res) => {
 }
 
 /**
+ * Uploads or updates the currently logged-in user's avatar.
+ *
+ * @param {Request} req - Request object containing the user ID and the avatar file.
+ * @param {Response} res - Response object to send a success message or error.
+ * @returns {void} - Responds with a success message if upload is successful, or an error if it fails.
+ */
+const patchUserAvatar = async (req, res) => {
+  try {
+    const { logged_user_id } = req.body;
+    const avatar = req.file?.buffer;
+
+    // Check if avatar file is provided
+    if (!avatar) {
+      return res.status(400).json({ error: 'Avatar file is required' });
+    }
+
+    // Update user avatar in the database
+    await userModel.updateUserAvatar(logged_user_id, avatar);
+
+    // Successful response
+    res.status(204).json();
+  } catch (error) {
+    console.error('Error uploading avatar:', error.stack);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+/**
  * Updates the currently logged-in user's password.
  *
  * @param {Request} req - Request object with user ID and new password.
@@ -246,5 +274,6 @@ module.exports = {
   logoutUser,
   deleteUser,
   patchUser,
+  patchUserAvatar,
   patchUserPassword,
 }

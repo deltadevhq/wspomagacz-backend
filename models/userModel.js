@@ -154,6 +154,36 @@ const updateUserPassword = async (user_id, password_hash) => {
 }
 
 /**
+ * Updates the user's avatar in the database.
+ *
+ * @param {number} user_id - The ID of the user whose avatar is to be updated.
+ * @param {Buffer} avatar - The new avatar data as a Buffer.
+ * @returns {Object|null} - The updated avatar object if successful, or throws an error if the user is not found.
+ */
+const updateUserAvatar = async (user_id, avatar) => {
+  const query = `
+    INSERT INTO user_avatars (user_id, avatar)
+    VALUES ($1, $2)
+    ON CONFLICT (user_id)
+    DO UPDATE SET avatar = EXCLUDED.avatar
+    RETURNING *`;
+  const values = [user_id, avatar];
+
+  try {
+    const result = await pool.query(query, values);
+
+    if (result.rows.length === 0) {
+      throw new Error('User not found');
+    }
+
+    return result.rows[0];
+  } catch (error) {
+    console.error('Error executing query', error.stack);
+    throw error;
+  }
+};
+
+/**
  * Updates the last_logged_at column in the database upon user login.
  *
  * @param {string} username - The username of the user whose login time is to be updated.
@@ -234,6 +264,7 @@ module.exports = {
   insertUser,
   updateUser,
   updateUserPassword,
+  updateUserAvatar,
   updateUserLastLogin,
   deleteUser,
 }
