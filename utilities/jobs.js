@@ -1,5 +1,7 @@
 const { pool } = require('../config/database');
 const workoutController =  require('../controllers/workoutController');
+const notificationModel = require('../models/notificationModel');
+const system_user_id = 1;
 
 /**
  * Closes all planned workouts for today that were not started by marking them as 'skipped'.
@@ -54,6 +56,8 @@ const closeUnfinishedWorkouts = async () => {
       if (message) {
         console.error(message);
         error_count++;
+      } else {
+        await notificationModel.insertNotification(workout.user_id, 'workout_closed_by_job', workout, system_user_id);
       }
     };
     
