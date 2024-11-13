@@ -10,9 +10,15 @@ const { pool } = require('../config/database');
  */
 const selectNotifications = async (user_id, offset = 0, limit = 10) => {
   const query = `
-    SELECT *
-    FROM notifications
+    SELECT 
+      n.*,
+      JSON_BUILD_OBJECT('id', u.id, 'display_name', u.display_name) AS "user",
+      JSON_BUILD_OBJECT('id', creator.id, 'display_name', creator.display_name) AS creator
+    FROM notifications n
+      JOIN users u ON n.user_id = u.id
+      JOIN users creator ON n.created_by = creator.id
     WHERE user_id = $1
+    GROUP BY n.id, u.id, creator.id
     ORDER BY created_at DESC
     LIMIT $2 OFFSET $3
   `;
@@ -54,17 +60,18 @@ const selectNotificationById = async (notification_id) => {
  * Function to insert a notification for a user
  * 
  * @param {number} user_id - The ID of the user to send the notification to
- * @param {string} message - The message of the notification
  * @param {string} type - The type of the notification (e.g., 'info', 'alert')
+ * @param {number} created_by - The ID of the user who created notification
+ * @param {string} data - JSON object containing data of notification
  * @returns {Object} - An object with the inserted notification record
  */
-const insertNotification = async (user_id, message, type) => {
+const insertNotification = async (user_id, type, created_by, data) => {
   const query = `
-    INSERT INTO notifications (user_id, message, type)
-    VALUES ($1, $2, $3)
+    INSERT INTO notifications (user_id, type, created_by, data)
+    VALUES ($1, $2, $3, $4)
     RETURNING *;
   `;
-  const values = [user_id, message, type];
+  const values = [user_id, type, created_by, data];
 
   try {
     const result = await pool.query(query, values);

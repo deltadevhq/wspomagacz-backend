@@ -3,6 +3,7 @@ const { Response, Request } = require('express');
 const friendsModel = require('../models/friendsModel');
 const userModel = require('../models/userModel');
 const activitiesModel = require('../models/activitiesModel');
+const notificationModel = require('../models/notificationModel');
 
 /**
  * Handles requests to fetch the list of friends for a user.
@@ -81,6 +82,9 @@ const sendFriendRequest = async (req, res) => {
 
     // Send the friend request
     const new_request = await friendsModel.insertFriendRequest(logged_user_id, to_id);
+
+    // Send notification
+    await notificationModel.insertNotification(to_id, 'friend_request', logged_user_id, new_request);
 
     // Respond with the newly created request
     res.status(201).json(new_request);
