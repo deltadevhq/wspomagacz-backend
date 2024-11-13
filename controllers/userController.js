@@ -95,8 +95,35 @@ const fetchUserAchievementById = async (req, res) => {
   }
 }
 
+/**
+ * Fetches the user's avatar from the database.
+ *
+ * @param {Request} req - The request object containing the user ID.
+ * @param {Response} res - The response object to send the avatar image.
+ * @returns {void}
+ */
+const fetchUserAvatar = async (req, res) => {
+  try {
+    const { id: user_id } = req.params;
+
+    // Fetch the user's avatar from the database
+    const userAvatar = await userModel.selectUserAvatarById(user_id);
+    if (!userAvatar) return res.status(404).json({ error: 'User avatar not found' });
+
+    // Set the response header to the appropriate content type
+    res.setHeader('Content-Type', 'image/jpeg');
+
+    // Send the avatar image as a binary stream
+    res.send(userAvatar.avatar);
+  } catch (error) {
+    console.error('Error fetching user avatar:', error.stack);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
 module.exports = {
   searchUserProfile,
   fetchUserAchievements,
   fetchUserAchievementById,
+  fetchUserAvatar,
 }

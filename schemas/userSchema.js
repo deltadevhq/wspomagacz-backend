@@ -145,6 +145,13 @@ const fetchUserAchievementById = Joi.object({
 })
 
 /**
+ * Specific validation schema for fetching user avatar
+ */
+const fetchUserAvatar = Joi.object({
+  id: baseUserSchema.id.required().messages({ 'any.required': 'ID is required' }),
+})
+
+/**
  * Specific validation schema for user login
  */
 const loginSchema = Joi.object({
@@ -188,6 +195,7 @@ module.exports = {
   searchUserProfileSchema,
   fetchUserAchievements,
   fetchUserAchievementById,
+  fetchUserAvatar,
   loginSchema,
   registerSchema,
   patchUserSchema,

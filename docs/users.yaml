@@ -99,6 +99,25 @@
     404:
       description: Not Found - User not found
 
+/api/users/{id}/avatar:
+  get:
+    summary: Retrieve user avatar by user ID
+    tags: [ User Profile ]
+    parameters:
+      - in: path
+        name: id
+        description: The ID of the user whose avatar is being requested.
+        required: true
+        schema:
+          type: integer
+    responses:
+      200:
+        description: Successfully retrieved user avatar
+        content:
+          image/jpeg: {}
+      404:
+        description: Not Found - User avatar not found
+
 /api/users/{id}/achievements:
   get:
     summary: Retrieve user achievements by user ID

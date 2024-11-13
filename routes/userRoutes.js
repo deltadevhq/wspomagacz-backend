@@ -7,6 +7,7 @@ const { validateInput } = require('../utilities/middleware/validateInput');
 
 // AUTH ROUTES
 router.get('/search', validateInput(userSchema.searchUserProfileSchema, 'query'), verifyToken, userController.searchUserProfile);
+router.get('/:id/avatar', validateInput(userSchema.fetchUserAvatar, 'params'), verifyToken, userController.fetchUserAvatar);
 router.get('/:id/achievements', validateInput(userSchema.fetchUserAchievements, 'params'), verifyToken, userController.fetchUserAchievements);
 router.get('/:id/achievements/:achievement_id', validateInput(userSchema.fetchUserAchievementById, 'params'), verifyToken, userController.fetchUserAchievementById);
 

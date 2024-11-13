@@ -104,6 +104,29 @@ const selectUserAchievementById = async (user_id, achievement_id) => {
 }
 
 /**
+ * Select user's avatar from the database.
+ *
+ * @param {number} user_id - The ID of the user whose avatar is to be fetched.
+ * @returns {Object|null} - The user avatar if found, or null if not.
+ */
+const selectUserAvatarById = async (user_id) => {
+  const query = `
+    SELECT avatar
+    FROM user_avatars
+    WHERE user_id = $1
+  `;
+  const values = [user_id];
+
+  try {
+    const result = await pool.query(query, values);
+    return result.rows.length > 0 ? result.rows[0] : null;
+  } catch (error) {
+    console.error('Error executing query', error.stack);
+    throw error;
+  }
+}
+
+/**
  * Inserts a new user into the database.
  *
  * @param {string} username - The username of the user.
@@ -261,6 +284,7 @@ module.exports = {
   selectUserByEmail,
   selectUserAchievements,
   selectUserAchievementById,
+  selectUserAvatarById,
   insertUser,
   updateUser,
   updateUserPassword,
