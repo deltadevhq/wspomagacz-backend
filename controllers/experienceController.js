@@ -2,6 +2,7 @@
 const { Response, Request } = require('express');
 const experienceModel = require('../models/experienceModel');
 const activitiesModel = require('../models/activitiesModel');
+const notificationModel = require('../models/notificationModel');
 const userModel = require('../models/userModel');
 
 /**
@@ -108,10 +109,11 @@ const userExperienceHandler = async (workout) => {
     await experienceModel.insertExperience(workout.user_id, exp_after, lvl_after);
     const history_result = await experienceModel.insertExperienceHistory(workout.user_id, exp_granted, exp_before, exp_after, lvl_before, lvl_after);
 
-    // Publish level up activity 
+    // Publish level up activity and send notification to user
     if (lvl_before < lvl_after) {
       history_result.multiplier = multiplier;
       await activitiesModel.insertActivity(workout.user_id, 'level_up', history_result, workout.user_id, 'public');
+      await notificationModel.insertNotification(workout.user_id, 'level_up', history_result, workout.user_id);
     }
 
     return history_result;
@@ -154,7 +156,7 @@ const calculateMultiplier = async (user_id) => {
 const calculateExperience = async (exercises, user) => {
   try {
     let xp = 0;
-    const bodyweight = user.weights ? [user.weights.length-1]?.weight ?? user.weights[user.weights.length-1].weight : 40;
+    const bodyweight = user.weights ? [user.weights.length - 1]?.weight ?? user.weights[user.weights.length - 1].weight : 40;
 
     // Sum XP from exercises
     for (const exercise_obj of exercises) {

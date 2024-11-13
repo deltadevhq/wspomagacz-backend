@@ -61,11 +61,11 @@ const selectNotificationById = async (notification_id) => {
  * 
  * @param {number} user_id - The ID of the user to send the notification to
  * @param {string} type - The type of the notification (e.g., 'info', 'alert')
- * @param {number} created_by - The ID of the user who created notification
  * @param {string} data - JSON object containing data of notification
+ * @param {number} created_by - The ID of the user who created notification
  * @returns {Object} - An object with the inserted notification record
  */
-const insertNotification = async (user_id, type, created_by, data) => {
+const insertNotification = async (user_id, type, data, created_by) => {
   const query = `
     INSERT INTO notifications (user_id, type, created_by, data)
     VALUES ($1, $2, $3, $4)

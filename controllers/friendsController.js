@@ -84,7 +84,7 @@ const sendFriendRequest = async (req, res) => {
     const new_request = await friendsModel.insertFriendRequest(logged_user_id, to_id);
 
     // Send notification
-    await notificationModel.insertNotification(to_id, 'friend_request', logged_user_id, new_request);
+    await notificationModel.insertNotification(to_id, 'friend_request', new_request, logged_user_id);
 
     // Respond with the newly created request
     res.status(201).json(new_request);
@@ -120,7 +120,7 @@ const acceptFriendRequest = async (req, res) => {
     const updated_request = await friendsModel.updateFriendRequestWithAcceptance(from_id, logged_user_id);
 
     // Send notification
-    await notificationModel.insertNotification(from_id, 'friend_request_accepted', logged_user_id, updated_request);
+    await notificationModel.insertNotification(from_id, 'friend_request_accepted', updated_request, logged_user_id);
 
     // Insert activity for new friendship
     await activitiesModel.insertActivity(logged_user_id, 'friendship', JSON.stringify(updated_request), from_id, 'public');
