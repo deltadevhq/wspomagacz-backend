@@ -138,10 +138,60 @@ const insertExperienceHistory = async (user_id, exp_granted, exp_before, exp_aft
   }
 }
 
+/**
+ * Retrieves the user's personal best from the database for a given exercise.
+ * 
+ * @param {number} exercise_id - The ID of the exercise for which to retrieve the personal best.
+ * @param {number} user_id - The ID of the user whose personal best is to be retrieved.
+ * @returns {Object} - An object with the personal best value or null if no personal best is recorded for the given exercise and user.
+ */
+const checkPersonalBestForExercise = async (exercise_id, exercise_type, user_id) => {
+  const query = `
+    SELECT personal_best FROM user_workout_exercise_stats
+    WHERE exercise_id = $1 AND exercise_type = $2 AND user_id = $3;
+  `;
+  const values = [exercise_id, exercise_type, user_id];
+
+  try {
+    const result = await pool.query(query, values);
+    return result.rows.length > 0 ? result.rows[0] : null;
+  } catch (error) {
+    console.error(`Error checking personal best for user_id: ${user_id}, exercise_id: ${exercise_id}, exercise_type: ${exercise_type}`, error.stack);
+    throw new Error('Database query failed while checking personal best.');
+  }
+}
+
+/**
+ * Counts the total number of times a specific exercise has been completed by a user.
+ * 
+ * @param {number} exercise_id - The ID of the exercise to count completions for.
+ * @param {string} exercise_type - The type of the exercise ('custom' or 'standard').
+ * @param {number} user_id - The ID of the user whose completions are being counted.
+ * @returns {Object|null} - The count of completions if successful, or null if the query fails.
+ */
+const countTotalExerciseCompletions = async (exercise_id, exercise_type, user_id) => {
+  const query = `
+    SELECT jsonb_array_length(data) AS count
+    FROM user_workout_exercise_stats
+    WHERE exercise_id = $1 AND exercise_type = $2 AND user_id = $3
+  `;
+  const values = [exercise_id, exercise_type, user_id];
+
+  try {
+    const result = await pool.query(query, values);
+    return result.rows.length > 0 ? result.rows[0] : null;
+  } catch (error) {
+    console.error(`Error checking total exercise completions for user_id: ${user_id}, exercise_id: ${exercise_id}, exercise_type: ${exercise_type}`, error.stack);
+    throw new Error('Database query failed while checking personal best.');
+  }
+}
+
 module.exports = {
   getLevelByXp,
   getXpByLevel,
   selectEvents,
   insertExperience,
   insertExperienceHistory,
+  checkPersonalBestForExercise,
+  countTotalExerciseCompletions,
 }

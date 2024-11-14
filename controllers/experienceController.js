@@ -5,6 +5,10 @@ const activitiesModel = require('../models/activitiesModel');
 const notificationModel = require('../models/notificationModel');
 const userModel = require('../models/userModel');
 
+const EXPERIENCE_DIVIDER = 0.01;
+const DEFAULT_BODY_WEIGHT = 40;
+const PERSONAL_BEST_EXTRA_EXP = 20;
+
 /**
  * Retrieves the level corresponding to a given amount of experience points (XP).
  *
@@ -96,9 +100,14 @@ const userExperienceHandler = async (workout) => {
     const lvl_before = user.level;
 
     // Calculate experience granted based on workout and user data
-    const exp = await calculateExperience(workout.exercises, user);
+    const exp = calculateExperience(workout.exercises, user);
     const multiplier = await calculateMultiplier(workout.user_id);
-    const exp_granted = Math.round(exp * multiplier);
+    const pb_count = await personalBestHandler(workout.exercises, workout.date, workout.user_id);
+
+    console.log(`XP granted: ${exp}, multiplier: ${multiplier}, PB count: ${pb_count}`);
+    console.log(`XP granted without PB: ${exp * multiplier}, XP granted with PB: ${(exp * multiplier) + (pb_count * PERSONAL_BEST_EXTRA_EXP)}`);
+
+    const exp_granted = Math.round((exp * multiplier) + (pb_count * PERSONAL_BEST_EXTRA_EXP));
 
     // Calculate user experience after grant
     const exp_after = exp_before + exp_granted;
@@ -153,10 +162,10 @@ const calculateMultiplier = async (user_id) => {
  * @param {Object} user - The user object containing information such as weights.
  * @returns {number} - The total experience calculated based on the exercises.
  */
-const calculateExperience = async (exercises, user) => {
+const calculateExperience = (exercises, user) => {
   try {
     let xp = 0;
-    const bodyweight = user.weights ? [user.weights.length - 1]?.weight ?? user.weights[user.weights.length - 1].weight : 40;
+    const bodyweight = user.weights ? [user.weights.length - 1]?.weight ?? user.weights[user.weights.length - 1].weight : DEFAULT_BODY_WEIGHT;
 
     // Sum XP from exercises
     for (const exercise_obj of exercises) {
@@ -171,12 +180,53 @@ const calculateExperience = async (exercises, user) => {
       });
     }
 
-    xp = Math.round(xp / 50);
+    xp = Math.round(xp * EXPERIENCE_DIVIDER);
 
     return xp;
   } catch (error) {
     console.error('Error calculating experience:', error.stack);
     throw new Error('Failed to calculate experience.');
+  }
+}
+
+/**
+ * Handles personal bests for a user after completing a workout.
+ *
+ * @param {Array} exercises - An array of exercise objects containing details about the exercises performed.
+ * @param {number} user_id - The ID of the user for whom to handle the personal bests.
+ * @returns {Promise<number>} - A promise resolving to the number of personal bests set for the user during this workout.
+ */
+const personalBestHandler = async (exercises, date, user_id) => {
+  try {
+    let pb_count = 0;
+    date = date.toLocaleDateString('sv-SE');
+    
+    for (const exercise_obj of exercises) {
+      const exercise = exercise_obj.exercise;
+      const sets = exercise_obj.sets;
+      let weight_record = 0;
+
+      for (const set of sets) {
+        if (set.weight > weight_record) weight_record = set.weight;
+      }
+
+      // Fetch personal best for exercise from database - view automatically updates pb on workout finish so we only compare it by date to check if it match
+      const { personal_best: exercise_pb } = await experienceModel.checkPersonalBestForExercise(exercise.exercise_id, exercise.exercise_type, user_id);
+      if (exercise_pb.weight === weight_record && date === exercise_pb.date) {
+        pb_count++;
+
+        // If user completed exercise 5 or more times, insert activity
+        const { count: total_exercise_completions } = await experienceModel.countTotalExerciseCompletions(exercise.exercise_id, exercise.exercise_type, user_id);
+        if (total_exercise_completions >= 5) {
+          await activitiesModel.insertActivity(user_id, 'personal_best', exercise_obj, user_id, 'public');
+        } 
+      }
+
+    }
+    return pb_count;
+  } catch (error) {
+    console.error('Error handling personal bests:', error.stack);
+    throw new Error('Failed to handle personal bests.');
   }
 }
 
@@ -186,4 +236,5 @@ module.exports = {
   userExperienceHandler,
   calculateMultiplier,
   calculateExperience,
+  personalBestHandler,
 }
