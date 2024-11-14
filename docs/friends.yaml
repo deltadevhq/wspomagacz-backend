@@ -112,3 +112,27 @@
         description: Unauthorized - Invalid or missing token
       404:
         description: Not Found - Friend not found
+
+/api/friends/leaderboards/exp:
+  get:
+    summary: Retrieve experience ranking with currently logged-in user friends
+    tags: [ Friends Leaderboards ]
+    responses:
+      200:
+        description: OK - Successfully retrieved friends ranking
+      401:
+        description: Unauthorized - Invalid or missing token
+      404:
+        description: Not Found - Friend list is empty
+
+/api/friends/leaderboards/weight:
+  get:
+    summary: Retrieve weight lifted ranking with currently logged-in user friends
+    tags: [ Friends Leaderboards ]
+    responses:
+      200:
+        description: OK - Successfully retrieved friends ranking
+      401:
+        description: Unauthorized - Invalid or missing token
+      404:
+        description: Not Found - Friend list is empty

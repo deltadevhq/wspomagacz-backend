@@ -51,6 +51,56 @@ const selectFriendRequests = async (user_id) => {
 }
 
 /**
+ * Function to fetch the experience leaderboard data for friends of a specified user
+ * 
+ * @param {number} user_id - The ID of the user whose friends leaderboard data is being retrieved
+ * @returns {Array} - An array of leaderboard entries for friends, or an empty array if no entries are found
+ */
+const selectFriendsExperienceLeaderboard = async (user_id) => {
+  const query = `
+    SELECT mle.*
+    FROM monthly_leaderboard_exp mle 
+    JOIN friends f ON f.sender_id = mle.user_id OR f.receiver_id = mle.user_id 
+    WHERE (f.sender_id = $1 OR f.receiver_id = $1) 
+    AND f.status = 'accepted'
+  `;
+  const values = [user_id];
+
+  try {
+    const result = await pool.query(query, values);
+    return result.rows.length > 0 ? result.rows : null;
+  } catch (error) {
+    console.error('Error executing query', error.stack);
+    throw error;
+  }
+}
+
+/**
+ * Function to fetch the weight leaderboard data for friends of a specified user
+ * 
+ * @param {number} user_id - The ID of the user whose friends leaderboard data is being retrieved
+ * @returns {Array} - An array of leaderboard entries for friends, or an empty array if no entries are found
+ */
+const selectFriendsWeightLeaderboard = async (user_id) => {
+  const query = `
+    SELECT mlw.*
+    FROM monthly_leaderboard_weight mlw
+    JOIN friends f ON f.sender_id = mlw.user_id OR f.receiver_id = mlw.user_id 
+    WHERE (f.sender_id = $1 OR f.receiver_id = $1) 
+    AND f.status = 'accepted'
+  `;
+  const values = [user_id];
+
+  try {
+    const result = await pool.query(query, values);
+    return result.rows.length > 0 ? result.rows : null;
+  } catch (error) {
+    console.error('Error executing query', error.stack);
+    throw error;
+  }
+}
+
+/**
  * Function to send a friend request to a specified user
  * 
  * @param {number} sender_id - The ID of the user sending the friend request
@@ -173,6 +223,7 @@ const deleteFriend = async (user_id, removed_friend_id) => {
  * 
  * @param {number} sender_id - The ID of the user sending the friend request
  * @param {number} receiver_id - The ID of the user receiving the friend request
+ * @param {'pending'|'rejected'|'accepted'} status - The status of the friend request
  * @returns {Array|null} - An array of existing pending friend requests if found, or null if no duplicates are found
  */
 const checkFriendRequestExists = async (sender_id, receiver_id, status = 'pending') => {
@@ -200,6 +251,8 @@ const checkFriendRequestExists = async (sender_id, receiver_id, status = 'pendin
 module.exports = {
   selectFriends,
   selectFriendRequests,
+  selectFriendsExperienceLeaderboard,
+  selectFriendsWeightLeaderboard,
   insertFriendRequest,
   updateFriendRequestWithAcceptance,
   updateFriendRequestWithRejection,

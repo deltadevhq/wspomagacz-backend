@@ -48,6 +48,50 @@ const fetchFriendRequests = async (req, res) => {
 }
 
 /**
+ * Handles requests to fetch the friends experience leaderboard for a user.
+ *
+ * @param {Request} req - The request object containing the logged-in user's ID in the body.
+ * @param {Response} res - The response object to return the leaderboard data or an error message.
+ * @returns {void} - Responds with the list of friends sorted by experience or an error message on failure.
+ */
+const fetchFriendsExperienceLeaderboard = async (req, res) => {
+  try {
+    const { logged_user_id } = req.body;
+
+    // Retrieve leaderboard based on friends experience points
+    const leaderboard = await friendsModel.selectFriendsExperienceLeaderboard(logged_user_id);
+    if (!leaderboard) return res.status(404).json({ error: 'Leaderboard not found.' });
+
+    res.status(200).json(leaderboard);
+  } catch (error) {
+    console.error('Error fetching friends experience leaderboard:', error.stack);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+/**
+ * Handles requests to fetch the friends weight leaderboard for a user.
+ *
+ * @param {Request} req - The request object containing the logged-in user's ID in the body.
+ * @param {Response} res - The response object to return the leaderboard data or an error message.
+ * @returns {void} - Responds with the list of friends sorted by weight lifted or an error message on failure.
+ */
+const fetchFriendsWeightLeaderboard = async (req, res) => {
+  try {
+    const { logged_user_id } = req.body;
+
+    // Retrieve leaderboard based on friends weight lifted
+    const leaderboard = await friendsModel.selectFriendsWeightLeaderboard(logged_user_id);
+    if (!leaderboard) return res.status(404).json({ error: 'Leaderboard not found.' });
+
+    res.status(200).json(leaderboard);
+  } catch (error) {
+    console.error('Error fetching friends experience leaderboard:', error.stack);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+/**
  * Handles requests to send a friend request to another user.
  *
  * @param {Request} req - The request object containing the recipient's ID in the URL parameters and the logged-in user's ID in the body.
@@ -206,6 +250,8 @@ const removeFriend = async (req, res) => {
 module.exports = {
   fetchFriends,
   fetchFriendRequests,
+  fetchFriendsExperienceLeaderboard,
+  fetchFriendsWeightLeaderboard,
   sendFriendRequest,
   acceptFriendRequest,
   rejectFriendRequest,

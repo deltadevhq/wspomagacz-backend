@@ -13,4 +13,8 @@ router.post('/accept/:from_id', validateInput(friendsSchema.acceptFriendRequestS
 router.post('/reject/:from_id', validateInput(friendsSchema.rejectFriendRequestSchema, 'params'), verifyToken, friendsController.rejectFriendRequest);
 router.delete('/:id', validateInput(friendsSchema.removeFriendSchema, 'params'), verifyToken, friendsController.removeFriend);
 
+// Friends Leaderboards
+router.get('/leaderboards/exp', verifyToken, friendsController.fetchFriendsExperienceLeaderboard);
+router.get('/leaderboards/weight', verifyToken, friendsController.fetchFriendsWeightLeaderboard);
+
 module.exports = router;
