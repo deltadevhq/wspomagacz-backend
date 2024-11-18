@@ -56,9 +56,9 @@ const baseUserSchema = {
     }),
 
   gender: Joi.string()
-    .valid('Male', 'Female', 'Not specified')
+    .valid('male', 'female', 'not_specified')
     .messages({
-      'any.only': 'Gender must be one of Male, Female, or Not specified',
+      'any.only': 'Gender must be "male", "female", or "not_specified"',
     }),
 
   birthday: Joi.date()
@@ -115,7 +115,7 @@ const baseUserSchema = {
       'number.positive': 'Height must be a positive number',
       'number.max': 'Height must be at most 250',
     }),
-}
+};
 
 /**
  * Specific validation schema for searching user profile
@@ -123,18 +123,18 @@ const baseUserSchema = {
  */
 const searchUserProfileSchema = Joi.object({
   id: baseUserSchema.id.optional(),
-  username: baseUserSchema.username.optional()
+  username: baseUserSchema.username.optional(),
 }).xor('id', 'username').messages({
-    'object.missing': 'Please provide either an ID or a username.',
-    'object.xor': 'Please provide either an ID or a username, but not both.'
-})
+  'object.missing': 'Please provide either an ID or a username.',
+  'object.xor': 'Please provide either an ID or a username, but not both.',
+});
 
 /**
  * Specific validation schema for fetching user achievements
  */
 const fetchUserAchievements = Joi.object({
   id: baseUserSchema.id.required().messages({ 'any.required': 'ID is required' }),
-})
+});
 
 /**
  * Specific validation schema for fetching user achievement
@@ -142,14 +142,14 @@ const fetchUserAchievements = Joi.object({
 const fetchUserAchievementById = Joi.object({
   id: baseUserSchema.id.required().messages({ 'any.required': 'ID is required' }),
   achievement_id: baseUserSchema.id.required().messages({ 'any.required': 'Achievement ID is required' }),
-})
+});
 
 /**
  * Specific validation schema for fetching user avatar
  */
 const fetchUserAvatar = Joi.object({
   id: baseUserSchema.id.required().messages({ 'any.required': 'ID is required' }),
-})
+});
 
 /**
  * Specific validation schema for user login
@@ -158,12 +158,12 @@ const loginSchema = Joi.object({
   username: Joi.alternatives()
     .try(
       baseUserSchema.username.required().messages({ 'any.required': 'Username is required' }),
-      baseUserSchema.email.required().messages({ 'any.required': 'Email is required' })
+      baseUserSchema.email.required().messages({ 'any.required': 'Email is required' }),
     ).messages({
-      'alternatives.match': 'Either a valid username or a valid email is required.'
+      'alternatives.match': 'Either a valid username or a valid email is required.',
     }),
   password: baseUserSchema.password.required().messages({ 'any.required': 'Password is required' }),
-})
+});
 
 /**
  * Specific validation schema for user registration
@@ -172,7 +172,7 @@ const registerSchema = Joi.object({
   username: baseUserSchema.username.required().messages({ 'any.required': 'Username is required' }),
   password: baseUserSchema.password.required().messages({ 'any.required': 'Password is required' }),
   email: baseUserSchema.email.required().messages({ 'any.required': 'Email is required' }),
-})
+});
 
 /**
  * Specific validation schema for patching user
@@ -180,7 +180,7 @@ const registerSchema = Joi.object({
 const patchUserSchema = Joi.object({
   id: baseUserSchema.id.required().messages({ 'any.required': 'ID is required' }),
   ...baseUserSchema,
-})
+});
 
 /**
  * Specific validation schema for user password change
@@ -188,7 +188,7 @@ const patchUserSchema = Joi.object({
 const patchPasswordSchema = Joi.object({
   password: baseUserSchema.password.required().messages({ 'any.required': 'Password is required' }),
   new_password: baseUserSchema.password.required().messages({ 'any.required': 'New password is required' }),
-})
+});
 
 module.exports = {
   baseUserSchema,
@@ -200,4 +200,4 @@ module.exports = {
   registerSchema,
   patchUserSchema,
   patchPasswordSchema,
-}
+};
