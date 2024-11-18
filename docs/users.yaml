@@ -114,7 +114,7 @@
       200:
         description: Successfully retrieved user avatar
         content:
-          image/jpeg: {}
+          image/jpeg: { }
       404:
         description: Not Found - User avatar not found
 
@@ -144,7 +144,7 @@
     parameters:
       - in: path
         name: id
-        description: The ID of the user whose achievements are being requested.
+        description: The ID of the user whose achievement categories are being requested.
         required: true
         schema:
           type: integer
@@ -197,7 +197,7 @@ components:
         gender:
           type: string
           example: Male
-          enum: [ Male, Female, Not specified ]
+          enum: [ male, female, not_specified ]
         birthday:
           type: date
           example: 2001-03-05
@@ -261,7 +261,7 @@ components:
         gender:
           type: string
           example: Male
-          enum: [ Male, Female, Not specified ]
+          enum: [ male, female, not_specified ]
         birthday:
           type: date
           example: 2001-03-05

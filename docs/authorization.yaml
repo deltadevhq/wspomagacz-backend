@@ -100,18 +100,54 @@
         description: Not Found - User not found
   delete:
     summary: Delete currently logged-in user
-    description: Deletes user and all associated data. Removes cookie with authorization token. Currently DELETE /api/users/{id}.
+    description: Deletes user and all associated data. Removes cookie with authorization token.
     tags: [ Authorization ]
     responses:
-      404:
-        description: Cannot DELETE /api/auth/user
+      200:
+        description: OK - Successfully deleted user
+      401:
+        description: Unauthorized - Invalid or missing token
+
   patch:
     summary: Patch currently logged-in user
-    description: Only display_name, gender, birthday, weights and height can be updated through this endpoint. Currently PATCH /api/users/{id}.
+    description: Only display_name, gender, birthday, weights and height can be updated through this endpoint.
     tags: [ Authorization ]
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              display_name:
+                type: string
+              gender:
+                type: string
+                enum: [ Male, Female, Not specified ]
+              birthday:
+                type: string
+                format: date
+              weights:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    date:
+                      type: string
+                      format: date
+                    weight:
+                      type: number
+              height:
+                type: number
     responses:
+      200:
+        description: OK - Successfully updated user data
+      400:
+        description: Bad Request - Invalid or missing user data
+      401:
+        description: Unauthorized - Invalid or missing token
       404:
-        description: Cannot PATCH /api/auth/user
+        description: Not Found - User not found
 
 /api/auth/user/avatar:
   patch:
