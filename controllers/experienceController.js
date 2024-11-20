@@ -1,6 +1,8 @@
 // eslint-disable-next-line no-unused-vars
 const { Response, Request } = require('express');
+const achievementController = require('../controllers/achievementController');
 const experienceModel = require('../models/experienceModel');
+const achievementModel = require('../models/achievementModel');
 const activitiesModel = require('../models/activitiesModel');
 const notificationModel = require('../models/notificationModel');
 const userModel = require('../models/userModel');
@@ -83,52 +85,105 @@ const getXpByLevel = async (req, res) => {
 }
 
 /**
- * Handles user experience processing after a workout.
+ * Handles requests to grant experience points to users after a workout and
+ * handle personal bests and achievements.
  *
- * @param {Object} workout - The workout object containing workout details.
- * @returns {Object} - Returns the history result of experience granted.
+ * @param {Object} workout - The workout data object, containing the user ID, exercises, and date.
+ * @returns {Promise<Object>} - A promise that resolves with an object containing the granted
+ *   experience points and an array of the user's achievements progress.
  */
 const userExperienceHandler = async (workout) => {
   try {
-    // Fetch user actual experience
-    const user = await userModel.selectUserById(workout.user_id);
-    if (!user) {
-      throw new Error(`User with ID ${workout.user_id} not found.`);
+    // Deconstruct workout data
+    const { user_id: user_id, exercises: workout_exercises, date: workout_date } = workout;
+
+    // Initialize sum of granted experience
+    let sum_of_granted_xp = 0;
+
+    // Fetch user weights
+    const { weights: user_weights } = await userModel.selectUserById(user_id);
+
+    // Calculate experience based on workout exercises
+    const exp = calculateWorkoutExperience(workout_exercises, user_weights);
+
+    // Calculate events multiplier for workout
+    const multiplier = await calculateMultiplier(user_id);
+
+    // Grant experience for workout
+    const { exp_granted: workout_exp_granted, experience_history } = await grantExperienceHandler(user_id, exp, multiplier);
+    sum_of_granted_xp += workout_exp_granted;
+
+    // Grant experience for achievements
+    let user_achievements = [];
+    const achievements_progress = await achievementController.workoutAchievementsHandler(workout_exercises, user_id, user_weights);
+    for (const achievement of achievements_progress) {
+      const { achievement_id, current_value, achieved, exp } = achievement;
+      let experience_history_id = null;
+
+      if (achieved) {
+        const { exp_granted, experience_history } = await grantExperienceHandler(user_id, exp);
+        experience_history_id = experience_history.id;
+        sum_of_granted_xp += exp_granted;
+
+        await activitiesModel.insertActivity(user_id, 'achievement', achievement, user_id, 'public');
+      }
+
+      const user_achievement = await achievementModel.insertUserAchievement(user_id, achievement_id, current_value, achieved, experience_history_id);
+      user_achievements.push(user_achievement);
     }
+
+    // Grant experience for each personal best
+    const pb_count = await personalBestHandler(workout_exercises, workout_date, user_id);
+    for (let i = 0; i < pb_count; i++) {
+      i = i + 1;
+      const { exp_granted: pb_exp_granted } = await grantExperienceHandler(user_id, 1, PERSONAL_BEST_EXTRA_EXP);
+      sum_of_granted_xp += pb_exp_granted;
+    }
+
+    return { sum_of_granted_xp, user_achievements, experience_history };
+  } catch (error) {
+    console.error(`Error in user experience handler for workout id: ${workout.id}, user id: ${workout.user_id}:`, error.stack);
+    throw new Error('Failed to process user experience after workout.');
+  }
+}
+
+/**
+ * Grants experience points to a user and handles level up logic.
+ * 
+ * @param {number} user_id - The ID of the user
+ * @param {number} exp - The experience points to be granted
+ * @param {number} [multiplier=1.00] - The multiplier for the experience points
+ * @returns {Promise<number>} - The granted experience points
+ */
+const grantExperienceHandler = async (user_id, exp = 0, multiplier = 1.00) => {
+  try {
+    // Fetch user actual experience
+    const user = await userModel.selectUserById(user_id);
 
     const exp_before = user.exp;
     const lvl_before = user.level;
 
-    // Calculate experience granted based on workout and user data
-    const exp = calculateExperience(workout.exercises, user);
-    const multiplier = await calculateMultiplier(workout.user_id);
-    const pb_count = await personalBestHandler(workout.exercises, workout.date, workout.user_id);
+    const exp_granted = Math.round((exp * multiplier));
 
-    console.log(`XP granted: ${exp}, multiplier: ${multiplier}, PB count: ${pb_count}`);
-    console.log(`XP granted without PB: ${exp * multiplier}, XP granted with PB: ${(exp * multiplier) + (pb_count * PERSONAL_BEST_EXTRA_EXP)}`);
-
-    const exp_granted = Math.round((exp * multiplier) + (pb_count * PERSONAL_BEST_EXTRA_EXP));
-
-    // Calculate user experience after grant
     const exp_after = exp_before + exp_granted;
     const progression = await getLevelByXpHandler(exp_after);
     const lvl_after = progression.level;
 
     // Grant experience and level for user and insert row in history
-    await experienceModel.insertExperience(workout.user_id, exp_after, lvl_after);
-    const history_result = await experienceModel.insertExperienceHistory(workout.user_id, exp_granted, exp_before, exp_after, lvl_before, lvl_after);
+    await experienceModel.insertExperience(user_id, exp_after, lvl_after);
+    const experience_history = await experienceModel.insertExperienceHistory(user_id, exp_granted, exp_before, exp_after, lvl_before, lvl_after);
 
     // Publish level up activity and send notification to user
     if (lvl_before < lvl_after) {
-      history_result.multiplier = multiplier;
-      await activitiesModel.insertActivity(workout.user_id, 'level_up', history_result, workout.user_id, 'public');
-      await notificationModel.insertNotification(workout.user_id, 'level_up', history_result, workout.user_id);
+      experience_history.multiplier = multiplier;
+      await activitiesModel.insertActivity(user_id, 'level_up', experience_history, user_id, 'public');
+      await notificationModel.insertNotification(user_id, 'level_up', experience_history, user_id);
     }
 
-    return history_result;
+    return { exp_granted, experience_history };
   } catch (error) {
-    console.error(`Error in user experience handler for workout id: ${workout.id}, user id: ${workout.user_id}:`, error.stack);
-    throw new Error('Failed to process user experience after workout.');
+    console.error(`Error in user experience handler for user id: ${user_id}:`, error.stack);
+    throw new Error('Failed to process user experience.');
   }
 }
 
@@ -162,10 +217,10 @@ const calculateMultiplier = async (user_id) => {
  * @param {Object} user - The user object containing information such as weights.
  * @returns {number} - The total experience calculated based on the exercises.
  */
-const calculateExperience = (exercises, user) => {
+const calculateWorkoutExperience = (exercises, user_weights) => {
   try {
     let xp = 0;
-    const bodyweight = user.weights ? [user.weights.length - 1]?.weight ?? user.weights[user.weights.length - 1].weight : DEFAULT_BODY_WEIGHT;
+    const bodyweight = user_weights ? user_weights[user_weights.length - 1] : DEFAULT_BODY_WEIGHT;
 
     // Sum XP from exercises
     for (const exercise_obj of exercises) {
@@ -200,7 +255,7 @@ const personalBestHandler = async (exercises, date, user_id) => {
   try {
     let pb_count = 0;
     date = date.toLocaleDateString('sv-SE');
-    
+
     for (const exercise_obj of exercises) {
       const exercise = exercise_obj.exercise;
       const sets = exercise_obj.sets;
@@ -219,7 +274,7 @@ const personalBestHandler = async (exercises, date, user_id) => {
         const { count: total_exercise_completions } = await experienceModel.countTotalExerciseCompletions(exercise.exercise_id, exercise.exercise_type, user_id);
         if (total_exercise_completions >= 5) {
           await activitiesModel.insertActivity(user_id, 'personal_best', exercise_obj, user_id, 'public');
-        } 
+        }
       }
 
     }
@@ -235,6 +290,7 @@ module.exports = {
   getXpByLevel,
   userExperienceHandler,
   calculateMultiplier,
-  calculateExperience,
+  calculateWorkoutExperience,
   personalBestHandler,
+  grantExperienceHandler,
 }

@@ -74,7 +74,10 @@ const selectWorkoutByDate = async (user_id, date) => {
  * @returns {Object|null} - The workout summary if found, otherwise null.
  */
 const selectWorkoutSummary = async (workout_id) => {
-  const query = 'SELECT * FROM workout_summaries WHERE workout_id = $1';
+  const query = `
+    SELECT * FROM workout_summaries ws 
+    WHERE workout_id = $1
+  `;
   const values = [workout_id];
 
   try {
@@ -130,6 +133,30 @@ const insertWorkoutSummary = async (workout_id, experience_history_id, duration,
     RETURNING *
   `;
   const values = [workout_id, experience_history_id, duration, total_weight];
+
+  try {
+    const result = await pool.query(query, values);
+    return result.rows.length > 0 ? result.rows[0] : null;
+  } catch (error) {
+    console.error('Error executing query', error.stack);
+    throw error;
+  }
+}
+
+/**
+ * Inserts a new workout achievement record into the database.
+ *
+ * @param {number} workout_summary_id - The ID of the workout summary associated with the achievement.
+ * @param {number} user_achievement_id - The ID of the user achievement to associate with the workout.
+ * @returns {Object|null} - The newly created workout achievement object if successful, or null if the insert failed.
+ */
+const insertWorkoutAchievement = async (workout_summary_id, user_achievement_id) => {
+  const query = `
+    INSERT INTO workout_achievements (workout_summary_id, user_achievement_id)
+    VALUES ($1, $2)
+    RETURNING *
+  `;
+  const values = [workout_summary_id, user_achievement_id];
 
   try {
     const result = await pool.query(query, values);
@@ -293,6 +320,7 @@ module.exports = {
   selectWorkoutSummary,
   insertWorkout,
   insertWorkoutSummary,
+  insertWorkoutAchievement,
   updateWorkout,
   updateWorkoutWithStart,
   updateWorkoutWithStop,

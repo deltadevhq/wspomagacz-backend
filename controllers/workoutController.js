@@ -311,15 +311,18 @@ const finishWorkout = async (req, res = null) => {
     else await activitiesModel.insertActivity(user_id, 'workout', finished_workout, user_id, 'private');
 
     // Grant experience to user for finished workout
-    let experience_grant;
-    if (res) experience_grant = await experienceController.userExperienceHandler(finished_workout);
-    else experience_grant = await experienceController.userExperienceHandler(finished_workout);
+    let experience_result;
+    if (res) experience_result = await experienceController.userExperienceHandler(finished_workout);
+    else experience_result = await experienceController.userExperienceHandler(finished_workout);
 
     // Insert workout summary for finished workout
-    await workoutModel.insertWorkoutSummary(workout_id, experience_grant.id, workout_duration, total_weight);
+    const { id: workout_summary_id } = await workoutModel.insertWorkoutSummary(workout_id, experience_result.experience_history.id, workout_duration, total_weight);
+    for (const { id: user_achievement_id } of experience_result.user_achievements) {
+      await workoutModel.insertWorkoutAchievement(workout_summary_id, user_achievement_id);
+    }
 
     // Successful response with updated workout data
-    if (res) res.status(200).json({ finished_workout, experience_grant });
+    if (res) res.status(200).json(finished_workout);
   } catch (error) {
     console.error('Error finishing workout:', error.stack);
     if (res) res.status(500).json({ error: 'Internal server error' });
