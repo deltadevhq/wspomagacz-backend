@@ -115,17 +115,20 @@ const userExperienceHandler = async (workout) => {
 
     // Grant experience for achievements
     let user_achievements = [];
-    const achievements_progress = await achievementController.workoutAchievementsHandler(workout_exercises, user_id, user_weights);
-    for (const achievement of achievements_progress) {
-      const { achievement_id, current_value, achieved, exp } = achievement;
+    const achievements_progress = await achievementController.postWorkoutAchievementsHandler(workout_exercises, user_id, user_weights);
+    for (const achievement_progress of achievements_progress) {
       let experience_history_id = null;
+      const { achievement, current_value, achieved, exp } = achievement_progress;
+      const { id: achievement_id, tier } = achievement;
 
       if (achieved) {
         const { exp_granted, experience_history } = await grantExperienceHandler(user_id, exp);
         experience_history_id = experience_history.id;
         sum_of_granted_xp += exp_granted;
-
-        await activitiesModel.insertActivity(user_id, 'achievement', achievement, user_id, 'public');
+        
+        if (tier >= 3) {
+          await activitiesModel.insertActivity(user_id, 'achievement', achievement, user_id, 'public');
+        }
       }
 
       const user_achievement = await achievementModel.insertUserAchievement(user_id, achievement_id, current_value, achieved, experience_history_id);

@@ -29,6 +29,29 @@ const selectWorkouts = async (user_id, status, date, offset = 0, limit = 10) => 
 }
 
 /**
+ * Counts the number of workouts that a user has completed.
+ *
+ * @param {number} user_id - The ID of the user whose completed workouts are being counted.
+ * @returns {Array|null} - The count of completed workouts if successful, or null if the query fails.
+ */
+const selectUserCompletedWorkoutsCount = async (user_id) => {
+  const query = `
+    SELECT count(id) AS workout_count FROM workouts 
+    WHERE user_id = $1 
+    AND status = 'completed'
+  `;
+  const values = [user_id];
+
+  try {
+    const result = await pool.query(query, values);
+    return result.rows.length > 0 ? result.rows[0] : null;
+  } catch (error) {
+    console.error('Error executing query', error.stack);
+    throw error;
+  }
+}
+
+/**
  * Selects a workout from the database by its ID.
  *
  * @param {number} workout_id - The ID of the workout to select.
@@ -315,6 +338,7 @@ const checkWorkoutCollision = async (user_id, date) => {
 
 module.exports = {
   selectWorkouts,
+  selectUserCompletedWorkoutsCount,
   selectWorkoutById,
   selectWorkoutByDate,
   selectWorkoutSummary,
@@ -327,4 +351,5 @@ module.exports = {
   updateWorkoutWithFinish,
   deleteWorkout,
   checkWorkoutCollision,
+  
 }

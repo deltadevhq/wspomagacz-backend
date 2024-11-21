@@ -111,10 +111,6 @@ const putWorkout = async (req, res) => {
   const { error } = workoutSchema.isWorkoutDateNotInPast.validate({ date: date });
   if (error) return res.status(400).json({ error: error.details[0].message });
 
-  // Check if a workout with the same date already exists for the user
-  const collided_workout = await workoutModel.checkWorkoutCollision(logged_user_id, date);
-  if (collided_workout) return res.status(409).json({ error: `Workout with date '${date}' already exists for currently logged user` });
-
   if (workout_id) {
     try {
       // Check if workout exists
@@ -138,6 +134,10 @@ const putWorkout = async (req, res) => {
     }
   } else {
     try {
+      // Check if a workout with the same date already exists for the user
+      const collided_workout = await workoutModel.checkWorkoutCollision(logged_user_id, date);
+      if (collided_workout) return res.status(409).json({ error: `Workout with date '${date}' already exists for currently logged user` });
+      
       // Create new workout in the database
       const created_workout = await workoutModel.insertWorkout(related_workout_id, logged_user_id, workout_name, parsed_exercises, date, notes);
 
@@ -297,7 +297,7 @@ const finishWorkout = async (req, res = null) => {
     // Sum total weight of exercises
     const user = await userModel.selectUserById(user_id);
     let total_weight = 0;
-    const bodyweight = user.weights ? [user.weights.length-1]?.weight ?? user.weights[user.weights.length-1].weight : 40;
+    const bodyweight = user.weights ? [user.weights.length - 1]?.weight ?? user.weights[user.weights.length - 1].weight : 40;
     for (const exercise_obj of exercises) {
       const exercise = exercise_obj.exercise;
       exercise_obj.sets.forEach(set => {
@@ -305,7 +305,7 @@ const finishWorkout = async (req, res = null) => {
         else total_weight += set.reps * set.weight;
       });
     }
-    
+
     // Insert activity for finished workout
     if (res) await activitiesModel.insertActivity(user_id, 'workout', finished_workout, user_id, 'public');
     else await activitiesModel.insertActivity(user_id, 'workout', finished_workout, user_id, 'private');
