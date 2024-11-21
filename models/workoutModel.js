@@ -98,8 +98,8 @@ const selectWorkoutByDate = async (user_id, date) => {
  */
 const selectWorkoutSummary = async (workout_id) => {
   const query = `
-    SELECT * FROM workout_summaries ws 
-    WHERE workout_id = $1
+    SELECT * FROM workout_summaries_view wsv 
+    WHERE wsv.id = $1
   `;
   const values = [workout_id];
 
