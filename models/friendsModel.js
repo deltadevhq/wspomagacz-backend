@@ -43,7 +43,16 @@ const selectFriends = async (user_id) => {
  */
 const selectFriendRequests = async (user_id) => {
   const query = `
-    SELECT f.sender_id, u.username AS sender_username, f.receiver_id, f.status, f.requested_at
+    SELECT f.sender_id,
+           u.username AS sender_username,
+           json_build_object(
+             'id', u.id,
+             'display_name', u.display_name,
+             'username', u.username
+           )          AS "sender",
+           f.receiver_id,
+           f.status,
+           f.requested_at
     FROM friends f
            JOIN users u ON f.sender_id = u.id
     WHERE f.receiver_id = $1
