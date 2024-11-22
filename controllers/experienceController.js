@@ -3,6 +3,7 @@ const { Response, Request } = require('express');
 const achievementController = require('../controllers/achievementController');
 const experienceModel = require('../models/experienceModel');
 const achievementModel = require('../models/achievementModel');
+const workoutModel = require('../models/workoutModel');
 const activitiesModel = require('../models/activitiesModel');
 const notificationModel = require('../models/notificationModel');
 const userModel = require('../models/userModel');
@@ -276,7 +277,8 @@ const personalBestHandler = async (exercises, date, user_id) => {
         // If user completed exercise 5 or more times, insert activity
         const { count: total_exercise_completions } = await experienceModel.countTotalExerciseCompletions(exercise.exercise_id, exercise.exercise_type, user_id);
         if (total_exercise_completions >= 5) {
-          await activitiesModel.insertActivity(user_id, 'personal_best', exercise_obj, user_id, 'public');
+          const activity_data = await workoutModel.selectWorkoutExerciseStats(user_id, exercise.exercise_id, exercise.exercise_type);
+          await activitiesModel.insertActivity(user_id, 'personal_best', activity_data, user_id, 'public');
         }
       }
 

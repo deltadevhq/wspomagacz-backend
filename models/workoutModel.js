@@ -113,6 +113,33 @@ const selectWorkoutSummary = async (workout_id) => {
 }
 
 /**
+ * Retrieves workout exercise statistics for a specified user, exercise, and exercise type.
+ *
+ * @param {number} user_id - The ID of the user whose exercise statistics are being retrieved.
+ * @param {number} exercise_id - The ID of the exercise whose statistics are being retrieved.
+ * @param {string} exercise_type - The type of the exercise (custom or standard) whose statistics are being retrieved.
+ * @returns {Object|null} - The workout exercise statistics object if found, otherwise null.
+ */
+const selectWorkoutExerciseStats = async (user_id, exercise_id, exercise_type) => {
+  const query = `
+    SELECT e.*, ues.data, ues.personal_best FROM user_workout_exercise_stats ues
+    JOIN exercises e ON e.id = ues.exercise_id
+    WHERE ues.user_id = $1 
+    AND ues.exercise_id = $2 
+    AND ues.exercise_type = $3
+  `;
+  const values = [user_id, exercise_id, exercise_type];
+
+  try {
+    const result = await pool.query(query, values);
+    return result.rows.length > 0 ? result.rows[0] : null;
+  } catch (error) {
+    console.error('Error executing query', error.stack);
+    throw error;
+  }
+}
+
+/**
  * Inserts a new workout into the database.
  *
  * @param {number} related_workout_id - The ID of the related workout, if any.
@@ -342,6 +369,7 @@ module.exports = {
   selectWorkoutById,
   selectWorkoutByDate,
   selectWorkoutSummary,
+  selectWorkoutExerciseStats,
   insertWorkout,
   insertWorkoutSummary,
   insertWorkoutAchievement,
