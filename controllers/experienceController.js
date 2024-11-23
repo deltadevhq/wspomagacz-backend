@@ -126,7 +126,7 @@ const userExperienceHandler = async (workout) => {
         const { exp_granted, experience_history } = await grantExperienceHandler(user_id, exp);
         experience_history_id = experience_history.id;
         sum_of_granted_xp += exp_granted;
-        
+
         if (tier >= 3) {
           await activitiesModel.insertActivity(user_id, 'achievement', achievement, user_id, 'public');
         }
@@ -141,6 +141,7 @@ const userExperienceHandler = async (workout) => {
     for (let i = 0; i < pb_count; i++) {
       i = i + 1;
       const { exp_granted: pb_exp_granted } = await grantExperienceHandler(user_id, 1, PERSONAL_BEST_EXTRA_EXP);
+
       sum_of_granted_xp += pb_exp_granted;
     }
 
@@ -182,6 +183,28 @@ const grantExperienceHandler = async (user_id, exp = 0, multiplier = 1.00) => {
       experience_history.multiplier = multiplier;
       await activitiesModel.insertActivity(user_id, 'level_up', experience_history, user_id, 'public');
       await notificationModel.insertNotification(user_id, 'level_up', experience_history, user_id);
+
+      const level_up_achievements = await achievementController.userLevelUpAchievementsHandler(user_id, lvl_after);
+
+      if (level_up_achievements) {
+        for (const level_up_achievement of level_up_achievements) {
+
+          let experience_history_id = null;
+          const { achievement, current_value, achieved, exp } = level_up_achievement;
+          const { id: achievement_id, tier } = achievement;
+
+          if (achieved) {
+            const { experience_history } = await grantExperienceHandler(user_id, exp);
+            experience_history_id = experience_history.id;
+
+            if (tier >= 3) {
+              await activitiesModel.insertActivity(user_id, 'achievement', achievement, user_id, 'public');
+            }
+          }
+
+          await achievementModel.insertUserAchievement(user_id, achievement_id, current_value, achieved, experience_history_id);
+        }
+      }
     }
 
     return { exp_granted, experience_history };

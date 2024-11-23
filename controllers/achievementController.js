@@ -78,8 +78,46 @@ const postWorkoutAchievementsHandler = async (exercises, user_id, user_weights) 
   return achievements_progress.concat(exercises_achievements_progress, workout_achievements_progress);
 };
 
+const userLevelUpAchievementsHandler = async (user_id, level_after) => {
+  let achievements_progress = [];
+
+  // Select initial values from database
+  const user_achievements = await userModel.selectUserAchievements(user_id);
+  const all_achievements = await achievementModel.selectAchievements();
+
+  const level_up_achievements = all_achievements.filter(achievement => achievement.type === 'level_achieved');
+
+  for (const achievement of level_up_achievements) {
+    const { id: achievement_id, min_value, target_value, xp: exp } = achievement;
+
+    const user_achievement = user_achievements.find(user_achievement => user_achievement.achievement_id === achievement_id);
+    if (user_achievement?.achieved) {
+      continue;
+    }
+
+    const new_value = Math.min(level_after, target_value);
+
+    if (new_value <= min_value) {
+      continue;
+    }
+
+    const achievement_progress = {
+      achievement,
+      user_id,
+      current_value: new_value,
+      achieved: new_value >= target_value,
+      exp,
+    }
+
+    achievements_progress.push(achievement_progress);
+  }
+
+  return achievements_progress;
+}
+
 module.exports = {
   fetchAchievements,
   fetchAchievementById,
-  postWorkoutAchievementsHandler
+  postWorkoutAchievementsHandler,
+  userLevelUpAchievementsHandler,
 }

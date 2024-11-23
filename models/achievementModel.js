@@ -56,8 +56,8 @@ const selectAchievementById = async (achievement_id) => {
  */
 const insertUserAchievement = async (user_id, achievement_id, current_value, achieved, experience_history_id) => {
   const query = `
-    INSERT INTO user_achievements (user_id, achievement_id, current_value, achieved, experience_history_id)
-    VALUES ($1, $2, $3, $4, $5)
+    INSERT INTO user_achievements (updated_at, user_id, achievement_id, current_value, achieved, experience_history_id)
+    VALUES (NOW(), $1, $2, $3, $4, $5)
     ON CONFLICT (user_id, achievement_id) DO UPDATE SET updated_at = NOW(), current_value = $3, achieved = $4, experience_history_id = $5
     RETURNING *
   `;
