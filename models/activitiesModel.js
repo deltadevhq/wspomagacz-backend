@@ -57,7 +57,7 @@ const selectActivities = async (user_id, visibility, logged_user_id, offset = 0,
       AND (CASE WHEN $2 = FALSE THEN ua.hidden = $2 ELSE TRUE END)
     GROUP BY ua.id, ua.created_at, u.id, creator.id, ual.user_id
     ORDER BY ua.created_at DESC
-    LIMIT $4 OFFSET $5;
+    LIMIT $4 OFFSET $5
   `;
   const hidden = visibility === 'private';
   const values = [user_id, hidden, logged_user_id, limit, offset];

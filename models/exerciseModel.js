@@ -7,10 +7,16 @@ const { pool } = require('../config/database');
  * @param {string|null} type - The type of exercises to filter by ('custom', 'standard', or 'all'). If 'all', retrieves all exercise types.
  * @returns {Array|null} - An array of exercise objects if found, or null if no exercises match the criteria.
  */
-const selectExercises = async (user_id, type) => {
-  const query = 'SELECT * FROM all_exercises WHERE (user_id = COALESCE($1, user_id) OR user_id IS NULL) AND exercise_type = COALESCE($2, exercise_type) ORDER BY exercise_type DESC, exercise_id';
+const selectExercises = async (user_id, type, offset = 0, limit = 20) => {
+  const query = `
+    SELECT * FROM all_exercises
+    WHERE (user_id = COALESCE($1, user_id) OR user_id IS NULL) 
+    AND exercise_type = COALESCE($2, exercise_type) 
+    ORDER BY exercise_type DESC, exercise_id
+    LIMIT $3 OFFSET $4
+  `;
   if (type === 'all') type = null;
-  const values = [user_id, type];
+  const values = [user_id, type, limit, offset];
 
   try {
     const result = await pool.query(query, values);

@@ -50,6 +50,8 @@ const baseExerciseSchema = {
 const fetchExercisesSchema = Joi.object({
   type: baseExerciseSchema.exercise_type,
   user_id: baseExerciseSchema.user_id,
+  offset: baseRequestSchema.offset,
+  limit: baseRequestSchema.limit,
 })
 
 /**

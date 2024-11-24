@@ -12,7 +12,7 @@ const userModel = require('../models/userModel');
  */
 const fetchExercises = async (req, res) => {
   try {
-    const { user_id, type: exercise_type } = req.query;
+    const { user_id, type: exercise_type, offset, limit } = req.query;
 
     // Check user existence if user_id is provided
     if (user_id) {
@@ -21,7 +21,7 @@ const fetchExercises = async (req, res) => {
     }
 
     // Fetch exercises from database
-    const exercises = await exerciseModel.selectExercises(user_id, exercise_type);
+    const exercises = await exerciseModel.selectExercises(user_id, exercise_type, offset, limit);
 
     // Successful response with all exercises
     res.status(200).json(exercises);

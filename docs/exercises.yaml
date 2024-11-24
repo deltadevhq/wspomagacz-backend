@@ -15,6 +15,20 @@
           type: string
           enum: [ all, custom, standard ]
         description: Type of exercises which will be shown
+      - in: query
+        name: offset
+        description: The number of items to skip for pagination. Use this to retrieve the next set of results.
+        required: false
+        schema:
+          type: integer
+          default: 0
+      - in: query
+        name: limit
+        description: The maximum number of items to return. This helps limit the size of the response for better performance.
+        required: false
+        schema:
+          type: integer
+          default: 20
     responses:
       200:
         description: OK - Successfully retrieved exercises
