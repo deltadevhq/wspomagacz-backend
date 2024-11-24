@@ -39,6 +39,32 @@ const selectUserByUsername = async (username) => {
 }
 
 /**
+ * Retrieves a list of users whose usernames match the specified pattern, with optional pagination.
+ *
+ * @param {string} username - The pattern to match usernames against (case-insensitive).
+ * @param {number} [offset=0] - The number of records to skip (for pagination).
+ * @param {number} [limit=10] - The maximum number of records to return (for pagination).
+ * @returns {Array} - An array of user objects that match the criteria, or an empty array if no matches are found.
+ */
+const selectUsersByUsername = async (username, offset = 0, limit = 10) => {
+  const query = `
+    SELECT * FROM users
+    WHERE username ILIKE '%' || $1 || '%'
+    ORDER BY username
+    LIMIT $2 OFFSET $3
+  `;
+  const values = [username, limit, offset];
+
+  try {
+    const result = await pool.query(query, values);
+    return result.rows.length > 0 ? result.rows : [];
+  } catch (error) {
+    console.error('Error executing query', error.stack);
+    throw error;
+  }
+}
+
+/**
  * Selects a single user from the database by their email.
  *
  * @param {string} email - The email address of the user to search for.
@@ -305,6 +331,7 @@ const deleteUser = async (user_id) => {
 module.exports = {
   selectUserById,
   selectUserByUsername,
+  selectUsersByUsername,
   selectUserByEmail,
   selectUserAchievements,
   selectUserAchievementById,

@@ -1,44 +1,11 @@
-/api/users/search:
-  get:
-    summary: Get user profile data
-    description: This endpoint requires authorization token
-    tags: [ User Profile ]
-    parameters:
-      - in: query
-        name: id
-        required: false
-        schema:
-          type: integer
-      - in: query
-        name: username
-        required: false
-        schema:
-          type: string
-    responses:
-      200:
-        description: Successfully retrieved user profile
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UserProfile"
-      400:
-        description: Bad request - Invalid user ID
-      401:
-        description: Unauthorized - Invalid or missing token
-      403:
-        description: Forbidden - Token does not have the required permissions
-      404:
-        description: Not Found - User not found
-
 /api/users:
   get:
-    deprecated: true
     summary: Retrieve users
     tags: [ User Profile ]
     parameters:
       - in: query
         name: username
-        required: false
+        required: true
         schema:
           type: string
       - in: query
@@ -74,7 +41,6 @@
 
 /api/users/{id}:
   get:
-    deprecated: true
     summary: Get user by ID
     tags: [ User Profile ]
     parameters:
@@ -84,20 +50,20 @@
         schema:
           type: integer
     responses:
-    200:
-      description: Successfully retrieved user
-      content:
-      application/json:
-        schema:
-        $ref: "#/components/schemas/User"
-    400:
-      description: Bad request - Invalid user ID
-    401:
-      description: Unauthorized - Invalid or missing token
-    403:
-      description: Forbidden - Token does not have the required permissions
-    404:
-      description: Not Found - User not found
+      200:
+        description: Successfully retrieved user
+        content:
+        application/json:
+          schema:
+          $ref: "#/components/schemas/User"
+      400:
+        description: Bad request - Invalid user ID
+      401:
+        description: Unauthorized - Invalid or missing token
+      403:
+        description: Forbidden - Token does not have the required permissions
+      404:
+        description: Not Found - User not found
 
 /api/users/{id}/avatar:
   get:

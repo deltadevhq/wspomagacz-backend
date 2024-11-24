@@ -118,15 +118,25 @@ const baseUserSchema = {
 };
 
 /**
- * Specific validation schema for searching user profile
- * Requires either `id` or `username`, but not both.
+ * Specific validation schema for fetching user profile by username
  */
-const searchUserProfileSchema = Joi.object({
-  id: baseUserSchema.id.optional(),
-  username: baseUserSchema.username.optional(),
-}).xor('id', 'username').messages({
-  'object.missing': 'Please provide either an ID or a username.',
-  'object.xor': 'Please provide either an ID or a username, but not both.',
+const fetchUserProfileByUsername = Joi.object({
+  username: baseUserSchema.username
+    .required()
+    .min(1)
+    .messages({ 
+      'any.required': 'Username is required', 
+      'string.min': 'Username must be at least 1 character long',
+    }),
+  limit: baseRequestSchema.limit,
+  offset: baseRequestSchema.offset,
+});
+
+/**
+ * Specific validation schema for fetching user profile by username
+ */
+const fetchUserProfileById = Joi.object({
+  id: baseUserSchema.id.required().messages({ 'any.required': 'ID is required' }),
 });
 
 /**
@@ -200,7 +210,8 @@ const patchPasswordSchema = Joi.object({
 
 module.exports = {
   baseUserSchema,
-  searchUserProfileSchema,
+  fetchUserProfileByUsername,
+  fetchUserProfileById,
   fetchUserAchievements,
   fetchUserAchievementById,
   fetchUserExerciseStats,

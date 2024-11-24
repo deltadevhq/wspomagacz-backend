@@ -4,22 +4,59 @@ const userModel = require('../models/userModel');
 const system_user_id = 1;
 
 /**
- * Searches for a user profile by ID or username and returns public user information.
+ * Fetches user profiles by username, with optional pagination.
  *
- * @param {Request} req - The request object containing either the user ID or username as query parameters.
- * @param {Response} res - The response object used to send the user data or an error message.
- * @returns {void} - Sends a response with the user's public information or an error.
+ * @param {Request} req - The request object containing the query parameters: username, limit, and offset.
+ * @param {Response} res - The response object used to send the list of user profiles or an error message.
+ * @returns {void} - Sends a response with an array of user profiles or an error message if the fetch fails.
  */
-const searchUserProfile = async (req, res) => {
+const fetchUserProfileByUsername = async (req, res) => {
   try {
-    const { id: user_id, username } = req.query;
+    const { username, offset, limit } = req.query;
 
-    let user;
-    if (username) user = await userModel.selectUserByUsername(username);
-    else user = await userModel.selectUserById(user_id);
+    const users = await userModel.selectUsersByUsername(username, offset, limit);
 
-    // If no user is found, return a 404 response
-    if (!user) return res.status(404).json({ error: 'User not found.' });
+    let public_users_data = [];
+    users.forEach((user) => {
+
+      // Construct an object with public user information
+      const public_user_data = {
+        id: user.id,
+        username: user.username,
+        display_name: user.display_name,
+        gender: user.gender,
+        birthday: user.birthday,
+        status: user.status,
+        level: user.level,
+        exp: user.exp,
+        weights: user.weights,
+        height: user.height,
+      };
+
+      public_users_data.push(public_user_data);
+    });
+
+    // Successful response with sanitized user data
+    res.status(200).json(public_users_data);
+  } catch (error) {
+    console.error('Error fetching user by username:', error.stack);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+/**
+ * Fetches a user profile by their user ID.
+ *
+ * @param {Request} req - The request object containing the user ID as a route parameter.
+ * @param {Response} res - The response object used to send the user profile or an error message.
+ * @returns {void} - Sends a response with the user profile or an error message if the fetch fails.
+ */
+const fetchUserProfileById = async (req, res) => {
+  try {
+    const { id: user_id } = req.params;
+
+    const user = await userModel.selectUserById(user_id);
+    if (!user) return res.status(404).json({ error: 'User not found' });
 
     // Construct an object with public user information
     const public_user_data = {
@@ -152,7 +189,8 @@ const fetchUserAvatar = async (req, res) => {
 }
 
 module.exports = {
-  searchUserProfile,
+  fetchUserProfileByUsername,
+  fetchUserProfileById,
   fetchUserAchievements,
   fetchUserAchievementById,
   fetchUserExerciseStats,
