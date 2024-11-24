@@ -50,6 +50,9 @@ const baseExerciseSchema = {
 const fetchExercisesSchema = Joi.object({
   type: baseExerciseSchema.exercise_type,
   user_id: baseExerciseSchema.user_id,
+  name: baseExerciseSchema.exercise_name
+    .min(1)
+    .messages({ 'string.min': 'Exercise name must be at least 1 character long' }),
   offset: baseRequestSchema.offset,
   limit: baseRequestSchema.limit,
 })

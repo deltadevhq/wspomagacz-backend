@@ -16,6 +16,12 @@
           enum: [ all, custom, standard ]
         description: Type of exercises which will be shown
       - in: query
+        name: name
+        description: Name of the exercise to search for
+        required: false
+        schema:
+          type: string
+      - in: query
         name: offset
         description: The number of items to skip for pagination. Use this to retrieve the next set of results.
         required: false
