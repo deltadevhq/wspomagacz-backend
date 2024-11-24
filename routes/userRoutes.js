@@ -13,6 +13,9 @@ router.get('/:id/avatar', validateInput(userSchema.fetchUserAvatar, 'params'), v
 router.get('/:id/achievements', validateInput(userSchema.fetchUserAchievements, 'params'), verifyToken, userController.fetchUserAchievements);
 router.get('/:id/achievements/:achievement_id', validateInput(userSchema.fetchUserAchievementById, 'params'), verifyToken, userController.fetchUserAchievementById);
 
+// User Statistics
+router.get('/:id/exercises/:exercise_id/stats', validateInput(userSchema.fetchUserExerciseStats, 'params'), verifyToken, userController.fetchUserExerciseStats);
+
 // TODO: GET /API/USERS
 // TODO: GET /API/USERS/ID
 

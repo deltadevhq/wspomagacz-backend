@@ -158,6 +158,34 @@
       404:
         description: Not Found - Achievement not found
 
+/api/users/{id}/exercises/{exercise_id}/stats:
+  get:
+    summary: Get user exercise statistics
+    tags: [ User Statistics ]
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      - in: path
+        name: exercise_id
+        required: true
+        schema:
+          type: integer
+    responses:
+      200:
+        description: Successfully retrieved user exercise statistics
+      400:
+        description: Bad request - Invalid user ID or exercise ID
+      401:
+        description: Unauthorized - Invalid or missing token
+      403:
+        description: Forbidden - Token does not have the required permissions
+      404:
+        description: Not Found - User not found
+
+
 components:
   schemas:
     User:

@@ -104,6 +104,30 @@ const selectUserAchievementById = async (user_id, achievement_id) => {
 }
 
 /**
+ * Retrieves exercise statistics for a specific user and exercise.
+ *
+ * @param {number} user_id - The ID of the user whose exercise statistics are being retrieved.
+ * @param {number} exercise_id - The ID of the exercise whose statistics are being retrieved.
+ * @returns {Object|null} - The exercise statistics object if found, or null if not found.
+ */
+const selectUserExerciseStats = async (user_id, exercise_id) => {
+  const query = `
+    SELECT * FROM user_workout_exercise_stats
+    WHERE user_id = $1
+    AND exercise_id = $2
+  `;
+  const values = [user_id, exercise_id];
+
+  try {
+    const result = await pool.query(query, values);
+    return result.rows.length > 0 ? result.rows[0] : null;
+  } catch (error) {
+    console.error('Error executing query', error.stack);
+    throw error;
+  }
+}
+
+/**
  * Select user's avatar from the database.
  *
  * @param {number} user_id - The ID of the user whose avatar is to be fetched.
@@ -284,6 +308,7 @@ module.exports = {
   selectUserByEmail,
   selectUserAchievements,
   selectUserAchievementById,
+  selectUserExerciseStats,
   selectUserAvatarById,
   insertUser,
   updateUser,

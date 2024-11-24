@@ -97,6 +97,33 @@ const fetchUserAchievementById = async (req, res) => {
 }
 
 /**
+ * Fetches the exercise statistics for a specific user and exercise.
+ *
+ * @param {Request} req - The request object containing the user ID and exercise ID in the route parameters.
+ * @param {Response} res - The response object used to send the user's exercise statistics or an error message.
+ * @returns {void} - Sends a response with the user's exercise statistics or an error.
+ */
+const fetchUserExerciseStats = async (req, res) => {
+  try {
+    const { id: user_id, exercise_id } = req.params;
+
+    // Check user existence
+    const user = await userModel.selectUserById(user_id);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    // Fetch user exercise stats
+    const user_exercise_stats = await userModel.selectUserExerciseStats(user_id, exercise_id);
+
+    // Return the user's exercise stats
+    return res.status(200).json(user_exercise_stats);
+  } catch (error) {
+    console.error('Error fetching user exercise stats:', error.stack);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+
+/**
  * Fetches the user's avatar from the database.
  *
  * @param {Request} req - The request object containing the user ID.
@@ -128,5 +155,6 @@ module.exports = {
   searchUserProfile,
   fetchUserAchievements,
   fetchUserAchievementById,
+  fetchUserExerciseStats,
   fetchUserAvatar,
 }
