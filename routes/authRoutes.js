@@ -17,6 +17,5 @@ router.delete('/user', verifyToken,  authController.deleteUser);
 router.patch('/user', validateInput(userSchema.patchUserSchema), verifyToken, authController.patchUser);
 router.patch('/user/avatar', upload.single('avatar'), verifyToken, authController.patchUserAvatar);
 router.patch('/user/password', validateInput(userSchema.patchPasswordSchema), verifyToken, authController.patchUserPassword);
-// TODO: router.post('/user/password/reset', verifyToken, authController.resetUserPassword);
 
 module.exports = router;
