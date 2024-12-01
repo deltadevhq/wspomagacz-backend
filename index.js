@@ -31,10 +31,16 @@ app.use(cookieParser());
 app.use(compression());
 
 // Use CORS to control allow origin access
-app.use(cors({
-  origin: config.application_cors_origin,
-  credentials: true,
-}));
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+
+  res.setHeader('Access-Control-Allow-Origin', origin);
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  next();
+});
+
 app.use(express.json());
 
 // Define specific routes
