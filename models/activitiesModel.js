@@ -2,7 +2,7 @@ const { pool } = require('../config/database');
 
 /**
  * Fetches a single activity with like count by its ID
- * 
+ *
  * @param {number} activity_id - ID of the activity to fetch
  * @param {number} logged_user_id - The ID of the user viewing activities
  * @returns {Object|null} - Activity with like count, or null if not found
@@ -10,14 +10,14 @@ const { pool } = require('../config/database');
 const selectActivity = async (activity_id, logged_user_id) => {
   const query = `
     SELECT ua.*,
-      JSON_BUILD_OBJECT('id', u.id, 'display_name', u.display_name) AS "user",
-      JSON_BUILD_OBJECT('id', creator.id, 'display_name', creator.display_name) AS creator,
-      COUNT(ual.activity_id) AS likes,
-      CASE WHEN ual.user_id = $2 THEN true ELSE false END AS liked
+           JSON_BUILD_OBJECT('id', u.id, 'display_name', u.display_name)             AS "user",
+           JSON_BUILD_OBJECT('id', creator.id, 'display_name', creator.display_name) AS creator,
+           COUNT(ual.activity_id)::integer                                           AS likes,
+           CASE WHEN ual.user_id = $2 THEN true ELSE false END                       AS liked
     FROM user_activities ua
-      JOIN users u ON ua.user_id = u.id
-      JOIN users creator ON ua.created_by = creator.id
-      LEFT JOIN user_activity_likes ual ON ual.activity_id = ua.id
+           JOIN users u ON ua.user_id = u.id
+           JOIN users creator ON ua.created_by = creator.id
+           LEFT JOIN user_activity_likes ual ON ual.activity_id = ua.id
     WHERE ua.id = $1
     GROUP BY ua.id, u.id, creator.id, ual.user_id
   `;
@@ -30,11 +30,11 @@ const selectActivity = async (activity_id, logged_user_id) => {
     console.error('Error executing query', error.stack);
     throw error;
   }
-}
+};
 
 /**
  * Fetches user activities with like counts, ordered by creation date
- * 
+ *
  * @param {number} user_id - ID of the user whose activities to fetch
  * @param {string} visibility - 'private' or 'public' to filter visibility
  * @param {number} logged_user_id - The ID of the user viewing activities
@@ -45,15 +45,15 @@ const selectActivity = async (activity_id, logged_user_id) => {
 const selectActivities = async (user_id, visibility, logged_user_id, offset = 0, limit = 10) => {
   const query = `
     SELECT ua.*,
-      JSON_BUILD_OBJECT('id', u.id, 'display_name', u.display_name) AS "user",
-      JSON_BUILD_OBJECT('id', creator.id, 'display_name', creator.display_name) AS creator,
-      COUNT(ual.activity_id) AS likes,
-      CASE WHEN ual.user_id = $3 THEN true ELSE false END AS liked
+           JSON_BUILD_OBJECT('id', u.id, 'display_name', u.display_name)             AS "user",
+           JSON_BUILD_OBJECT('id', creator.id, 'display_name', creator.display_name) AS creator,
+           COUNT(ual.activity_id)::integer                                           AS likes,
+           CASE WHEN ual.user_id = $3 THEN true ELSE false END                       AS liked
     FROM user_activities ua
-      JOIN users u ON ua.user_id = u.id
-      JOIN users creator ON ua.created_by = creator.id
-      LEFT JOIN user_activity_likes ual ON ual.activity_id = ua.id
-    WHERE ua.user_id = $1 
+           JOIN users u ON ua.user_id = u.id
+           JOIN users creator ON ua.created_by = creator.id
+           LEFT JOIN user_activity_likes ual ON ual.activity_id = ua.id
+    WHERE ua.user_id = $1
       AND (CASE WHEN $2 = FALSE THEN ua.hidden = $2 ELSE TRUE END)
     GROUP BY ua.id, ua.created_at, u.id, creator.id, ual.user_id
     ORDER BY ua.created_at DESC
@@ -69,11 +69,11 @@ const selectActivities = async (user_id, visibility, logged_user_id, offset = 0,
     console.error('Error executing query', error.stack);
     throw error;
   }
-}
+};
 
 /**
  * Fetches user activity from friends based on pagination options
- * 
+ *
  * @param {number} logged_user_id - The ID of the user viewing activities
  * @param {number} offset - The number of items to skip for pagination
  * @param {number} limit - The maximum number of items to return
@@ -81,23 +81,23 @@ const selectActivities = async (user_id, visibility, logged_user_id, offset = 0,
  */
 const selectFriendsActivity = async (logged_user_id, offset = 0, limit = 10) => {
   const query = `
-      SELECT ua.*,
-        JSON_BUILD_OBJECT('id', u.id, 'display_name', u.display_name) AS "user",
-        JSON_BUILD_OBJECT('id', creator.id, 'display_name', creator.display_name) AS creator,
-        COUNT(ual.activity_id) AS likes,
-        CASE WHEN ual.user_id = $1 THEN true ELSE false END AS liked
-      FROM user_activities ua
-        JOIN users u ON ua.user_id = u.id
-        JOIN users creator ON ua.created_by = creator.id
-        LEFT JOIN user_activity_likes ual ON ual.activity_id = ua.id
-      WHERE ua.user_id IN (
-        SELECT CASE WHEN sender_id = $1 THEN receiver_id ELSE sender_id END
-        FROM friends WHERE (sender_id = $1 OR receiver_id = $1) AND status = 'accepted'
-      )
-        AND ua.hidden = false
-      GROUP BY ua.id, ua.created_at, u.id, creator.id, ual.user_id
-      ORDER BY ua.created_at DESC
-      LIMIT $2 OFFSET $3;
+    SELECT ua.*,
+           JSON_BUILD_OBJECT('id', u.id, 'display_name', u.display_name)             AS "user",
+           JSON_BUILD_OBJECT('id', creator.id, 'display_name', creator.display_name) AS creator,
+           COUNT(ual.activity_id)::integer                                           AS likes,
+           CASE WHEN ual.user_id = $1 THEN true ELSE false END                       AS liked
+    FROM user_activities ua
+           JOIN users u ON ua.user_id = u.id
+           JOIN users creator ON ua.created_by = creator.id
+           LEFT JOIN user_activity_likes ual ON ual.activity_id = ua.id
+    WHERE ua.user_id IN (SELECT CASE WHEN sender_id = $1 THEN receiver_id ELSE sender_id END
+                         FROM friends
+                         WHERE (sender_id = $1 OR receiver_id = $1)
+                           AND status = 'accepted')
+      AND ua.hidden = false
+    GROUP BY ua.id, ua.created_at, u.id, creator.id, ual.user_id
+    ORDER BY ua.created_at DESC
+    LIMIT $2 OFFSET $3;
   `;
   const values = [logged_user_id, limit, offset];
 
@@ -108,7 +108,7 @@ const selectFriendsActivity = async (logged_user_id, offset = 0, limit = 10) => 
     console.error('Error executing query', error.stack);
     throw error;
   }
-}
+};
 
 /**
  * Checks if a user has liked a specific activity.
@@ -121,7 +121,8 @@ const selectActivityLike = async (activity_id, user_id) => {
   const query = `
     SELECT *
     FROM user_activity_likes
-    WHERE activity_id = $1 AND user_id = $2
+    WHERE activity_id = $1
+      AND user_id = $2
   `;
   const values = [activity_id, user_id];
 
@@ -132,7 +133,7 @@ const selectActivityLike = async (activity_id, user_id) => {
     console.error('Error executing query', error.stack);
     throw error;
   }
-}
+};
 
 /**
  * Inserts a new user activity into the database.
@@ -146,13 +147,11 @@ const selectActivityLike = async (activity_id, user_id) => {
  */
 const insertActivity = async (user_id, type, data, created_by = 1, visibility) => {
   const query = `
-    INSERT INTO user_activities (
-      user_id,
-      type,
-      data,
-      created_by,
-      hidden
-    )
+    INSERT INTO user_activities (user_id,
+                                 type,
+                                 data,
+                                 created_by,
+                                 hidden)
     VALUES ($1, $2, $3, $4, $5)
     RETURNING *;
   `;
@@ -166,7 +165,7 @@ const insertActivity = async (user_id, type, data, created_by = 1, visibility) =
     console.error('Error executing query', error.stack);
     throw error;
   }
-}
+};
 
 /**
  * Inserts a like for a specific activity by a user.
@@ -190,17 +189,18 @@ const insertLike = async (activity_id, user_id) => {
     console.error('Error executing query', error.stack);
     throw error;
   }
-}
+};
 
 /**
  * Deletes a single activity by its ID.
- * 
+ *
  * @param {number} activity_id - ID of the activity to delete.
  * @returns {Object|null} - Deleted activity object if successful, or null if not found.
  */
 const deleteActivity = async (activity_id) => {
   const query = `
-    DELETE FROM user_activities
+    DELETE
+    FROM user_activities
     WHERE id = $1
     RETURNING *
   `;
@@ -213,7 +213,7 @@ const deleteActivity = async (activity_id) => {
     console.error('Error executing query', error.stack);
     throw error;
   }
-}
+};
 
 /**
  * Deletes a like for a specific activity by a user.
@@ -224,8 +224,10 @@ const deleteActivity = async (activity_id) => {
  */
 const deleteLike = async (activity_id, user_id) => {
   const query = `
-    DELETE FROM user_activity_likes
-    WHERE activity_id = $1 AND user_id = $2
+    DELETE
+    FROM user_activity_likes
+    WHERE activity_id = $1
+      AND user_id = $2
     RETURNING *
   `;
   const values = [activity_id, user_id];
@@ -237,7 +239,7 @@ const deleteLike = async (activity_id, user_id) => {
     console.error('Error executing query', error.stack);
     throw error;
   }
-}
+};
 
 /**
  * Changes the visibility of a specific activity for a user by setting the hidden status.
@@ -249,10 +251,10 @@ const deleteLike = async (activity_id, user_id) => {
  */
 const updateUserActivityVisibility = async (activity_id, logged_user_id, visibility) => {
   const query = `
-    UPDATE user_activities 
-    SET hidden = $3 
+    UPDATE user_activities
+    SET hidden = $3
     WHERE id = $1
-    AND user_id =  $2
+      AND user_id = $2
     RETURNING *
   `;
   const hidden = (visibility === 'private');
@@ -265,7 +267,7 @@ const updateUserActivityVisibility = async (activity_id, logged_user_id, visibil
     console.error('Error executing query', error.stack);
     throw error;
   }
-}
+};
 
 module.exports = {
   selectActivity,
@@ -277,4 +279,4 @@ module.exports = {
   deleteActivity,
   deleteLike,
   updateUserActivityVisibility,
-}
+};
