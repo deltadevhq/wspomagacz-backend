@@ -92,18 +92,20 @@ const selectUserByEmail = async (email) => {
  */
 const selectUserAchievements = async (user_id) => {
   const query = `
-    SELECT ue.*,
+    SELECT ua.*,
+           ae.exercise_id,
            json_build_object(
-             'id', achievements.id,
-             'description', achievements.description,
-             'target_value', achievements.target_value,
-             'min_value', achievements.min_value,
-             'tier', achievements.tier,
-             'xp', achievements.xp,
-             'type', achievements.type
+             'id', a.id,
+             'description', a.description,
+             'target_value', a.target_value,
+             'min_value', a.min_value,
+             'tier', a.tier,
+             'xp', a.xp,
+             'type', a.type
            ) AS achievement
-    FROM user_achievements ue
-           LEFT JOIN achievements ON ue.achievement_id = achievements.id
+    FROM user_achievements ua
+           LEFT JOIN achievements a ON ua.achievement_id = a.id
+           LEFT JOIN achievement_exercises ae ON ae.achievement_id = a.id
     WHERE user_id = $1
   `;
   const values = [user_id];
