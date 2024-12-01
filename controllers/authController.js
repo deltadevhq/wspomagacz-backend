@@ -117,7 +117,7 @@ const loginUser = async (req, res) => {
       httpOnly: true,
       secure: true,
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
-      sameSite: 'strict',
+      sameSite: 'None',
     });
 
     // Successful login response
