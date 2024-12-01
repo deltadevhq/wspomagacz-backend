@@ -51,7 +51,7 @@ app.use('/api/notifications', dateFormatter, routes.notificationRoutes);
 app.use('/api/users', dateFormatter, routes.userRoutes);
 app.use('/api/workouts', dateFormatter, routes.workoutRoutes);
 
-app.get('/version', (req, res) => {
+app.get('/api/version', (req, res) => {
   res.json({ name: packageJson.name, version: packageJson.version });
 });
 
