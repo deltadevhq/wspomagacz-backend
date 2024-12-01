@@ -17,7 +17,7 @@ const selectUserById = async (user_id) => {
     console.error('Error executing query', error.stack);
     throw error;
   }
-}
+};
 
 /**
  * Selects a single user from the database by their username.
@@ -36,7 +36,7 @@ const selectUserByUsername = async (username) => {
     console.error('Error executing query', error.stack);
     throw error;
   }
-}
+};
 
 /**
  * Retrieves a list of users whose usernames match the specified pattern, with optional pagination.
@@ -48,7 +48,8 @@ const selectUserByUsername = async (username) => {
  */
 const selectUsersByUsername = async (username, offset = 0, limit = 10) => {
   const query = `
-    SELECT * FROM users
+    SELECT *
+    FROM users
     WHERE username ILIKE '%' || $1 || '%'
     ORDER BY username
     LIMIT $2 OFFSET $3
@@ -62,7 +63,7 @@ const selectUsersByUsername = async (username, offset = 0, limit = 10) => {
     console.error('Error executing query', error.stack);
     throw error;
   }
-}
+};
 
 /**
  * Selects a single user from the database by their email.
@@ -81,7 +82,7 @@ const selectUserByEmail = async (email) => {
     console.error('Error executing query', error.stack);
     throw error;
   }
-}
+};
 
 /**
  * Retrieves all achievements for a specified user by user ID.
@@ -91,7 +92,18 @@ const selectUserByEmail = async (email) => {
  */
 const selectUserAchievements = async (user_id) => {
   const query = `
-    SELECT * FROM user_achievements
+    SELECT ue.*,
+           json_build_object(
+             'id', achievements.id,
+             'description', achievements.description,
+             'target_value', achievements.target_value,
+             'min_value', achievements.min_value,
+             'tier', achievements.tier,
+             'xp', achievements.xp,
+             'type', achievements.type
+           ) AS achievement
+    FROM user_achievements ue
+           LEFT JOIN achievements ON ue.achievement_id = achievements.id
     WHERE user_id = $1
   `;
   const values = [user_id];
@@ -103,7 +115,7 @@ const selectUserAchievements = async (user_id) => {
     console.error('Error executing query', error.stack);
     throw error;
   }
-}
+};
 
 /**
  * Retrieves a specific achievement for a user by user ID and achievement ID.
@@ -114,9 +126,10 @@ const selectUserAchievements = async (user_id) => {
  */
 const selectUserAchievementById = async (user_id, achievement_id) => {
   const query = `
-    SELECT * FROM user_achievements
+    SELECT *
+    FROM user_achievements
     WHERE user_id = $1
-    AND achievement_id = $2
+      AND achievement_id = $2
   `;
   const values = [user_id, achievement_id];
 
@@ -127,7 +140,7 @@ const selectUserAchievementById = async (user_id, achievement_id) => {
     console.error('Error executing query', error.stack);
     throw error;
   }
-}
+};
 
 /**
  * Retrieves exercise statistics for a specific user and exercise.
@@ -138,9 +151,10 @@ const selectUserAchievementById = async (user_id, achievement_id) => {
  */
 const selectUserExerciseStats = async (user_id, exercise_id) => {
   const query = `
-    SELECT * FROM user_workout_exercise_stats
+    SELECT *
+    FROM user_workout_exercise_stats
     WHERE user_id = $1
-    AND exercise_id = $2
+      AND exercise_id = $2
   `;
   const values = [user_id, exercise_id];
 
@@ -151,7 +165,7 @@ const selectUserExerciseStats = async (user_id, exercise_id) => {
     console.error('Error executing query', error.stack);
     throw error;
   }
-}
+};
 
 /**
  * Select user's avatar from the database.
@@ -174,7 +188,7 @@ const selectUserAvatarById = async (user_id) => {
     console.error('Error executing query', error.stack);
     throw error;
   }
-}
+};
 
 /**
  * Inserts a new user into the database.
@@ -199,7 +213,7 @@ const insertUser = async (username, password_hash, email) => {
     console.error('Error executing query:', error.stack);
     throw error;
   }
-}
+};
 
 /**
  * Updates the user's password in the database.
@@ -209,7 +223,10 @@ const insertUser = async (username, password_hash, email) => {
  * @returns {Object|null} - The updated user object if successful, or throws an error if the user is not found.
  */
 const updateUserPassword = async (user_id, password_hash) => {
-  const query = `UPDATE users SET password_hash = $2 WHERE id = $1 RETURNING *`;
+  const query = `UPDATE users
+                 SET password_hash = $2
+                 WHERE id = $1
+                 RETURNING *`;
   const values = [user_id, password_hash];
 
   try {
@@ -224,7 +241,7 @@ const updateUserPassword = async (user_id, password_hash) => {
     console.error('Error executing query', error.stack);
     throw error;
   }
-}
+};
 
 /**
  * Updates the user's avatar in the database.
@@ -238,7 +255,7 @@ const updateUserAvatar = async (user_id, avatar) => {
     INSERT INTO user_avatars (user_id, avatar)
     VALUES ($1, $2)
     ON CONFLICT (user_id)
-    DO UPDATE SET avatar = EXCLUDED.avatar
+      DO UPDATE SET avatar = EXCLUDED.avatar
     RETURNING *`;
   const values = [user_id, avatar];
 
@@ -273,7 +290,7 @@ const updateUserLastLogin = async (username) => {
     console.error('Error executing query', error.stack);
     throw error;
   }
-}
+};
 
 /**
  * Updates user information in the database by their ID.
@@ -289,12 +306,11 @@ const updateUserLastLogin = async (username) => {
 const updateUser = async (user_id, display_name, gender, birthday, weights, height) => {
   const query = `
     UPDATE users
-    SET 
-        display_name = COALESCE($1, display_name),
-        gender = COALESCE($2, gender),
-        birthday = COALESCE($3, birthday),
-        weights = COALESCE($4, weights),
-        height = COALESCE($5, height)
+    SET display_name = COALESCE($1, display_name),
+        gender       = COALESCE($2, gender),
+        birthday     = COALESCE($3, birthday),
+        weights      = COALESCE($4, weights),
+        height       = COALESCE($5, height)
     WHERE id = $6
     RETURNING *
   `;
@@ -307,7 +323,7 @@ const updateUser = async (user_id, display_name, gender, birthday, weights, heig
     console.error('Error executing query', error.stack);
     throw error;
   }
-}
+};
 
 /**
  * Deletes a user from the database by their ID.
@@ -326,7 +342,7 @@ const deleteUser = async (user_id) => {
     console.error('Error executing query', error.stack);
     throw error;
   }
-}
+};
 
 module.exports = {
   selectUserById,
@@ -343,4 +359,4 @@ module.exports = {
   updateUserAvatar,
   updateUserLastLogin,
   deleteUser,
-}
+};
