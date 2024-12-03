@@ -1,7 +1,6 @@
 require('./setup');
 const compression = require('compression');
 const express = require('express');
-const cors = require('cors');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const app = express();
