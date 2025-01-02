@@ -10,7 +10,7 @@ const userModel = require('../models/userModel');
 
 const EXPERIENCE_DIVIDER = 0.01;
 const DEFAULT_BODY_WEIGHT = 40;
-const PERSONAL_BEST_EXTRA_EXP = 20;
+// const PERSONAL_BEST_EXTRA_EXP = 20;
 
 /**
  * Retrieves the level corresponding to a given amount of experience points (XP).
@@ -137,13 +137,12 @@ const userExperienceHandler = async (workout) => {
     }
 
     // Grant experience for each personal best
-    const pb_count = await personalBestHandler(workout_exercises, workout_date, user_id);
-    for (let i = 0; i < pb_count; i++) {
-      i = i + 1;
-      const { exp_granted: pb_exp_granted } = await grantExperienceHandler(user_id, 1, PERSONAL_BEST_EXTRA_EXP);
-
-      sum_of_granted_xp += pb_exp_granted;
-    }
+    // const pb_count = await personalBestHandler(workout_exercises, workout_date, user_id);
+    // for (let i = 0; i < pb_count; i++) {
+    //   i = i + 1;
+    // const { exp_granted: pb_exp_granted } = await grantExperienceHandler(user_id, 1, PERSONAL_BEST_EXTRA_EXP);
+    // sum_of_granted_xp += pb_exp_granted;
+    //}
 
     return { sum_of_granted_xp, user_achievements, experience_history };
   } catch (error) {

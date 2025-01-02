@@ -12,7 +12,7 @@ const baseExerciseSchema = {
   exercise_name: Joi.string()
     .min(3)
     .max(100)
-    .pattern(/^(?!.*\s{2,})[A-Za-z0-9ĄąĆćĘęŁłŃńÓóŚśŹźŻż]+(?: [A-Za-z0-9ĄąĆćĘęŁłŃńÓóŚśŹźŻż]+)*$/)
+    .pattern(/^(?!.*\s{2,})[A-Za-z0-9ĄąĆćĘęŁłŃńÓóŚśŹźŻż,()]+(?: [A-Za-z0-9ĄąĆćĘęŁłŃńÓóŚśŹźŻż,()]+)*$/)
     .messages({
       'string.min': 'Exercise name must be at least 3 characters long',
       'string.max': 'Exercise name must be at most 100 characters long',

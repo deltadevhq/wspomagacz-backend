@@ -42,16 +42,16 @@
     summary: Mark all notifications as read for currently logged-in user
     tags: [ Notifications ]
     responses:
-    200:
-      description: OK - Successfully marked all notifications as read
-    401:
-      description: Unauthorized - Invalid or missing token
-    404:
-      description: Not Found - Notifications not found
-    409:
-      description: Conflict - All notifications are already marked as read
-    500:
-      description: Internal Server Error - Database error
+      200:
+        description: OK - Successfully marked all notifications as read
+      401:
+        description: Unauthorized - Invalid or missing token
+      404:
+        description: Not Found - Notifications not found
+      409:
+        description: Conflict - All notifications are already marked as read
+      500:
+        description: Internal Server Error - Database error
 
 /api/notifications/{id}:
   get:
