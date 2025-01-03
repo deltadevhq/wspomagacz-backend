@@ -96,7 +96,7 @@ const getXpByLevel = async (req, res) => {
 const userExperienceHandler = async (workout) => {
   try {
     // Deconstruct workout data
-    const { user_id: user_id, exercises: workout_exercises, date: workout_date } = workout;
+    const { user_id: user_id, exercises: workout_exercises, workout_id } = workout;
 
     // Initialize sum of granted experience
     let sum_of_granted_xp = 0;
@@ -111,7 +111,7 @@ const userExperienceHandler = async (workout) => {
     const multiplier = await calculateMultiplier(user_id);
 
     // Grant experience for workout
-    const { exp_granted: workout_exp_granted, experience_history } = await grantExperienceHandler(user_id, exp, multiplier);
+    const { exp_granted: workout_exp_granted, experience_history } = await grantExperienceHandler(user_id, exp, multiplier, 'workout', workout_id);
     sum_of_granted_xp += workout_exp_granted;
 
     // Grant experience for achievements
@@ -123,7 +123,7 @@ const userExperienceHandler = async (workout) => {
       const { id: achievement_id, tier } = achievement;
 
       if (achieved) {
-        const { exp_granted, experience_history } = await grantExperienceHandler(user_id, exp);
+        const { exp_granted, experience_history } = await grantExperienceHandler(user_id, exp, 1.00, 'achievement', achievement_id);
         experience_history_id = experience_history.id;
         sum_of_granted_xp += exp_granted;
 
@@ -159,7 +159,7 @@ const userExperienceHandler = async (workout) => {
  * @param {number} [multiplier=1.00] - The multiplier for the experience points
  * @returns {Promise<number>} - The granted experience points
  */
-const grantExperienceHandler = async (user_id, exp = 0, multiplier = 1.00) => {
+const grantExperienceHandler = async (user_id, exp = 0, multiplier = 1.00, type, type_value) => {
   try {
     // Fetch user actual experience
     const user = await userModel.selectUserById(user_id);
@@ -168,6 +168,8 @@ const grantExperienceHandler = async (user_id, exp = 0, multiplier = 1.00) => {
     const lvl_before = user.level;
 
     const exp_granted = Math.round((exp * multiplier));
+
+    console.debug(`Granting ${exp_granted} XP to user ${user_id} for ${type} ID: ${type_value}`);
 
     const exp_after = exp_before + exp_granted;
     const progression = await getLevelByXpHandler(exp_after);
@@ -193,7 +195,7 @@ const grantExperienceHandler = async (user_id, exp = 0, multiplier = 1.00) => {
           const { id: achievement_id, tier } = achievement;
 
           if (achieved) {
-            const { experience_history } = await grantExperienceHandler(user_id, exp);
+            const { experience_history } = await grantExperienceHandler(user_id, exp, 1.00, 'achievement', achievement_id);
             experience_history_id = experience_history.id;
 
             if (tier >= 3) {
