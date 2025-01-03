@@ -96,7 +96,7 @@ const getXpByLevel = async (req, res) => {
 const userExperienceHandler = async (workout) => {
   try {
     // Deconstruct workout data
-    const { user_id: user_id, exercises: workout_exercises, workout_id } = workout;
+    const { user_id: user_id, exercises: workout_exercises, id: workout_id } = workout;
 
     // Initialize sum of granted experience
     let sum_of_granted_xp = 0;
