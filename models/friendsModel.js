@@ -90,6 +90,7 @@ const selectFriendsExperienceLeaderboard = async (user_id) => {
            JOIN users u ON u.id = mle.user_id
     WHERE (f.sender_id = $1 OR f.receiver_id = $1)
       AND f.status = 'accepted'
+    ORDER BY rank
   `;
   const values = [user_id];
 
@@ -122,6 +123,7 @@ const selectFriendsWeightLeaderboard = async (user_id) => {
            JOIN users u ON u.id = mlw.user_id
     WHERE (f.sender_id = $1 OR f.receiver_id = $1)
       AND f.status = 'accepted'
+    ORDER BY rank
   `;
   const values = [user_id];
 
